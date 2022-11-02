@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "strapi_forums",
+  "info": {
+    "singularName": "strapi-forum",
+    "pluralName": "strapi-forums",
+    "displayName": "strapi-forum"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "Answers": {
+      "type": "json"
+    },
+    "Questions": {
+      "type": "richtext"
+    },
+    "Username": {
+      "type": "string"
+    },
+    "answerusername": {
+      "type": "string"
+    }
+  }
+}
