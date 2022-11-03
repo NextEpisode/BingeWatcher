@@ -12,9 +12,11 @@ export default function ForumList({ response }) {
                 <>
                     <Link href={`/questions/${post.id}`} >
                         <a>
-                            <ForumListItem forumEntry={post}>
-
-                            </ForumListItem>
+                            <ForumListItem
+                                title={post.attributes.title}
+                                subtitle={post.attributes.Username}
+                                paragraph={post.attributes.Questions}
+                            />
                         </a>
                     </Link>
                     <Divider variant="inset" component="li" />

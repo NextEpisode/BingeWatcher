@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import style from "../../styles/Home.module.css";
 import { useRouter } from 'next/router'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import Link from "next/link";
 import axios from "axios"
+import { List, Divider } from "@mui/material";
+import ForumListItem from "../Components/ForumListItem";
 
 function IdComponent({ mediaResponse }) {
 
@@ -24,7 +26,7 @@ function IdComponent({ mediaResponse }) {
             console.log(session.user.name)
             axios.put(`http://localhost:1337/api/strapi-forums/${mId}`, {
                 data: {
-                    Answers: [...a, [session.user.name, answer]],
+                    Answers: [...a, { user: session.user.name, reply: answer }],
                     Answername: session.user.name,
                 },
             }).catch((e) => {
@@ -49,52 +51,57 @@ function IdComponent({ mediaResponse }) {
                     <div className={style.userinfo}>
                         <p>Posted By: {media.Username}</p>
                     </div>
-                    <div className={style.questioncont}>
-                        <p className={style.question}>{media.Questions}</p>
-                    </div>
-                    <div className={style.answercont}>
-                        <h2 className={style.subheading}>Answers</h2>
-                        <div className={style.inputanswer}>
-                            {!session && (
-                                <div />
-                            )}
-                            {session && (
-                                <form>
-                                    <textarea
-                                        type="text"
-                                        placeholder="Enter your answer"
-                                        rows="5"
-                                        value={answer}
-                                        onChange={(e) => {
-                                            formerArray(media.Answers);
-                                            setAnswer(e.target.value);
-                                        }}
-                                    />
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            submitAnswer();
-                                        }}
-                                    >
-                                        Post
-                                    </button>
-                                </form>
-                            )}
+                    <List>
+                        <div className={style.questioncont}>
+                            <p className={style.question}>{media.Questions}</p>
                         </div>
-                        <button className={style.showanswer} onClick={() => setShow(!show)}>
-                            {show ? "Hide Answers" : "Show Answers"}
-                        </button>
-                        {show ? (
-                            <div className={style.answers}>
-                                {media.Answers.map((answers, i) => (
-                                    <div className={style.eachanswer} key={i}>
-                                        <p className={style.username}>{answers[0]}</p>
-                                        <p className={style.answertext}>{answers[1]}</p>
-                                    </div>
-                                ))}
+                        <div className={style.answercont}>
+                            <div className={style.inputanswer}>
+                                {!session && (
+                                    <div />
+                                )}
+                                {session && (
+                                    <form>
+                                        <textarea
+                                            type="text"
+                                            placeholder="Enter your answer"
+                                            rows="5"
+                                            value={answer}
+                                            onChange={(e) => {
+                                                formerArray(media.Answers);
+                                                setAnswer(e.target.value);
+                                            }}
+                                        />
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                submitAnswer();
+                                            }}
+                                        >
+                                            Post
+                                        </button>
+                                    </form>
+                                )}
                             </div>
-                        ) : null}
-                    </div>
+                            <button className={style.showanswer} onClick={() => setShow(!show)}>
+                                {show ? "Hide Answers" : "Show Answers"}
+                            </button>
+                            {show ? (
+                                <div className={style.answers}>
+                                    {media.Answers.map((answers, i) => (
+                                        <>
+                                            <ForumListItem
+                                                subtitle={answers.user}
+                                                paragraph={answers.reply}
+                                            />
+                                            <Divider variant="inset" component="li" />
+                                        </>
+                                    ))}
+                                </div>
+                            ) : null}
+                        </div>
+
+                    </List>
                 </div>
             )}
         </div>

@@ -5,14 +5,14 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
-export default function ForumListItem({ forumEntry }) {
+export default function ForumListItem({ title, subtitle, paragraph }) {
     return (
         <ListItem alignItems="flex-start">
             <ListItemAvatar>
                 <Avatar alt="Remy Sharp" src="/Images/userIcon.png" />
             </ListItemAvatar>
             <ListItemText
-                primary={forumEntry.attributes.title}
+                primary={title}
                 secondary={
                     <React.Fragment>
                         <Typography
@@ -21,9 +21,9 @@ export default function ForumListItem({ forumEntry }) {
                             variant="body2"
                             color="text.primary"
                         >
-                            {forumEntry.attributes.Username}
+                            {subtitle}
                         </Typography>
-                        {forumEntry.attributes.Questions}
+                        {paragraph}
                     </React.Fragment>
                 }
             />
