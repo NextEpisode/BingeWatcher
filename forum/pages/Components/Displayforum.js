@@ -3,6 +3,7 @@ import style from "../../styles/Home.module.css";
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from "next/link";
 import axios from "axios"
+import ForumList from "./ForumList";
 
 function Displayforum({ response }) {
 
@@ -51,20 +52,7 @@ function Displayforum({ response }) {
                                 <button onClick={() => signOut()}>Signout</button>
                             </div>
                         </div>
-
-                        {response.map((post, index) => (
-                            <div key={index}>
-                                <Link href={`/questions/${post.id}`}>
-                                    <h2 className={style.subheading}>{post.attributes.title}</h2>
-                                </Link>
-                                <div className={style.userinfo}>
-                                    <p>Posted By: {post.attributes.Username}</p>
-                                </div>
-                                <div className={style.questioncont}>
-                                    <p className={style.question}>{post.attributes.Questions}</p>
-                                </div>
-                            </div>
-                        ))}
+                        <ForumList response={response} />
                     </div>
                 </>
             )}
