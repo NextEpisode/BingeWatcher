@@ -12,30 +12,35 @@ function IdComponent({ mediaResponse }) {
     const { data: session } = useSession()
     const [show, setShow] = useState(false);
     const [answer, setAnswer] = useState("")
-    const [a, formerArray] = useState([]);
     const [media, setMedia] = useState(mediaResponse?.data?.attributes);
 
     const router = useRouter()
     const { mId } = router.query
 
-    const submitAnswer = () => {
+    const answerEmpty = (answer == "");
+
+    // Function used to submit answers to the forum entry with {mID}
+    // by looking up the old answers and then appending to them
+    const submitAnswer = async () => {
         try {
+            const tmpMedia = await axios.get(`http://localhost:1337/api/strapi-forums/${mId}`)
+            const originalAnswers = tmpMedia.data.data.attributes.Answers
+            const appendedAnswers = [...originalAnswers, { user: session.user.name, reply: answer }]
+
+
             axios.put(`http://localhost:1337/api/strapi-forums/${mId}`, {
                 data: {
-                    Answers: [...a, { user: session.user.name, reply: answer }]
+                    Answers: appendedAnswers
                 },
             }).then(() => {
-                console.log(a)
+                window.location.reload()
             }).catch((e) => {
-                console.log(e.mediaResponse)
-
+                console.log(e)
             });
         } catch (error) {
             console.log("Error found: ", mId, error);
         }
     };
-
-
 
     return (
         <div>
@@ -67,11 +72,10 @@ function IdComponent({ mediaResponse }) {
                                             value={answer}
                                             autoComplete="off"
                                             onChange={(e) => {
-                                                formerArray(media.Answers);
                                                 setAnswer(e.target.value);
                                             }}
                                         />
-                                        <button
+                                        <button disabled={answerEmpty}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 submitAnswer();
@@ -95,9 +99,10 @@ function IdComponent({ mediaResponse }) {
                             </div>
                         </div>
                     </List>
-                </div>
-            )}
-        </div>
+                </div >
+            )
+            }
+        </div >
 
     )
 }
