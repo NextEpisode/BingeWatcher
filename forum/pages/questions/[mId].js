@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import Link from "next/link";
 import axios from "axios"
-import { List, Divider } from "@mui/material";
+import { List, Divider, TextField } from "@mui/material";
 import ForumListItem from "../Components/ForumListItem";
 
 function IdComponent({ mediaResponse }) {
@@ -15,24 +15,21 @@ function IdComponent({ mediaResponse }) {
     const [a, formerArray] = useState([]);
     const [media, setMedia] = useState(mediaResponse?.data?.attributes);
 
-    console.log("this is it - ", mediaResponse);
-
     const router = useRouter()
     const { mId } = router.query
-    console.log("this is the mid - ", mId);
 
     const submitAnswer = () => {
         try {
-            console.log(session.user.name)
             axios.put(`http://localhost:1337/api/strapi-forums/${mId}`, {
                 data: {
-                    Answers: [...a, { user: session.user.name, reply: answer }],
-                    Answername: session.user.name,
+                    Answers: [...a, { user: session.user.name, reply: answer }]
                 },
+            }).then(() => {
+                console.log(a)
             }).catch((e) => {
                 console.log(e.mediaResponse)
+
             });
-            window.location.reload()
         } catch (error) {
             console.log("Error found: ", mId, error);
         }
@@ -53,7 +50,7 @@ function IdComponent({ mediaResponse }) {
                     </div>
                     <List>
                         <div className={style.questioncont}>
-                            <p className={style.question}>{media.Questions}</p>
+                            <p className={style.question} >{media.Questions}</p>
                         </div>
                         <div className={style.answercont}>
                             <div className={style.inputanswer}>
@@ -62,11 +59,13 @@ function IdComponent({ mediaResponse }) {
                                 )}
                                 {session && (
                                     <form>
-                                        <textarea
-                                            type="text"
-                                            placeholder="Enter your answer"
-                                            rows="5"
+                                        <TextField
+                                            placeholder="What are your thoughts?"
+                                            multiline
+                                            minRows={2}
+                                            maxRows={6}
                                             value={answer}
+                                            autoComplete="off"
                                             onChange={(e) => {
                                                 formerArray(media.Answers);
                                                 setAnswer(e.target.value);
@@ -83,24 +82,18 @@ function IdComponent({ mediaResponse }) {
                                     </form>
                                 )}
                             </div>
-                            <button className={style.showanswer} onClick={() => setShow(!show)}>
-                                {show ? "Hide Answers" : "Show Answers"}
-                            </button>
-                            {show ? (
-                                <div className={style.answers}>
-                                    {media.Answers.map((answers, i) => (
-                                        <>
-                                            <ForumListItem
-                                                subtitle={answers.user}
-                                                paragraph={answers.reply}
-                                            />
-                                            <Divider variant="inset" component="li" />
-                                        </>
-                                    ))}
-                                </div>
-                            ) : null}
+                            <div className={style.answers}>
+                                {media.Answers.map((answers, i) => (
+                                    <>
+                                        <ForumListItem
+                                            subtitle={answers.user}
+                                            paragraph={answers.reply}
+                                        />
+                                        <Divider variant="inset" component="li" />
+                                    </>
+                                ))}
+                            </div>
                         </div>
-
                     </List>
                 </div>
             )}
@@ -111,7 +104,6 @@ function IdComponent({ mediaResponse }) {
 
 
 export async function getServerSideProps(context) {
-
     const { mId } = context.query;
     let mediaResponse = {};
 

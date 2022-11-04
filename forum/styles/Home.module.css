@@ -43,17 +43,24 @@
       min-height: 300px;
       padding: 15px 14px;
       box-shadow: 12px 12px 36px rgba(0, 0, 0, 0.12);
+      background-color: #F2F2F2;
+      outline-style: solid;
+      outline-width: 0.1%;
+      outline-color: #1976D2;
+
+      border-radius: 10px;
+      padding: 20px;
+      margin-left: 0.5%;
+      margin-right: 0.5%;
     }
     .answercont {
       min-height: 300px;
       padding: 5px 3px 5px 15px;
     }
-    .answers {
-      height: 300px;
-      overflow-x: scroll;
-    }
     .inputanswer {
       margin-bottom: 8px;
+      margin-top: 10px;
+      
     }
     .inputanswer textarea {
       width: 100%;
