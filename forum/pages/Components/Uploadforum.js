@@ -9,6 +9,8 @@ function Uploadforum({ session }) {
     const [description, setDescription] = useState("");
     const url = "http://localhost:1337/api/strapi-forums";
 
+    const smtEmpty = (name == "") || (description == "")
+
     const sendData = async () => {
 
         const response = await axios.post(url, {
@@ -50,10 +52,11 @@ function Uploadforum({ session }) {
                         onChange={(e) => setDescription(e.target.value)}
                     />
                     <div className={style.inputanswer}>
-                        <button onClick={(e) => {
-                            e.preventDefault();
-                            sendData();
-                        }}>Submit Post
+                        <button disabled={smtEmpty}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                sendData();
+                            }}>Submit Post
                         </button>
                     </div>
                 </form>
