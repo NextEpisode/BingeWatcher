@@ -6,6 +6,11 @@ export const Header = () => {
 
   const { data: session } = useSession()
 
+  function handleSignOut() {
+    signOut().then(() => {
+      window.location = "/"
+    })
+  }
 
   return (
     <header>
@@ -31,7 +36,6 @@ export const Header = () => {
                   <Link href="/search" className="btn btn-main">
                     Search
                   </Link>
-
                 </li>
               </ul>
             </>
@@ -39,7 +43,6 @@ export const Header = () => {
 
           {session && (
             <ul className="nav-links">
-
               <li>
                 <Link href="/profile">Profile</Link>
               </li>
@@ -52,7 +55,7 @@ export const Header = () => {
                 </Link>
               </li>
               <li>
-                <a onClick={() => signOut()}>
+                <a onClick={() => handleSignOut()}>
                   Logout
                 </a>
               </li>

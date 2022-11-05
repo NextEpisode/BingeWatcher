@@ -13,8 +13,12 @@ function Displayforum({ response }) {
         <div>
             {!session && (
                 <>
-                    <h1>Sign in to access forum</h1>
-                    <button onClick={() => signIn()}>Sign In</button>
+                    <div>
+                        <div className={style.topcont}>
+                            <h1 className={style.heading}>Display Forum</h1>
+                        </div>
+                        <ForumList response={response} />
+                    </div>
                 </>
             )}
             {session && (
@@ -26,7 +30,6 @@ function Displayforum({ response }) {
                                 <Link href="/upload">
                                     <button>Create a new post</button>
                                 </Link>
-                                <button onClick={() => signOut()}>Signout</button>
                             </div>
                         </div>
                         <ForumList response={response} />

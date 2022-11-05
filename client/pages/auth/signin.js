@@ -7,7 +7,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getProviders, signIn } from "next-auth/react"
+import { signIn, signOut, useSession } from 'next-auth/react'
 
 
 
@@ -15,6 +15,9 @@ import { getProviders, signIn } from "next-auth/react"
 const theme = createTheme();
 
 export default function SignIn() {
+
+    const { data: session } = useSession()
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -26,38 +29,46 @@ export default function SignIn() {
     };
 
     return (
-        <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Sign in
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                            onClick={() => {
-                                signIn("google")
+        <div>
+            {!session && (
+                <ThemeProvider theme={theme}>
+                    <Container component="main" maxWidth="xs">
+                        <CssBaseline />
+                        <Box
+                            sx={{
+                                marginTop: 8,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
                             }}
                         >
-                            Sign In with Google
-                        </Button>
-                    </Box>
-                </Box>
-            </Container>
-        </ThemeProvider>
+                            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                                <LockOutlinedIcon />
+                            </Avatar>
+                            <Typography component="h1" variant="h5">
+                                Sign in
+                            </Typography>
+                            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    sx={{ mt: 3, mb: 2 }}
+                                    onClick={() => {
+                                        signIn("google")
+                                    }}
+                                >
+                                    Sign In with Google
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Container>
+                </ThemeProvider>
+            )}
+            {session && (
+                window.location = "/home"
+            )}
+        </div>
+
     );
 }

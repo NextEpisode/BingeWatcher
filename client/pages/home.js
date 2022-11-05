@@ -1,14 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Carousel from 'react-material-ui-carousel';
 import CarouselItem from '../ClientComponents/CarouselItem';
 
-
-
-
-// const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 
 
