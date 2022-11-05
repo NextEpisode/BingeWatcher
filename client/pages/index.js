@@ -1,17 +1,15 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Item from '@mui/material/ListItem';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import ShareIcon from '@mui/icons-material/Share';
+import SearchIcon from '@mui/icons-material/Search';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
-import BrushIcon from '@mui/icons-material/Brush';
+import MovieIcon from '@mui/icons-material/Movie';
+import TvIcon from '@mui/icons-material/Tv';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Carousel from 'react-material-ui-carousel';
 
@@ -27,12 +25,16 @@ export default function Album() {
                 {/* Hero unit */}
                 <Box
                     sx={{
-                        bgcolor: 'info.main',
+                        bgcolor: '#1876D1',
                         pt: 8,
                         pb: 6,
-                        marginLeft: 50,
-                        marginRight: 50,
+                        marginLeft: "35px",
+                        marginRight: "35px",
+                        marginTop: "25px",
                         borderRadius: 7,
+                        boxShadow: "1px 6px 8px 3px rgba(160,159,159,0.75)",
+                        padding: "70px 100px"
+
 
                     }}
                 >
@@ -40,12 +42,13 @@ export default function Album() {
                         component="h1"
                         variant="h2"
                         align="center"
-                        color="text.primary"
+                        color="white"
                         gutterBottom
+                        fontWeight={"bold"}
                     >
-                        Album layout
+                        Welcome to BingeWatcher!
                     </Typography>
-                    <Typography variant="h5" align="center" color="text.secondary" paragraph>
+                    <Typography variant="h5" align="center" color="white" paragraph>
                         Something short and leading about the collection below—its contents,
                         the creator, etc. Make it short and sweet, but not too short so folks
                         don&apos;t simply skip over it entirely.
@@ -54,17 +57,18 @@ export default function Album() {
                         container
                         direction="row"
                         justifyContent="space-around"
-                        alignItems="center" rowSpacing={5} columns={10}>
+                        alignItems="center" rowSpacing={5} columns={10}
+                        color="white">
                         <Grid item xs={4}>
 
                             <Item>
-                                <ShareIcon sx={{ mr: 2 }}></ShareIcon>
+                                <TvIcon sx={{ mr: 2 }}></TvIcon>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
                             </Item>
                         </Grid>
                         <Grid item xs={4}>
                             <Item>
-                                <PhoneIphoneIcon sx={{ mr: 2 }}></PhoneIphoneIcon>
+                                <MovieIcon sx={{ mr: 2 }}></MovieIcon>
 
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
                             </Item>
@@ -77,20 +81,12 @@ export default function Album() {
                         </Grid>
                         <Grid item xs={4}>
                             <Item>
-                                <BrushIcon sx={{ mr: 2 }}></BrushIcon>
+                                <SearchIcon sx={{ mr: 2 }}></SearchIcon>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
 
                             </Item>
                         </Grid>
                     </Grid>
-                    <Stack
-                        sx={{ pt: 4 }}
-                        direction="row"
-                        spacing={2}
-                        justifyContent="center"
-                    >
-                        <Button variant="contained">Main call to action</Button>
-                    </Stack>
                 </Box>
                 <Container sx={{ py: 8 }} maxWidth="md">
                     {/* End hero unit */}
