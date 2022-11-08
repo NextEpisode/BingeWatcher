@@ -20,6 +20,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { visuallyHidden } from '@mui/utils';
 import StarBorder from '@mui/icons-material/StarBorder';
 import { Button, CardMedia, Collapse, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Modal, Popover, Popper } from '@mui/material';
@@ -270,13 +272,16 @@ EnhancedTableToolbar.propTypes = {
 
 export default function EnhancedTable({ medias }) {
     const [data, setData] = React.useState(medias);
-    const [episodes,setEpisodes] = React.useState(medias.episode);
+    const [episodes,setEpisodes] = React.useState(medias.map((element) => element.episode));
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('Title');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    console.log(episodes);
+
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -340,6 +345,11 @@ export default function EnhancedTable({ medias }) {
     const handleChangeDense = (event) => {
         setDense(event.target.checked);
     };
+
+    const handleEpisodeClick = (index) => {
+        console.log(episodes[index]);
+        episodes[index]++;
+    }
 
     const isSelected = (title) => selected.indexOf(title) !== -1;
 
@@ -414,11 +424,12 @@ export default function EnhancedTable({ medias }) {
                                             <TableCell align="left">{row.release_date}</TableCell>
                                             <TableCell align="left">{row.category}</TableCell>
                                             <TableCell align="left">{row.status}</TableCell>
-                                            {row.episode >= 0 ? <TableCell align="left">{row.episode}</TableCell> : 'dis a movie'
-
-                                                
-
-                                                
+                                           {row.episode >= 0 ? (<TableCell align="left">{episodes[data.indexOf(row)]}
+                                            <IconButton onIconClick={handleEpisodeClick(data.indexOf(row))}><AddIcon fontSize="small"/> 
+                                            </IconButton>
+                                            <IconButton><RemoveIcon fontSize="small"/> 
+                                            </IconButton>
+                                            </TableCell>) : 'dis a movie'                                                
                                             }
                                         </TableRow>
                                     );
