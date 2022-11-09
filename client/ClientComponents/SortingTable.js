@@ -24,7 +24,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { visuallyHidden } from '@mui/utils';
 import StarBorder from '@mui/icons-material/StarBorder';
-import { Button, CardMedia, Collapse, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Modal, Popover, Popper } from '@mui/material';
+import { Button, CardMedia, Collapse, Divider, List, ListItem, ListItemButton, InboxIcon, DraftsIcon, ListItemIcon, ListItemText, Modal, Popover, Popper } from '@mui/material';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -96,7 +96,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort,episodes} =
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, episodes } =
         props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -155,18 +155,9 @@ function EnhancedTableToolbar(props) {
     const { numSelected } = props;
     const { selected } = props;
     const { handleDeleteClick } = props;
-    const [anchorEl, setAnchorEl] = React.useState(null);
     const [openModal, setOpen] = React.useState(false);
     const handleModalOpen = () => setOpen(true);
     const handleModalClose = () => setOpen(false);
-
-    const handleListClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
 
     const style = {
         position: 'absolute',
@@ -180,8 +171,14 @@ function EnhancedTableToolbar(props) {
         p: 4,
     };
 
-    const openpopover = Boolean(anchorEl);
-    const id = openpopover ? 'simple-popover' : undefined;
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleListClick = (event) => {
+        setAnchorEl(anchorEl ? null : event.currentTarget);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popper' : undefined;
 
     return (
         <Toolbar
@@ -232,7 +229,7 @@ function EnhancedTableToolbar(props) {
                                 handleDeleteClick(selected);
                                 handleModalClose();
                             }
-                                } id="modal-modal-title" variant="h6" component="h2">
+                            } id="modal-modal-title" variant="h6" component="h2">
                                 delete
                             </Button>
                             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
@@ -244,23 +241,45 @@ function EnhancedTableToolbar(props) {
 
 
             ) : (
-                <Tooltip title="Filter list">
-                    <IconButton aria-describedby={id} onClick={handleListClick}>
-                        <FilterListIcon aria-describedby={id} variant="contained" onClick={handleListClick} />
-                        <Popover
-                            id={id}
-                            open={openpopover}
-                            anchorEl={anchorEl}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                        >
-                            <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
-                        </Popover>
-                    </IconButton>
-                </Tooltip>
+                <div>
+                    <Tooltip title="Filter list">
+                        <IconButton aria-describedby={id} type="button" onClick={handleListClick}>
+                            <FilterListIcon />
+                        </IconButton>
+
+                    </Tooltip>
+                    <Popper id={id} open={open} anchorEl={anchorEl}>
+                        <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
+                            <List>
+                                <ListItem disablePadding>
+                                    <ListItemButton>
+                                        <ListItemText primary="Plan to watch" />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem disablePadding>
+                                    <ListItemButton>
+                                        <ListItemText primary="Watching" />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem disablePadding>
+                                    <ListItemButton>
+                                        <ListItemText primary="Watched" />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem disablePadding>
+                                    <ListItemButton>
+                                        <ListItemText primary="Dropped" />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem disablePadding>
+                                    <ListItemButton>
+                                        <ListItemText primary="On Hold" />
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
+                        </Box>
+                    </Popper>
+                </div>
             )}
         </Toolbar>
     );
@@ -272,7 +291,7 @@ EnhancedTableToolbar.propTypes = {
 
 export default function EnhancedTable({ medias }) {
     const [data, setData] = React.useState(medias);
-    const [episodes,setEpisodes] = React.useState(medias.map((element) => element.episode));
+    const [episodes, setEpisodes] = React.useState(medias.map((element) => element.episode));
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('Title');
     const [selected, setSelected] = React.useState([]);
@@ -293,14 +312,12 @@ export default function EnhancedTable({ medias }) {
 
         const newData = [...data];
 
-        selected.forEach((element) => {
-            let index = newData.findIndex((media) => media.title === element);
+        selected.forEach((selectedMedia) => {
+            let index = newData.findIndex((media) => media.title === selectedMedia);
             newData.splice(index, 1);
             setData(newData);
         });
 
-        
-    
         setSelected([]);
 
     }
@@ -346,9 +363,19 @@ export default function EnhancedTable({ medias }) {
         setDense(event.target.checked);
     };
 
-    const handleEpisodeClick = (index) => {
-        console.log(episodes[index]);
-        episodes[index]++;
+    const handleAddClick = (index) => {
+        let newEpisodes = [...episodes];
+        newEpisodes[index]++;
+        setEpisodes(newEpisodes);
+    }
+
+    const handleRemoveClick = (index) => {
+
+        let newEpisodes = [...episodes];
+        if(newEpisodes[index] > 0){
+            newEpisodes[index]--;
+            setEpisodes(newEpisodes);
+        }
     }
 
     const isSelected = (title) => selected.indexOf(title) !== -1;
@@ -388,7 +415,6 @@ export default function EnhancedTable({ medias }) {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleClick(event, row.title)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
@@ -399,6 +425,7 @@ export default function EnhancedTable({ medias }) {
                                                 <Checkbox
                                                     color="primary"
                                                     checked={isItemSelected}
+                                                    onClick={(event) => handleClick(event, row.title)}
                                                     inputProps={{
                                                         'aria-labelledby': labelId,
                                                     }}
@@ -424,12 +451,12 @@ export default function EnhancedTable({ medias }) {
                                             <TableCell align="left">{row.release_date}</TableCell>
                                             <TableCell align="left">{row.category}</TableCell>
                                             <TableCell align="left">{row.status}</TableCell>
-                                           {row.episode >= 0 ? (<TableCell align="left">{episodes[data.indexOf(row)]}
-                                            <IconButton onIconClick={handleEpisodeClick(data.indexOf(row))}><AddIcon fontSize="small"/> 
-                                            </IconButton>
-                                            <IconButton><RemoveIcon fontSize="small"/> 
-                                            </IconButton>
-                                            </TableCell>) : 'dis a movie'                                                
+                                            {row.episode >= 0 ? (<TableCell align="left">{episodes[data.indexOf(row)]}
+                                                <IconButton onClick={(event) => handleAddClick(data.indexOf(row))}><AddIcon fontSize="small" />
+                                                </IconButton>
+                                                <IconButton onClick={(event) => handleRemoveClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
+                                                </IconButton>
+                                            </TableCell>) : 'dis a movie'
                                             }
                                         </TableRow>
                                     );
