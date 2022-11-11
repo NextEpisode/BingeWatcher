@@ -42,7 +42,7 @@ function a11yProps(index) {
 function BasicTabs() {
 
   const [value, setValue] = React.useState(0);
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const router = useRouter()
 
 
@@ -51,10 +51,10 @@ function BasicTabs() {
   };
 
   useEffect(() => {
-    if (!session) {
+    if (status != 'authenticated' && status != 'loading') {
       router.push("/auth/signin")
     }
-  }, [])
+  }, [status])
 
   return (
     <div>
