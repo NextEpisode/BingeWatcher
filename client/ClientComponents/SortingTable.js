@@ -89,14 +89,20 @@ const headCells = [
     },
     {
         id: 'episode',
-        numeric: false,
+        numeric: true,
         disablePadding: false,
         label: 'Episode',
+    },
+    {
+        id: 'season',
+        numeric: true,
+        disablePadding: false,
+        label: 'Season',
     },
 ];
 
 function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, episodes } =
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
         props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -112,14 +118,14 @@ function EnhancedTableHead(props) {
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
                         inputProps={{
-                            'aria-label': 'select all desserts',
+                            'aria-label': '',
                         }}
                     />
                 </TableCell>
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
+                        align={'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
@@ -246,7 +252,6 @@ function EnhancedTableToolbar(props) {
                         <IconButton aria-describedby={id} type="button" onClick={handleListClick}>
                             <FilterListIcon />
                         </IconButton>
-
                     </Tooltip>
                     <Popper id={id} open={open} anchorEl={anchorEl}>
                         <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
@@ -292,14 +297,14 @@ EnhancedTableToolbar.propTypes = {
 export default function EnhancedTable({ medias }) {
     const [data, setData] = React.useState(medias);
     const [episodes, setEpisodes] = React.useState(medias.map((element) => element.episode));
+    const [seasons, setSeasons] = React.useState(medias.map((element) => element.season));
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('Title');
+    const [orderBy, setOrderBy] = React.useState('title');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    console.log(episodes);
 
 
     const handleRequestSort = (event, property) => {
@@ -363,20 +368,46 @@ export default function EnhancedTable({ medias }) {
         setDense(event.target.checked);
     };
 
-    const handleAddClick = (index) => {
+    const handleAddEpisodeClick = (index) => {
         let newEpisodes = [...episodes];
         newEpisodes[index]++;
+        let newData = [...data];
+        newData[index].episode = newEpisodes[index];
         setEpisodes(newEpisodes);
+        setData(newData);
     }
 
-    const handleRemoveClick = (index) => {
-
+    const handleRemoveEpisodeClick = (index) => {
         let newEpisodes = [...episodes];
-        if(newEpisodes[index] > 0){
+        if (newEpisodes[index] > 0) {
             newEpisodes[index]--;
+            let newData = [...data];
+            newData[index].episode = newEpisodes[index];
             setEpisodes(newEpisodes);
+            setData(newData);
         }
     }
+
+    const handleAddSeasonClick = (index) => {
+        let newSeasons = [...seasons];
+        newSeasons[index]++;
+        let newData = [...data];
+        newData[index].season = newSeasons[index];
+        setSeasons(newSeasons);
+        setData(newData);
+    }
+
+    const handleRemoveSeasonClick = (index) => {
+        let newSeasons = [...seasons];
+        if (newSeasons[index] > 0) {
+            newSeasons[index]--;
+            let newData = [...data];
+            newData[index].season = newSeasons[index];
+            setSeasons(newSeasons);
+            setData(newData);
+        }
+    }
+
 
     const isSelected = (title) => selected.indexOf(title) !== -1;
 
@@ -401,7 +432,6 @@ export default function EnhancedTable({ medias }) {
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
                             rowCount={data.length}
-                            episodes={data.length > 0 ? data[0].episode : -1}
                         />
                         <TableBody>
                             {/* if you don't need to support IE11, you can replace the `stableSort` call with:
@@ -451,13 +481,23 @@ export default function EnhancedTable({ medias }) {
                                             <TableCell align="left">{row.release_date}</TableCell>
                                             <TableCell align="left">{row.category}</TableCell>
                                             <TableCell align="left">{row.status}</TableCell>
-                                            {row.episode >= 0 ? (<TableCell align="left">{episodes[data.indexOf(row)]}
-                                                <IconButton onClick={(event) => handleAddClick(data.indexOf(row))}><AddIcon fontSize="small" />
-                                                </IconButton>
-                                                <IconButton onClick={(event) => handleRemoveClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
-                                                </IconButton>
-                                            </TableCell>) : 'dis a movie'
+                                            {row.episode >= 0 ? (
+                                                <TableCell id={'episode'} align="left">
+                                                    <IconButton onClick={(event) => handleRemoveEpisodeClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
+                                                    </IconButton>
+                                                    {episodes[data.indexOf(row)]}
+                                                    <IconButton onClick={(event) => handleAddEpisodeClick(data.indexOf(row))}><AddIcon fontSize="small" />
+                                                    </IconButton>
+                                                </TableCell>) : 'dis a movie'
                                             }
+                                            {row.season >= 0 ? (
+                                                <TableCell align="left">
+                                                    <IconButton onClick={(event) => handleRemoveSeasonClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
+                                                    </IconButton>
+                                                    {seasons[data.indexOf(row)]}
+                                                    <IconButton onClick={(event) => handleAddSeasonClick(data.indexOf(row))}><AddIcon fontSize="small" />
+                                                    </IconButton>
+                                                </TableCell>) : 'dis a movie'}
                                         </TableRow>
                                     );
                                 })}
