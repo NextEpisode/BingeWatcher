@@ -186,6 +186,8 @@ function EnhancedTableToolbar(props) {
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : undefined;
 
+
+
     return (
         <Toolbar
             sx={{
@@ -305,6 +307,23 @@ export default function EnhancedTable({ medias }) {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+    const statuses = [
+        "Plan to watch",
+        "Watching",
+        "Watched",
+        "Dropped",
+        "On Hold"
+    ];
+
+    const [anchorEle, setAnchorEle] = React.useState(null);
+
+    const openStatus = Boolean(anchorEle);
+    const idStatus = open ? 'simple-popper' : undefined;
+
+    const handleStatusClick = (event,index) => {
+        setAnchorEle(anchorEle ? null : event.currentTarget);
+    };
+
 
 
     const handleRequestSort = (event, property) => {
@@ -407,6 +426,13 @@ export default function EnhancedTable({ medias }) {
             setData(newData);
         }
     }
+    const handlePickStatus = (status,row) => {
+        console.log(row);
+        let index = data.indexOf(row);
+        let newData = [...data];
+        newData[index].status = status;
+        setData(newData);
+    }
 
 
     const isSelected = (title) => selected.indexOf(title) !== -1;
@@ -480,7 +506,26 @@ export default function EnhancedTable({ medias }) {
                                             </TableCell>
                                             <TableCell align="left">{row.release_date}</TableCell>
                                             <TableCell align="left">{row.category}</TableCell>
-                                            <TableCell align="left">{row.status}</TableCell>
+                                            <TableCell align="left">{
+                                                <div>
+                                                    <Button variant='outlined' size='small' aria-describedby={idStatus} type="button" onClick={handleStatusClick}>
+                                                        {row.status}
+                                                    </Button>
+                                                    <Popper id={idStatus} open={openStatus} anchorEl={anchorEle}>
+                                                        <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
+                                                            <List>
+                                                                {statuses.map((status) => 
+                                                                <ListItem disablePadding>
+                                                                    <ListItemButton>
+                                                                        <ListItemText primary={status} onClick={() => handlePickStatus(status,row)}/>
+                                                                    </ListItemButton>
+                                                                </ListItem>)}
+                                                            </List>
+                                                        </Box>
+                                                    </Popper>
+                                                </div>
+
+                                            }</TableCell>
                                             {row.episode >= 0 ? (
                                                 <TableCell id={'episode'} align="left">
                                                     <IconButton onClick={(event) => handleRemoveEpisodeClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
