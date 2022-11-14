@@ -97,21 +97,24 @@ function BasicTabs() {
           release_date: '2022',
           category: 'Drama',
           status: 'Dropped',
-          episode: 0
+          episode: 0,
+          season: 11
         },{
           title: 'Lord of the Rings - Rings of Power',
           poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/mYLOqiStMxDK3fYZFirgrMt8z5d.jpg',
           release_date: '2099',
           category: 'Action/Adventure',
-          status: 'Planning to watch',
-          episode: 0
+          status: 'Plan to watch',
+          episode: 0,
+          season: 10
         },{
           title: 'Chainsaw Man',
           poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/npdB6eFzizki0WaZ1OvKcJrWe97.jpg',
           release_date: '2022',
           category: 'Action/Adventure',
-          status: 'Planning to watch',
-          episode: 0
+          status: 'Plan to watch',
+          episode: 0,
+          season: 5
         }]} />
           </TabPanel>
         </Box>
@@ -125,11 +128,6 @@ function BasicTabs() {
 function Katalogue({ medias, isMovie }) {
   return (
     <div>
-      <Carousel >
-        {medias.map((media) => (
-          <CarouselItem media={media} />
-        ))}
-      </Carousel>
       <Container>
         <Typography variant="h4" >
           Katalogue
@@ -137,6 +135,11 @@ function Katalogue({ medias, isMovie }) {
         <EnhancedTable medias={medias}></EnhancedTable>
         {/* <BasicTable medias={medias} isMovie={isMovie} /> */}
       </Container>
+      <Carousel >
+        {medias.map((media) => (
+          <CarouselItem media={media} />
+        ))}
+      </Carousel>
     </div>
 
   )
