@@ -137,7 +137,7 @@ function Katalogue({ medias, isMovie }) {
       </Container>
       <Carousel >
         {medias.map((media) => (
-          <CarouselItem media={media} />
+          <CarouselItem key={media.id} media={media} />
         ))}
       </Carousel>
     </div>

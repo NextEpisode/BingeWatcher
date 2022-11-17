@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React,{ useEffect, useState } from 'react';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -6,6 +6,7 @@ import Item from '@mui/material/ListItem';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import CarouselItem from '../ClientComponents/CarouselItem';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import MovieIcon from '@mui/icons-material/Movie';
@@ -18,6 +19,33 @@ import Carousel from 'react-material-ui-carousel';
 const theme = createTheme();
 
 export default function Album() {
+
+    const [trending, setTrending] = useState([]);
+    const [mediaType, setMediaType] = useState("movie");
+
+    useEffect(() => {
+        fetch(`https://api.themoviedb.org/3/trending/${mediaType}/week?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setTrending(firstThreeTrending(data.results));
+                } else {
+                    setTrending([]);
+                }
+            });
+    }, [])
+
+
+    const firstThreeTrending = (media) => {
+        const trendingMedia = [];
+        let index = 0;
+        for (index; index < 3; index++) {
+            trendingMedia[index] = media[index];
+        }
+        return trendingMedia;
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -92,27 +120,10 @@ export default function Album() {
                     {/* End hero unit */}
                     <Carousel
                         sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                        <CardMedia
-                            component="img"
-                            sx={{ maxHeight: 700, maxWidth: 700 }}
-
-                            image="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx114745-APZN90WhNMAD.jpg"
-                            alt="random"
-                        />
-                        <CardMedia
-                            component="img"
-                            sx={{ maxHeight: 700, maxWidth: 700 }}
-
-                            image="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg"
-                            alt="random"
-                        />
-                        <CardMedia
-                            component="img"
-                            sx={{ maxHeight: 700, maxWidth: 700, borderRadius: 2 }}
-
-                            image="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx130592-LAUlhx15mxQu.jpg"
-                            alt="random"
-                        />
+                            {trending.map(media => (
+                                <CarouselItem key={media.id} media={media}/>
+                            ))
+                            }
                     </Carousel>
                 </Container>
             </main>
