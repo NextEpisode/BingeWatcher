@@ -88,7 +88,6 @@ export default function Album() {
                         alignItems="center" rowSpacing={5} columns={10}
                         color="white">
                         <Grid item xs={4}>
-
                             <Item>
                                 <TvIcon sx={{ mr: 2 }}></TvIcon>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.

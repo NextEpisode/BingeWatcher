@@ -84,7 +84,7 @@ function BasicTabs() {
         },{
           title: 'Robinhood',
           poster_path: 'https://movieposters2.com/images/1595344-b.jpg',
-          status: 'Watched',
+          status: 'Watching',
           category: 'Action/Adventure',
           release_date: '2099'
         }]} />

@@ -22,9 +22,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { visuallyHidden } from '@mui/utils';
 import StarBorder from '@mui/icons-material/StarBorder';
-import { Button, CardMedia, Collapse, Divider, List, ListItem, ListItemButton, InboxIcon, DraftsIcon, ListItemIcon, ListItemText, Modal, Popover, Popper } from '@mui/material';
+import { Button, CardMedia, Collapse, Divider, List, ListItem, ListItemButton, InboxIcon, DraftsIcon, ListItemIcon, ListItemText, Modal, Popover, Popper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -320,7 +321,7 @@ export default function EnhancedTable({ medias }) {
     const openStatus = Boolean(anchorEle);
     const idStatus = open ? 'simple-popper' : undefined;
 
-    const handleStatusClick = (event,index) => {
+    const handleStatusClick = (event) => {
         setAnchorEle(anchorEle ? null : event.currentTarget);
     };
 
@@ -426,14 +427,13 @@ export default function EnhancedTable({ medias }) {
             setData(newData);
         }
     }
-    const handlePickStatus = (status,row) => {
-        console.log(row);
-        let index = data.indexOf(row);
+
+    const handlePickStatus = (status, index) => {
+        console.log(index);
         let newData = [...data];
         newData[index].status = status;
         setData(newData);
     }
-
 
     const isSelected = (title) => selected.indexOf(title) !== -1;
 
@@ -508,23 +508,27 @@ export default function EnhancedTable({ medias }) {
                                             <TableCell align="left">{row.category}</TableCell>
                                             <TableCell align="left">{
                                                 <div>
-                                                    <Button variant='outlined' size='small' aria-describedby={idStatus} type="button" onClick={handleStatusClick}>
-                                                        {row.status}
-                                                    </Button>
-                                                    <Popper id={idStatus} open={openStatus} anchorEl={anchorEle}>
-                                                        <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
+                                                    <Accordion>
+                                                        <AccordionSummary
+                                                            expandIcon={<ExpandMoreIcon />}
+                                                            aria-controls="panel1a-content"
+                                                            id="panel1a-header"
+                                                        >
+                                                            <Typography>{row.status}</Typography>
+                                                        </AccordionSummary>
+                                                        <AccordionDetails>
                                                             <List>
-                                                                {statuses.map((status) => 
-                                                                <ListItem disablePadding>
-                                                                    <ListItemButton>
-                                                                        <ListItemText primary={status} onClick={() => handlePickStatus(status,row)}/>
-                                                                    </ListItemButton>
-                                                                </ListItem>)}
+                                                                {statuses.map((status) => (
+                                                                    <ListItem disablePadding>
+                                                                        <ListItemButton>
+                                                                            <ListItemText primary={status} onClick={() => handlePickStatus(status,data.indexOf(row))}/>
+                                                                        </ListItemButton>
+                                                                    </ListItem>
+                                                                ))}
                                                             </List>
-                                                        </Box>
-                                                    </Popper>
+                                                        </AccordionDetails>
+                                                    </Accordion>
                                                 </div>
-
                                             }</TableCell>
                                             {row.episode >= 0 ? (
                                                 <TableCell id={'episode'} align="left">
