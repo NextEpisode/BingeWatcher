@@ -79,6 +79,27 @@ class TVKatalogueDAO:
         cursor.commit()
         return kid
 
+    def updateKatalogueStat(self, kid, tvid, tvkustatus):
+        cursor = self.conn.cursor()
+        query = "update [TVKatalogue] set tvkustatus = ? where tvid = ? and kid=?;"
+        cursor.execute(query, (tvkustatus, tvid, kid))
+        cursor.commit()
+        return kid
+
+    def updateKatalogueSeas(self, kid, tvid, tvkuseason,):
+        cursor = self.conn.cursor()
+        query = "update [TVKatalogue] set tvkuseason = ? where tvid = ? and kid=?;"
+        cursor.execute(query, (tvkuseason, tvid, kid))
+        cursor.commit()
+        return kid
+
+    def updateKatalogueEpis(self, kid, tvid, tvkuepisode):
+        cursor = self.conn.cursor()
+        query = "update [TVKatalogue] set tvkuepisode = ? where tvid = ? and kid=?;"
+        cursor.execute(query, (tvkuepisode, tvid, kid))
+        cursor.commit()
+        return kid
+
     def updateStatus(self, tvkid, kid, tvid, tvkustatus):
         cursor = self.conn.cursor()
         query = "update [TVKatalogue] set tvkustatus = ? where tvid = ? and kid=?;"

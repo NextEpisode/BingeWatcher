@@ -93,6 +93,43 @@ class TVKatalogueHandler:
                 dao.updateKatalogue(kid, tvid, tvkustatus, tvkuseason, tvkuepisode)
                 result = self.build_tvkatalogues_attributes(kid, tvid, tvkustatus, tvkuseason, tvkuepisode)
                 return jsonify(tvkatalogues=result), 200
+
+    def updateTVkatalogueStatJson(self, json):
+        dao = TVKatalogueDao.TVKatalogueDAO()
+        kid = json['KID']
+        tvid = json['TVID']
+        tvkustatus = json['TVKUStatus']
+        if not dao.getExistingEntry(kid, tvid):
+            return jsonify(Error="Katalogue not found."), 404
+        else:
+            if kid and tvid and tvkustatus:
+                dao.updateKatalogueStat(kid, tvid, tvkustatus)
+                return jsonify(UpdateStatus = "OK"), 200       
+
+    def updateTVkatalogueSeasJson(self, json):
+        dao = TVKatalogueDao.TVKatalogueDAO()
+        kid = json['KID']
+        tvid = json['TVID']
+        tvkuseason = json['TVKUSeason']
+        if not dao.getExistingEntry(kid, tvid):
+            return jsonify(Error="Katalogue not found."), 404
+        else:
+            if kid and tvid and tvkuseason:
+                dao.updateKatalogueSeas(kid, tvid, tvkuseason)
+                return jsonify(UpdateStatus = "OK"), 200       
+
+    def updateTVkatalogueEpisJson(self, json):
+        dao = TVKatalogueDao.TVKatalogueDAO()
+        kid = json['KID']
+        tvid = json['TVID']
+        tvkuepisode =json['TVKUEpisode']
+        if not dao.getExistingEntry(kid, tvid):
+            return jsonify(Error="Katalogue not found."), 404
+        else:
+            if kid and tvid and tvkuepisode:
+                dao.updateKatalogueEpis(kid, tvid, tvkuepisode)
+                return jsonify(UpdateStatus = "OK"), 200           
+    #Delete multiple entries at once.
             
     #Delete multiple entries at once.
             

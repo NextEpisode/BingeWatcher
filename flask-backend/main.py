@@ -105,6 +105,24 @@ def tvopt():
                  if request.method == "DELETE":
                     print("REQUEST: ", request.json)
                     return TVKatalogueHandler().deleteTVkatalogue(request.json) #Works
+
+@app.route('/zZPJMflCtI/stat', methods=['PUT'])
+def tvstat():    
+            if request.method == "PUT":
+                print("REQUEST: ", request.json)
+                return TVKatalogueHandler().updateTVkatalogueStatJson(request.json)#Works
+
+@app.route('/zZPJMflCtI/seas', methods=['PUT'])
+def tvseas():    
+            if request.method == "PUT":
+                print("REQUEST: ", request.json)
+                return TVKatalogueHandler().updateTVkatalogueSeasJson(request.json)#Works
+
+@app.route('/zZPJMflCtI/epis', methods=['PUT'])
+def tvepis():    
+            if request.method == "PUT":
+                print("REQUEST: ", request.json)
+                return TVKatalogueHandler().updateTVkatalogueEpisJson(request.json)#Works
                  
     #Works. Put with the rest later.
 @app.route('/f4doxSOsA7/stat', methods=['GET'])
