@@ -102,8 +102,41 @@ const headCells = [
     },
 ];
 
+const movieHeadCells = [
+    {
+        id: 'poster_path',
+        numeric: false,
+        disablePadding: true,
+        label: 'Poster',
+    },
+    {
+        id: 'title',
+        numeric: false,
+        disablePadding: false,
+        label: 'Title',
+    },
+    {
+        id: 'release_date',
+        numeric: false,
+        disablePadding: false,
+        label: 'Release date',
+    },
+    {
+        id: 'category',
+        numeric: false,
+        disablePadding: false,
+        label: 'Category',
+    },
+    {
+        id: 'status',
+        numeric: false,
+        disablePadding: false,
+        label: 'Status',
+    },
+];
+
 function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort,isMovie } =
         props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -123,7 +156,7 @@ function EnhancedTableHead(props) {
                         }}
                     />
                 </TableCell>
-                {headCells.map((headCell) => (
+                { isMovie ? (movieHeadCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={'left'}
@@ -143,7 +176,29 @@ function EnhancedTableHead(props) {
                             ) : null}
                         </TableSortLabel>
                     </TableCell>
-                ))}
+                ))) : headCells.map((headCell) => (
+                    <TableCell
+                        key={headCell.id}
+                        align={'left'}
+                        padding={headCell.disablePadding ? 'none' : 'normal'}
+                        sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                        >
+                            {headCell.label}
+                            {orderBy === headCell.id ? (
+                                <Box component="span" sx={visuallyHidden}>
+                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </Box>
+                            ) : null}
+                        </TableSortLabel>
+                    </TableCell>
+                ))
+            }
+
             </TableRow>
         </TableHead>
     );
@@ -297,7 +352,7 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
-export default function EnhancedTable({ medias }) {
+export default function EnhancedTable({ medias,isMovie }) {
     const [data, setData] = React.useState(medias);
     const [episodes, setEpisodes] = React.useState(medias.map((element) => element.episode));
     const [seasons, setSeasons] = React.useState(medias.map((element) => element.season));
@@ -458,6 +513,7 @@ export default function EnhancedTable({ medias }) {
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
                             rowCount={data.length}
+                            isMovie={isMovie}
                         />
                         <TableBody>
                             {/* if you don't need to support IE11, you can replace the `stableSort` call with:
@@ -537,7 +593,7 @@ export default function EnhancedTable({ medias }) {
                                                     {episodes[data.indexOf(row)]}
                                                     <IconButton onClick={(event) => handleAddEpisodeClick(data.indexOf(row))}><AddIcon fontSize="small" />
                                                     </IconButton>
-                                                </TableCell>) : 'dis a movie'
+                                                </TableCell>) : ''
                                             }
                                             {row.season >= 0 ? (
                                                 <TableCell align="left">
@@ -546,7 +602,7 @@ export default function EnhancedTable({ medias }) {
                                                     {seasons[data.indexOf(row)]}
                                                     <IconButton onClick={(event) => handleAddSeasonClick(data.indexOf(row))}><AddIcon fontSize="small" />
                                                     </IconButton>
-                                                </TableCell>) : 'dis a movie'}
+                                                </TableCell>) : ''}
                                         </TableRow>
                                     );
                                 })}
