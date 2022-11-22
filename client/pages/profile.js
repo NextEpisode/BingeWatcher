@@ -119,8 +119,10 @@ function Katalogue({ medias, isMovie }) {
   return (
     <div>
       <Carousel >
-        {medias.map((media) => (
-          <CarouselItem media={media} />
+        {medias.map((media, index) => (
+          <React.Fragment key={"carousel-" + index}>
+            <CarouselItem media={media} />
+          </React.Fragment>
         ))}
       </Carousel>
       <Container>
