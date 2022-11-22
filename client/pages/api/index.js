@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const url = "http://localhost:1337/api/strapi-forums";
+const url = process.env.STRAPI_DOMAIN + "api/strapi-forums";
 
 
 
