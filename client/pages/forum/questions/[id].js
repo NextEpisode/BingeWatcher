@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import axios from "axios"
 import { List, Divider, TextField } from "@mui/material";
-import ForumListItem from "../../Components/ForumListItem";
+import ForumListItem from "../../../Components/ForumListItem";
 
 function IdComponent({ mediaResponse }) {
 

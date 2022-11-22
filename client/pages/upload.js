@@ -1,6 +1,6 @@
 import React from "react";
 import { getSession, useSession } from "next-auth/react";
-import Uploadforum from "./Components/Uploadforum";
+import Uploadforum from "../Components/Uploadforum";
 
 function Upload() {
   const { data: session } = useSession();

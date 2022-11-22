@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import style from "../../styles/Home.module.css";
+import style from "../styles/Home.module.css";
 import Link from "next/link";
 import axios from "axios"
 
