@@ -66,13 +66,13 @@ export default function Album() {
 
                             <Item>
                                 <TvIcon sx={{ mr: 2 }}></TvIcon>
-                                Search for movies all of genres and languages from all over the world. Who knows, maybe you can find the one you've been looking for or find a hidden gem.
+                                Search for movies all of genres and languages from all over the world. Who knows, maybe you can find the one you&apos;ve been looking for or find a hidden gem.
                             </Item>
                         </Grid>
                         <Grid item xs={4}>
                             <Item>
                                 <MovieIcon sx={{ mr: 2 }}></MovieIcon>
-                                Looking for a new show to watch? We've got them all here, from science fiction to history and everything in between.
+                                Looking for a new show to watch?We&apos;ve got them all here, from science fiction to history and everything in between.
                             </Item>
                         </Grid>
                         <Grid item xs={4}>
