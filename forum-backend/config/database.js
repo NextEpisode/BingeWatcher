@@ -8,7 +8,6 @@ module.exports = ({ env }) => ({
       database: env('DATABASE_NAME', 'strapi'),
       user: env('DATABASE_USERNAME', 'bingewatcher'),
       password: env('DATABASE_PASSWORD', 'shadow1997'),
-      schema: env('DATABASE_SCHEMA', 'public'), // Not required
     },
     debug: false,
   },
