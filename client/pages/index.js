@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -13,6 +13,7 @@ import MovieIcon from '@mui/icons-material/Movie';
 import TvIcon from '@mui/icons-material/Tv';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Carousel from 'react-material-ui-carousel';
+import { Card, CardActionArea, Table, TableCell } from '@mui/material';
 
 
 
@@ -119,12 +120,31 @@ export default function Album() {
                     {/* End hero unit */}
                     <Carousel
                         sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                            {trending.map(media => (
-                                <CarouselItem key={media.id} media={media}/>
-                            ))
-                            }
+                        {trending.map(media => (
+                            <CarouselItem key={media.id} media={media} />
+                        ))
+                        }
                     </Carousel>
                 </Container>
+                <Table >
+                        {trending.map((media) => (
+                            <TableCell sx={{ maxWidth: 100 }} align='center'>
+                                <Card >
+                                    <CardActionArea>
+                                        <CardMedia
+                                            component="img"
+                                            height="140"
+                                            image={`https:image.tmdb.org/t/p/w200${media.poster_path}`}
+                                            alt="asdfa"
+                                        />
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            {media.title}
+                                        </Typography>
+                                    </CardActionArea>
+                                </Card>
+                            </TableCell>
+                        ))}
+                    </Table>
             </main>
             {/* Footer */}
             <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
