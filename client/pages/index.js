@@ -14,6 +14,7 @@ import TvIcon from '@mui/icons-material/Tv';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Carousel from 'react-material-ui-carousel';
 import { Card, CardActionArea, Table, TableCell } from '@mui/material';
+import Link from 'next/link';
 
 
 
@@ -23,6 +24,8 @@ export default function Album() {
 
     const [trending, setTrending] = useState([]);
     const [mediaType, setMediaType] = useState("movie");
+    const type = "movie";
+
 
     useEffect(() => {
         fetch(`https://api.themoviedb.org/3/trending/${mediaType}/week?api_key=468018e64d6cfa119009ede09787dea0&`
@@ -117,6 +120,9 @@ export default function Album() {
                     </Grid>
                 </Box>
                 <Container sx={{ py: 8 }} maxWidth="md">
+                    <Typography variant='h3'>
+                        Recommendation Carousel
+                    </Typography>
                     {/* End hero unit */}
                     <Carousel
                         sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -126,9 +132,13 @@ export default function Album() {
                         }
                     </Carousel>
                 </Container>
-                <Table >
-                        {trending.map((media) => (
-                            <TableCell sx={{ maxWidth: 100 }} align='center'>
+                <Typography variant='h3'>
+                        Trending Movies
+                    </Typography>
+                <Table>
+                    {trending.map((media) => (
+                        <TableCell sx={{ maxWidth: 100 }} align='center'>
+                            <Link href={`/media/${media.id}?type=${type}`}>
                                 <Card >
                                     <CardActionArea>
                                         <CardMedia
@@ -142,9 +152,10 @@ export default function Album() {
                                         </Typography>
                                     </CardActionArea>
                                 </Card>
-                            </TableCell>
-                        ))}
-                    </Table>
+                            </Link>
+                        </TableCell>
+                    ))}
+                </Table>
             </main>
             {/* Footer */}
             <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
