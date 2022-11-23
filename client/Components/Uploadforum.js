@@ -7,7 +7,7 @@ function Uploadforum({ session }) {
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const url = process.env.STRAPI_DOMAIN + "api/strapi-forums";
+    const url = process.env.NEXT_PUBLIC_STRAPI_DOMAIN + "api/strapi-forums";
 
     const smtEmpty = (name == "") || (description == "")
 
