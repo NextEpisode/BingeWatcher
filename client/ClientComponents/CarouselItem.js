@@ -23,15 +23,12 @@ export default function Profile({ media }) {
   ];
 
   const handlePickStatus = (id, pickedStatus) => {
+    //add media to katalogue here
+
     setStatus(pickedStatus);
   }
 
-
-
-  console.log(media);
-
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [E, setE] = React.useState(console.log(media));
   const [status, setStatus] = React.useState("Plan to Watch");
 
   const handleListClick = (event) => {
@@ -40,12 +37,11 @@ export default function Profile({ media }) {
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
-  const type = "movie";
 
   return (
     <div>
-      <Card sx={{ maxWidth: 1000, maxHeight: 1920, ml: 10 }}>
-        <Link href={`/media/${media.id}?type=${type}`}>
+      <Card sx={{ maxWidth: 1000, maxHeight: 1920 }}>
+        <Link href={`/media/${media.id}?type=${media.media_type}`}>
           <CardMedia
             component="img"
             height="500"
@@ -62,7 +58,7 @@ export default function Profile({ media }) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Link href={`/media/${media.id}?type=${type}`}>
+          <Link href={`/media/${media.id}?type=${media.media_type}`}>
             <Button size="small">Learn More</Button>
           </Link>
           <Box sx={{ minWidth: 170 }}>
@@ -71,11 +67,9 @@ export default function Profile({ media }) {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select">
-                <MenuItem value={10}>Completed</MenuItem>
-                <MenuItem value={20}>Plan to Watch</MenuItem>
-                <MenuItem value={30}>Watching</MenuItem>
-                <MenuItem value={40}>On Hold</MenuItem>
-                <MenuItem value={50}>Dropped</MenuItem>
+                {statuses.map(status => (
+                  <MenuItem value={status} onClick={() => handlePickStatus(media.id, status)}>{status}</MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>
