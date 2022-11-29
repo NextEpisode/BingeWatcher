@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -6,12 +6,15 @@ import Item from '@mui/material/ListItem';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import CarouselItem from '../ClientComponents/CarouselItem';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import MovieIcon from '@mui/icons-material/Movie';
 import TvIcon from '@mui/icons-material/Tv';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Carousel from 'react-material-ui-carousel';
+import { Card, CardActionArea, Table, TableCell } from '@mui/material';
+import Link from 'next/link';
 
 
 
@@ -24,6 +27,35 @@ const theme = createTheme();
 //
 
 export default function Album() {
+
+    const [trending, setTrending] = useState([]);
+    const [mediaType, setMediaType] = useState("movie");
+    const type = "movie";
+
+
+    useEffect(() => {
+        fetch(`https://api.themoviedb.org/3/trending/${mediaType}/week?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setTrending(firstThreeTrending(data.results));
+                } else {
+                    setTrending([]);
+                }
+            });
+    }, [])
+
+
+    const firstThreeTrending = (media) => {
+        const trendingMedia = [];
+        let index = 0;
+        for (index; index < 3; index++) {
+            trendingMedia[index] = media[index];
+        }
+        return trendingMedia;
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -63,7 +95,6 @@ export default function Album() {
                         alignItems="center" rowSpacing={5} columns={10}
                         color="white">
                         <Grid item xs={4}>
-
                             <Item>
                                 <TvIcon sx={{ mr: 2 }}></TvIcon>
                                 Search for movies all of genres and languages from all over the world. Who knows, maybe you can find the one you&apos;ve been looking for or find a hidden gem.
@@ -90,32 +121,42 @@ export default function Album() {
                     </Grid>
                 </Box>
                 <Container sx={{ py: 8 }} maxWidth="md">
+                    <Typography variant='h3'>
+                        Recommendation Carousel
+                    </Typography>
                     {/* End hero unit */}
                     <Carousel
                         sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                        <CardMedia
-                            component="img"
-                            sx={{ maxHeight: 700, maxWidth: 700 }}
-
-                            image="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx114745-APZN90WhNMAD.jpg"
-                            alt="random"
-                        />
-                        <CardMedia
-                            component="img"
-                            sx={{ maxHeight: 700, maxWidth: 700 }}
-
-                            image="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg"
-                            alt="random"
-                        />
-                        <CardMedia
-                            component="img"
-                            sx={{ maxHeight: 700, maxWidth: 700, borderRadius: 2 }}
-
-                            image="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx130592-LAUlhx15mxQu.jpg"
-                            alt="random"
-                        />
+                        {trending.map(media => (
+                            <CarouselItem key={media.id} media={media} />
+                        ))
+                        }
                     </Carousel>
                 </Container>
+                <Typography variant='h3'>
+                        Trending Movies
+                    </Typography>
+                <Table>
+                    {trending.map((media) => (
+                        <TableCell sx={{ maxWidth: 100 }} align='center'>
+                            <Link href={`/media/${media.id}?type=${type}`}>
+                                <Card >
+                                    <CardActionArea>
+                                        <CardMedia
+                                            component="img"
+                                            height="140"
+                                            image={`https:image.tmdb.org/t/p/w200${media.poster_path}`}
+                                            alt="asdfa"
+                                        />
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            {media.title}
+                                        </Typography>
+                                    </CardActionArea>
+                                </Card>
+                            </Link>
+                        </TableCell>
+                    ))}
+                </Table>
             </main>
             {/* Footer */}
             <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">

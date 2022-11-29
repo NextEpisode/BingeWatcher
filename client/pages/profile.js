@@ -9,6 +9,8 @@ import Typography from '@mui/material/Typography';
 import BasicTable from '../ClientComponents/Table';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import EnhancedTable from '../ClientComponents/SortingTable';
+import { Card, CardActionArea, CardContent, CardMedia } from '@mui/material';
 
 
 function TabPanel({ children, value, index, ...other }) {
@@ -71,17 +73,20 @@ function BasicTabs() {
             <Katalogue isMovie={true} medias={[{
               title: 'Shrek',
               poster_path: 'https://www.themoviedb.org/t/p/original/iB64vpL3dIObOtMZgX3RqdVdQDc.jpg',
-              name: 'Shrek name',
+              status: 'Watched',
+              category: 'Action/Adventure',
               release_date: '2001'
             }, {
               title: 'Dune',
               poster_path: 'https://imageio.forbes.com/specials-images/imageserve/61116cea2313e8bae55a536a/-Dune-/0x0.jpg?format=jpg&width=960',
-              name: 'Dune name',
+              status: 'Planning to watch',
+              category: 'SciFi',
               release_date: '2022',
             }, {
               title: 'Robinhood',
               poster_path: 'https://movieposters2.com/images/1595344-b.jpg',
-              name: 'Robinhood name',
+              status: 'Watching',
+              category: 'Action/Adventure',
               release_date: '2099'
             }]} />
           </TabPanel>
@@ -90,21 +95,27 @@ function BasicTabs() {
             <Katalogue isMovie={false} medias={[{
               title: 'House of Dragons',
               poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/z2yahl2uefxDCl0nogcRBstwruJ.jpg',
-              name: 'House of dragons name',
               release_date: '2022',
-              episode: '0'
+              category: 'Drama',
+              status: 'Dropped',
+              episode: 0,
+              season: 11
             }, {
               title: 'Lord of the Rings - Rings of Power',
               poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/mYLOqiStMxDK3fYZFirgrMt8z5d.jpg',
-              name: 'Rings of Power',
               release_date: '2099',
-              episode: '0'
+              category: 'Action/Adventure',
+              status: 'Plan to watch',
+              episode: 0,
+              season: 10
             }, {
               title: 'Chainsaw Man',
               poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/npdB6eFzizki0WaZ1OvKcJrWe97.jpg',
-              name: 'Chainsaw name',
               release_date: '2022',
-              episode: '0'
+              category: 'Action/Adventure',
+              status: 'Plan to watch',
+              episode: 0,
+              season: 5
             }]} />
           </TabPanel>
         </Box>
@@ -129,8 +140,30 @@ function Katalogue({ medias, isMovie }) {
         <Typography variant="h4" >
           Katalogue
         </Typography>
-        <BasicTable medias={medias} isMovie={isMovie} />
+        <EnhancedTable medias={medias} isMovie={isMovie}></EnhancedTable>
+        {/* <BasicTable medias={medias} isMovie={isMovie} /> */}
       </Container>
+      <Carousel >
+        {medias.map((media) => (
+          <CarouselItem key={media.id} media={media} />
+        ))}
+      </Carousel>
+      {medias.map((media) => (
+        <Card sx={{ maxWidth: 345, ml: 10 }}>
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              height="140"
+              image={media.poster_path}
+              alt="green iguana"
+            />
+            <Typography gutterBottom variant="h5" component="div">
+              {media.title}
+            </Typography>
+          </CardActionArea>
+        </Card>
+      ))}
+
     </div>
 
   )
