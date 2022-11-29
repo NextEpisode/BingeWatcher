@@ -10,7 +10,7 @@ import BasicTable from '../ClientComponents/Table';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import EnhancedTable from '../ClientComponents/SortingTable';
-import { Card, CardActionArea, CardContent, CardMedia } from '@mui/material';
+import { Card, CardActionArea, CardContent, CardMedia, Table, TableCell } from '@mui/material';
 
 
 function TabPanel({ children, value, index, ...other }) {
@@ -136,27 +136,13 @@ function Katalogue({ medias, isMovie }) {
         <EnhancedTable medias={medias} isMovie={isMovie}></EnhancedTable>
         {/* <BasicTable medias={medias} isMovie={isMovie} /> */}
       </Container>
-      <Carousel >
-        {medias.map((media) => (
-          <CarouselItem key={media.id} media={media} />
-        ))}
-      </Carousel>
-      {medias.map((media) => (
-        <Card sx={{ maxWidth: 345, ml: 10 }}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="140"
-              image={media.poster_path}
-              alt="green iguana"
-            />
-              <Typography gutterBottom variant="h5" component="div">
-                {media.title}
-              </Typography>
-          </CardActionArea>
-        </Card>
-      ))}
-
+      <div className='carousel'>
+        <Carousel stopAutoPlayOnHover={true} style={{ align: 'center' }}>
+          {medias.map((media) => (
+            <CarouselItem key={media.id} media={media} />
+          ))}
+        </Carousel>
+      </div>
     </div>
 
   )

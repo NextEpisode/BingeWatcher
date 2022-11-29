@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -6,6 +6,8 @@ import Carousel from 'react-material-ui-carousel';
 import CarouselItem from '../ClientComponents/CarouselItem';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { Card, CardActionArea, CardMedia, Grid, Table, TableCell, Typography } from '@mui/material';
+import Link from 'next/link';
 
 
 
@@ -14,6 +16,35 @@ export default function Album() {
     const theme = createTheme();
     const { data: session, status } = useSession()
     const router = useRouter()
+
+    const [trending, setTrending] = useState([]);
+    const [mediaType, setMediaType] = useState("movie");
+
+
+    useEffect(() => {
+        fetch(`https://api.themoviedb.org/3/trending/${mediaType}/week?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setTrending(firstThreeTrending(data.results));
+                } else {
+                    setTrending([]);
+                }
+            });
+    }, [])
+
+
+    const firstThreeTrending = (media) => {
+        const trendingMedia = [];
+        let index = 0;
+        for (index; index < 3; index++) {
+            trendingMedia[index] = media[index];
+        }
+        return trendingMedia;
+    }
+
+
 
     useEffect(() => {
         if (status != 'authenticated' && status != 'loading') {
@@ -31,29 +62,52 @@ export default function Album() {
                 {session && (
                     <main>
                         {/* Hero unit */}
-                        <Container sx={{ py: 8 }} >
+                        <Container sx={{ py: 8 }} maxWidth="md">
+                            <Typography variant='h3'>
+                                Recommendation Carousel
+                            </Typography>
                             {/* End hero unit */}
-                            <Carousel>
-                                <CarouselItem media={{
-                                    title: 'Shrek',
-                                    poster_path: 'https://www.themoviedb.org/t/p/original/iB64vpL3dIObOtMZgX3RqdVdQDc.jpg',
-                                    name: 'Shrek name',
-                                    release_date: '2001'
-                                }} />
-                                <CarouselItem media={{
-                                    title: 'Robinhood',
-                                    poster_path: 'https://movieposters2.com/images/1595344-b.jpg',
-                                    name: 'Robinhood name',
-                                    release_date: '2099'
-                                }} />
-                                <CarouselItem media={{
-                                    title: 'Dune',
-                                    poster_path: 'https://imageio.forbes.com/specials-images/imageserve/61116cea2313e8bae55a536a/-Dune-/0x0.jpg?format=jpg&width=960',
-                                    name: 'Dune name',
-                                    release_date: '2022',
-                                }} />
+                            <Carousel animation='slide'
+                                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                {trending.map(media => (
+                                    <CarouselItem key={media.id} media={media} />
+                                ))
+                                }
                             </Carousel>
                         </Container>
+                        <Grid
+                            container
+                            spacing={0}
+                            direction="column"
+                            alignItems="center"
+                            justifyContent="center"
+                        >
+                            <Typography variant='h3' sx={{ mt: 5 }}>
+                                Trending Movies
+                            </Typography>
+
+                            <Table item sx={{ maxWidth: 1500 }}>
+                                {trending.map((media) => (
+                                    <TableCell sx={{ maxWidth: 100 }} align='center'>
+                                        <Link href={`/media/${media.id}?type=${media.media_type}`}>
+                                            <Card >
+                                                <CardActionArea>
+                                                    <CardMedia sx={{ minHeight: 500 }}
+                                                        component="img"
+                                                        height="140"
+                                                        image={`https:image.tmdb.org/t/p/w200${media.poster_path}`}
+                                                        alt="no poster"
+                                                    />
+                                                    <Typography gutterBottom variant="h5" component="div" sx={{ minHeight: 100 }}>
+                                                        {media.title}
+                                                    </Typography>
+                                                </CardActionArea>
+                                            </Card>
+                                        </Link>
+                                    </TableCell>
+                                ))}
+                            </Table>
+                        </Grid>
                     </main>
                 )}
             </ThemeProvider>

@@ -24,7 +24,6 @@ export default function Album() {
 
     const [trending, setTrending] = useState([]);
     const [mediaType, setMediaType] = useState("movie");
-    const type = "movie";
 
 
     useEffect(() => {
@@ -55,107 +54,110 @@ export default function Album() {
             <CssBaseline />
             <main>
                 {/* Hero unit */}
-                <Box
-                    sx={{
-                        bgcolor: '#1876D1',
-                        pt: 8,
-                        pb: 6,
-                        marginLeft: "35px",
-                        marginRight: "35px",
-                        marginTop: "25px",
-                        borderRadius: 7,
-                        boxShadow: "1px 6px 8px 3px rgba(160,159,159,0.75)",
-                        padding: "70px 100px"
-
-
-                    }}
+                <Grid
+                    container
+                    spacing={0}
+                    direction="column"
+                    alignItems="center"
+                    justifyContent="center"
                 >
-                    <Typography
-                        component="h1"
-                        variant="h2"
+                    <Box item
+                        direction="column"
                         align="center"
-                        color="white"
-                        gutterBottom
-                        fontWeight={"bold"}
+                        sx={{
+                            bgcolor: '#1876D1',
+                            pt: 8,
+                            pb: 6,
+                            marginTop: "25px",
+                            borderRadius: 7,
+                            boxShadow: "1px 6px 8px 3px rgba(160,159,159,0.75)",
+                            padding: "70px 100px",
+                            maxWidth: 1000,
+                        }}
                     >
-                        Welcome to BingeWatcher!
-                    </Typography>
-                    <Typography variant="h5" align="center" color="white" paragraph>
-                        Something short and leading about the collection below—its contents,
-                        the creator, etc. Make it short and sweet, but not too short so folks
-                        don&apos;t simply skip over it entirely.
-                    </Typography>
-                    <Grid
-                        container
-                        direction="row"
-                        justifyContent="space-around"
-                        alignItems="center" rowSpacing={5} columns={10}
-                        color="white">
-                        <Grid item xs={4}>
-                            <Item>
-                                <TvIcon sx={{ mr: 2 }}></TvIcon>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
-                            </Item>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Item>
-                                <MovieIcon sx={{ mr: 2 }}></MovieIcon>
+                        <Typography
+                            component="h1"
+                            variant="h2"
+                            align="center"
+                            color="white"
+                            gutterBottom
+                            fontWeight={"bold"}
+                        >
+                            Welcome to BingeWatcher!
+                        </Typography>
+                        <Typography variant="h5" align="center" color="white" paragraph>
+                            Something short and leading about the collection below—its contents,
+                            the creator, etc. Make it short and sweet, but not too short so folks
+                            don&apos;t simply skip over it entirely.
+                        </Typography>
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="space-around"
+                            alignItems="center" rowSpacing={5} columns={10}
+                            color="white">
+                            <Grid item xs={4}>
+                                <Item>
+                                    <TvIcon sx={{ mr: 2 }}></TvIcon>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
+                                </Item>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Item>
+                                    <MovieIcon sx={{ mr: 2 }}></MovieIcon>
 
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
-                            </Item>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Item>
-                                <ChatBubbleIcon sx={{ mr: 2 }}></ChatBubbleIcon>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
-                            </Item>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Item>
-                                <SearchIcon sx={{ mr: 2 }}></SearchIcon>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
+                                </Item>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Item>
+                                    <ChatBubbleIcon sx={{ mr: 2 }}></ChatBubbleIcon>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
+                                </Item>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Item>
+                                    <SearchIcon sx={{ mr: 2 }}></SearchIcon>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
 
-                            </Item>
+                                </Item>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Box>
-                <Container sx={{ py: 8 }} maxWidth="md">
-                    <Typography variant='h3'>
-                        Recommendation Carousel
-                    </Typography>
-                    {/* End hero unit */}
-                    <Carousel
-                        sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                        {trending.map(media => (
-                            <CarouselItem key={media.id} media={media} />
-                        ))
-                        }
-                    </Carousel>
-                </Container>
-                <Typography variant='h3'>
-                        Trending Movies
-                    </Typography>
-                <Table>
-                    {trending.map((media) => (
-                        <TableCell sx={{ maxWidth: 100 }} align='center'>
-                            <Link href={`/media/${media.id}?type=${type}`}>
-                                <Card >
-                                    <CardActionArea>
-                                        <CardMedia
-                                            component="img"
-                                            height="140"
-                                            image={`https:image.tmdb.org/t/p/w200${media.poster_path}`}
-                                            alt="asdfa"
-                                        />
-                                        <Typography gutterBottom variant="h5" component="div">
-                                            {media.title}
-                                        </Typography>
-                                    </CardActionArea>
-                                </Card>
-                            </Link>
-                        </TableCell>
-                    ))}
-                </Table>
+                    </Box>
+                </Grid>
+                <Grid
+                    container
+                    spacing={0}
+                    direction="column"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                <Typography variant='h3' sx={{mt:5}}>
+                    Trending Movies
+                </Typography>
+
+                    <Table item sx={ {maxWidth: 1500} }>
+                        {trending.map((media) => (
+                            <TableCell sx={{ maxWidth: 100 }} align='center'>
+                                <Link href={`/media/${media.id}?type=${media.media_type}`}>
+                                    <Card >
+                                        <CardActionArea>
+                                            <CardMedia sx={{minHeight: 500}}
+                                                component="img"
+                                                height="140"
+                                                image={`https:image.tmdb.org/t/p/w200${media.poster_path}`}
+                                                alt="asdfa"
+                                            />
+                                            <Typography gutterBottom variant="h5" component="div" sx={{ minHeight:100}}>
+                                                {media.title}
+                                            </Typography>
+                                        </CardActionArea>
+                                    </Card>
+                                </Link>
+                            </TableCell>
+                        ))}
+                    </Table>
+                </Grid>
             </main>
             {/* Footer */}
             <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
