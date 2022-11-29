@@ -7,7 +7,7 @@ from flask import jsonify
 class UserDAO:
 
     def __init__(self):
-        connection_url = mysql.connector.connect(user='root', password='7676',host="localhost", database="bingwatcher")
+        connection_url = mysql.connector.connect(user='root', password='7676',host="localhost", database="bingewatcher")
         ##connection_url = MySQLdb.connect(host="localhost", user='root', passwd='root', db='BeyondHorizonsDB')
         self.conn = connection_url
 
