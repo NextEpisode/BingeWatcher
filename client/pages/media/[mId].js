@@ -47,14 +47,16 @@ export default function MediaPage() {
                         Format: <span>{type}</span>
                     </h4>
                     <h4>
-                        Genres: {mediaInfo.genres.map(item => (<div>
-                            {item.name}
-                        </div>))}
+                        Genres: {mediaInfo.genres.map((item, index) => (
+                            <div key={"genre-" + index}>
+                                {item.name}
+                            </div>))}
                     </h4>
                     <h4>
-                        Production Companies: {mediaInfo.production_companies.map(item => (<div>
-                            {item.name}
-                        </div>))}
+                        Production Companies: {mediaInfo.production_companies.map((item, index) => (
+                            <div key={"productionCompany-" + index}>
+                                {item.name}
+                            </div>))}
                     </h4>
                 </div>}
             </p>

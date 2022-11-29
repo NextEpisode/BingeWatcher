@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import style from "../../styles/Home.module.css";
+import style from "../styles/Home.module.css";
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from "next/link";
 import axios from "axios"

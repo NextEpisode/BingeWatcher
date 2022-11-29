@@ -129,6 +129,13 @@ function BasicTabs() {
 function Katalogue({ medias, isMovie }) {
   return (
     <div>
+      <Carousel >
+        {medias.map((media, index) => (
+          <React.Fragment key={"carousel-" + index}>
+            <CarouselItem media={media} />
+          </React.Fragment>
+        ))}
+      </Carousel>
       <Container>
         <Typography variant="h4" >
           Katalogue
@@ -150,9 +157,9 @@ function Katalogue({ medias, isMovie }) {
               image={media.poster_path}
               alt="green iguana"
             />
-              <Typography gutterBottom variant="h5" component="div">
-                {media.title}
-              </Typography>
+            <Typography gutterBottom variant="h5" component="div">
+              {media.title}
+            </Typography>
           </CardActionArea>
         </Card>
       ))}

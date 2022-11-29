@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import style from "../../styles/Home.module.css";
-import Link from "next/Link";
+import style from "../styles/Home.module.css";
+import Link from "next/link";
 import axios from "axios"
 
 function Uploadforum({ session }) {
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const url = "http://localhost:1337/api/strapi-forums";
+    const url = process.env.NEXT_PUBLIC_STRAPI_DOMAIN + "api/strapi-forums";
 
     const smtEmpty = (name == "") || (description == "")
 
@@ -22,7 +22,7 @@ function Uploadforum({ session }) {
             },
         });
         console.log(response)
-        window.location.href = `http://localhost:3000/questions/${response.data?.data.id}`
+        window.location.href = process.env.NEXT_PUBLIC_API_URL + `questions/${response.data?.data.id}`
     }
     return (
         <div className={style.uploadpage}>

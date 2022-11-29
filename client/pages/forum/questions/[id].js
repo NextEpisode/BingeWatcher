@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import axios from "axios"
 import { List, Divider, TextField } from "@mui/material";
-import ForumListItem from "../../Components/ForumListItem";
+import ForumListItem from "../../../Components/ForumListItem";
 
 function IdComponent({ mediaResponse }) {
 
@@ -21,12 +21,12 @@ function IdComponent({ mediaResponse }) {
     // by looking up the old answers and then appending to them
     const submitAnswer = async () => {
         try {
-            const tmpMedia = await axios.get(`http://localhost:1337/api/strapi-forums/${id}`)
+            const tmpMedia = await axios.get(process.env.NEXT_PUBLIC_STRAPI_DOMAIN + `api/strapi-forums/${id}`)
             const originalAnswers = tmpMedia.data.data.attributes.Answers
             const appendedAnswers = [...originalAnswers, { user: session.user.name, reply: answer }]
 
 
-            axios.put(`http://localhost:1337/api/strapi-forums/${id}`, {
+            axios.put(process.env.NEXT_PUBLIC_STRAPI_DOMAIN + `api/strapi-forums/${id}`, {
                 data: {
                     Answers: appendedAnswers
                 },
@@ -111,7 +111,7 @@ export async function getServerSideProps(context) {
     let mediaResponse = {};
 
     try {
-        mediaResponse = await axios.get(`http://localhost:1337/api/strapi-forums/${id}`)
+        mediaResponse = await axios.get(process.env.NEXT_PUBLIC_STRAPI_DOMAIN + `api/strapi-forums/${id}`)
     }
     catch (error) {
         mediaResponse.data = {};
