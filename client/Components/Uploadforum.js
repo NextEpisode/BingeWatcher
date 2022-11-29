@@ -22,7 +22,7 @@ function Uploadforum({ session }) {
             },
         });
         console.log(response)
-        window.location.href = process.env.NEXT_PUBLIC_API_URL + `questions/${response.data?.data.id}`
+        window.location.href = process.env.NEXT_PUBLIC_API_URL + `/forum/questions/${response.data?.data.id}`
     }
     return (
         <div className={style.uploadpage}>
