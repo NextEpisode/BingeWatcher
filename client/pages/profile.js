@@ -148,20 +148,22 @@ function Katalogue({ medias, isMovie }) {
           <CarouselItem key={media.id} media={media} />
         ))}
       </Carousel>
-      {medias.map((media) => (
-        <Card sx={{ maxWidth: 345, ml: 10 }}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="140"
-              image={media.poster_path}
-              alt="green iguana"
-            />
-            <Typography gutterBottom variant="h5" component="div">
-              {media.title}
-            </Typography>
-          </CardActionArea>
-        </Card>
+      {medias.map((media, index) => (
+        <React.Fragment key={"KatalogueEntry" + index}>
+          <Card sx={{ maxWidth: 345, ml: 10 }}>
+            <CardActionArea>
+              <CardMedia
+                component="img"
+                height="140"
+                image={media.poster_path}
+                alt="green iguana"
+              />
+              <Typography gutterBottom variant="h5" component="div">
+                {media.title}
+              </Typography>
+            </CardActionArea>
+          </Card>
+        </React.Fragment>
       ))}
 
     </div>

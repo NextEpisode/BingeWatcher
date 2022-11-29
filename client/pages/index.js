@@ -103,7 +103,7 @@ export default function Album() {
                         <Grid item xs={4}>
                             <Item>
                                 <MovieIcon sx={{ mr: 2 }}></MovieIcon>
-                                Looking for a new show to watch?We&apos;ve got them all here, from science fiction to history and everything in between.
+                                Looking for a new show to watch? We&apos;ve got them all here, from science fiction to history and everything in between.
                             </Item>
                         </Grid>
                         <Grid item xs={4}>
@@ -134,27 +134,29 @@ export default function Album() {
                     </Carousel>
                 </Container>
                 <Typography variant='h3'>
-                        Trending Movies
-                    </Typography>
+                    Trending Movies
+                </Typography>
                 <Table>
-                    {trending.map((media) => (
-                        <TableCell sx={{ maxWidth: 100 }} align='center'>
-                            <Link href={`/media/${media.id}?type=${type}`}>
-                                <Card >
-                                    <CardActionArea>
-                                        <CardMedia
-                                            component="img"
-                                            height="140"
-                                            image={`https:image.tmdb.org/t/p/w200${media.poster_path}`}
-                                            alt="asdfa"
-                                        />
-                                        <Typography gutterBottom variant="h5" component="div">
-                                            {media.title}
-                                        </Typography>
-                                    </CardActionArea>
-                                </Card>
-                            </Link>
-                        </TableCell>
+                    {trending.map((media, index) => (
+                        <React.Fragment key={"TrendingMoviesCart" + index}>
+                            <TableCell sx={{ maxWidth: 100 }} align='center'>
+                                <Link href={`/media/${media.id}?type=${type}`}>
+                                    <Card >
+                                        <CardActionArea>
+                                            <CardMedia
+                                                component="img"
+                                                height="140"
+                                                image={`https:image.tmdb.org/t/p/w200${media.poster_path}`}
+                                                alt="asdfa"
+                                            />
+                                            <Typography gutterBottom variant="h5" component="div">
+                                                {media.title}
+                                            </Typography>
+                                        </CardActionArea>
+                                    </Card>
+                                </Link>
+                            </TableCell>
+                        </React.Fragment>
                     ))}
                 </Table>
             </main>
