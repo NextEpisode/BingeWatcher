@@ -4,14 +4,14 @@ from sklearn.cluster import KMeans
 import pandas as pd
 import numpy as np
 import torch
-import loader
-import factorizer
+from algorithm import loader
+from algorithm import factorizer
 
 class Cluster():
 
     def getCluster(self):
-        movies_df = pd.read_csv(r'C:\Users\erick\VSCode\Algotest\algorithm\ml-latest-small\movies.csv')
-        ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\Algotest\algorithm\ml-latest-small\ratings.csv')
+        movies_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\ml-latest-small\movies.csv')
+        ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\ml-latest-small\ratings.csv')
         #movies_df = pd.read_csv('..\algorithm\ml-latest-small\movies.csv')
         #ratings_df = pd.read_csv('..\algorithm\ml-latest-small\ratings.csv')
         movie_names = movies_df.set_index('movieId')['title'].to_dict()
@@ -76,6 +76,7 @@ class Cluster():
             movid = train_set.idx2movieid[movidx]
             rat_count = ratings_df.loc[ratings_df['movieId']==movid].count()[0]
             movs.append((movie_names[movid], rat_count))
-        for mov in sorted(movs, key=lambda tup: tup[1], reverse=True)[:10]:
-            print("\t", mov[0])
+        #for mov in sorted(movs, key=lambda tup: tup[1], reverse=True)[:10]:
+            #print("\t", mov[0])
 
+        movs

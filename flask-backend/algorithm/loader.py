@@ -5,8 +5,8 @@ import torch
 # Note: This isn't 'good' practice, in a MLops sense but we'll roll with this since the data is already loaded in memory.
 class Loader(Dataset):
     def __init__(self):
-        movies_df = pd.read_csv(r'C:\Users\erick\VSCode\Algotest\algorithm\ml-latest-small\movies.csv')
-        ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\Algotest\algorithm\ml-latest-small\ratings.csv')
+        movies_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\ml-latest-small\movies.csv')
+        ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\ml-latest-small\ratings.csv')
         #movies_df = pd.read_csv('..\algorithm\ml-latest-small\movies.csv')
         #ratings_df = pd.read_csv('..\algorithm\ml-latest-small\ratings.csv')
         self.ratings = ratings_df.copy()

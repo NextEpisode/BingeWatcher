@@ -170,7 +170,7 @@ def tvkprg():
 #Uses Dataset of User collected Data to calculate popular movies and recommend a 'Cluster' of 10 movies. 
 @app.route('/tu15BntHj9/clst/rnd', methods=['GET'])
 def rndclst():
-    return cluster.Cluster.getCluster()
+    return cluster.Cluster().getCluster()
 
 #Selective Algorithm that uses User movie in Katalogue for calculations
 @app.route('/tu15BntHj9/clst/slct', methods=['GET'])
