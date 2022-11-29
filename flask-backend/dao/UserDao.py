@@ -1,21 +1,19 @@
 from asyncio.windows_events import NULL
 from contextlib import nullcontext
-import pyodbc
+import mysql.connector
 from flask import jsonify
 
 
 class UserDAO:
-    # fix this url crap tonight
-   ## def __init__(self):
-   ##     connection_url = MySQLdb.connect(host='24.54.205.36', user='RemoteMatcha', passwd='RemoteMatcha', db='BeyondHorizonsDB',port = 6606)
-   ##     # connection_url = (host="localhost", user='Argent', passwd='ArgentSable776', db='MatchaWareDB')
-   ##     self.conn = connection_url
 
     def __init__(self):
-        connection_url = pyodbc.connect(Driver="SQL Server Native Client 11.0",
-        SERVER="localhost", DATABASE="BingeWatcherFlaskTest", Trusted_Connection="yes")
+        connection_url = mysql.connector.connect(user='root', password='7676',host="localhost", database="bingwatcher")
         ##connection_url = MySQLdb.connect(host="localhost", user='root', passwd='root', db='BeyondHorizonsDB')
         self.conn = connection_url
+
+    #cnx = connection.MySQLConnection(user='scott', password='password',
+    #                             host='127.0.0.1',
+    #                             database='employees')
 
     #server = 'tcp:myserver.database.windows.net' 
     #database = 'mydb' 
@@ -28,7 +26,7 @@ class UserDAO:
 
     def getAllUsers(self):
         cursor = self.conn.cursor()
-        query = "select * from [Users];"
+        query = "select * from users;"
         cursor.execute(query)
         result = []
         for row in cursor:
@@ -37,59 +35,69 @@ class UserDAO:
 
     def getUserById(self, UID):
         cursor = self.conn.cursor()
-        query = "select * from [Users] Where uid = ?;"
+        query = "select * from users Where uid = %s;"
         cursor.execute(query, (UID,))
         result = cursor.fetchone()
         return result
 
     def getUserByGoogleId(self, googleid):
         cursor = self.conn.cursor()
-        query = "select * from [Users] Where googleid = ?;"
+        query = "select * from users Where googleid = %s;"
         cursor.execute(query, (googleid,))
         result = cursor.fetchone()
         return result
     
     def getUserKID(self, uid):
         cursor = self.conn.cursor()
-        query = "select KID from [Users] Where uid = ?;"
+        query = "select KID from users Where uid = %s;"
         cursor.execute(query, (uid,))
         result = cursor.fetchone()[0]
         return result
     
     def getUserUID(self, gid):
         cursor = self.conn.cursor()
-        query = "select UID from [Users] Where googleid = ?;"
+        query = "select UID from users Where googleid = %s;"
         cursor.execute(query, (gid,))
         result = cursor.fetchone()[0]
         return result
+
+
+#sql = ("INSERT INTO favourite (number, info) VALUES (%s, %s)", (numbers, animals))
+#Mysql example
 
     def insert(self, googleid, uname):
         cursor = self.conn.cursor()
-        query = "insert into [Users](GoogleID, UName) values (?, ?);"
+        query = "insert into users(GoogleID, UName) values (%s, %s);"
         cursor.execute(query, (googleid, uname))
-        query = "SELECT @@IDENTITY AS [UID];"
+        query = "SELECT LAST_INSERT_ID();"
         cursor.execute(query)
         result = cursor.fetchone()[0]
-        cursor.commit()
+        self.conn.commit()
         return result
 
-    def delete(self, gid):
+    def insertKID(self, uid):
         cursor = self.conn.cursor()
-        query = "delete from [Users] where googleid = ?;"
-        cursor.execute(query, (gid,))
+        query = "update users set kid = '%s' where uid = '%s';"
+        cursor.execute(query, (uid, uid))
         self.conn.commit()
-        return gid
+
+    def delete(self, uid):
+        cursor = self.conn.cursor()
+        query = "delete from users where uid = %s;"
+        cursor.execute(query, (uid,))
+        self.conn.commit()
+        return uid
 
     def update(self, googleid, uname):
         cursor = self.conn.cursor()
-        query = "update [Users] set uname = ? where googleid = ?;"
+        query = "update users set uname = %s where googleid = %s;"
         cursor.execute(query, (uname, googleid))
         self.conn.commit()
         return googleid
 
     def lastInsert(self):
         cursor = self.conn.cursor()
-        query = "SELECT @@IDENTITY AS [UID];"
+        query = "SELECT LAST_INSERT_ID();"
         cursor.execute(query)
         result = cursor.fetchone()[0]
         return result

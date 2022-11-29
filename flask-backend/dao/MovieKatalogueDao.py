@@ -1,16 +1,11 @@
-import pyodbc
-
+from asyncio.windows_events import NULL
+from contextlib import nullcontext
+import mysql.connector
+from flask import jsonify
 
 class MovieKatalogueDAO:
-    # fix this url crap tonightUID
-   ## def __init__(self):
-   ##     connection_url = MySQLdb.connect(host='24.54.205.36', moviekatalogue='RemoteMatcha', passwd='RemoteMatcha', db='BeyondHorizonsDB',port = 6606)
-   ##     # connection_url = (host="localhost", moviekatalogue='Argent', passwd='ArgentSable776', db='MatchaWareDB')
-   ##     self.conn = connection_url
-
     def __init__(self):
-        connection_url = pyodbc.connect(Driver="SQL Server Native Client 11.0",
-        SERVER="localhost", DATABASE="BingeWatcherFlaskTest", Trusted_Connection="yes")
+        connection_url = mysql.connector.connect(user='root', password='7676',host="localhost", database="bingwatcher")
         ##connection_url = MySQLdb.connect(host="localhost", user='root', passwd='root', db='BeyondHorizonsDB')
         self.conn = connection_url
 
@@ -24,7 +19,7 @@ class MovieKatalogueDAO:
 
     def getAllMovieKatalogues(self):
         cursor = self.conn.cursor()
-        query = "select * from [MovieKatalogue];"
+        query = "select * from moviekatalogue;"
         cursor.execute(query)
         result = []
         for row in cursor:
@@ -33,8 +28,8 @@ class MovieKatalogueDAO:
     
     def getMovieKataloguesByKID(self, kid):
         cursor = self.conn.cursor()
-        query = "select * from [MovieKatalogue] Where kid = ?;"
-        cursor.execute(query, (kid))
+        query = "select * from moviekatalogue Where kid = %s;"
+        cursor.execute(query, (kid,))
         result = []
         for row in cursor:
             result.append(row)
@@ -42,7 +37,7 @@ class MovieKatalogueDAO:
 
     def getMovieKataloguesByStatus(self, KID, status):
         cursor = self.conn.cursor()
-        query = "select * from [MovieKatalogue] Where KID = ? and mkustatus = ?;"
+        query = "select * from moviekatalogue Where KID = %s and mkustatus = %s;"
         cursor.execute(query, (KID, status))
         result = []
         for row in cursor:
@@ -51,45 +46,45 @@ class MovieKatalogueDAO:
     
     def getExistingEntry(self, kid, movieid):
         cursor = self.conn.cursor()
-        query = "select * from [MovieKatalogue] Where kid = ? and movieid = ?;"
+        query = "select * from moviekatalogue Where kid = %s and movieid = %s;"
         cursor.execute(query, (kid, movieid))
         result = cursor.fetchone()
         return result
 
     def insert(self, kid, movieid, mkustatus):
         cursor = self.conn.cursor()
-        query = "insert into [MovieKatalogue](kid, movieid, mkustatus) values (?, ?, ?) ;"
+        query = "insert into moviekatalogue(kid, movieid, mkustatus) values (%s, %s, %s) ;"
         cursor.execute(query, (kid, movieid, mkustatus))
-        query = "SELECT @@IDENTITY AS [MKID];"
+        query = "SELECT LAST_INSERT_ID();"
         cursor.execute(query)
         result = cursor.fetchone()[0]
-        cursor.commit()
+        self.conn.commit()
         return result
 
     def delete(self, kid, movieid):
         cursor = self.conn.cursor()
-        query = "delete from [MovieKatalogue] where kid = ? and movieid = ?;"
+        query = "delete from moviekatalogue where kid = %s and movieid = %s;"
         cursor.execute(query, (kid, movieid))
         self.conn.commit()
         return kid
     
     def deleteAll(self, KID):
         cursor = self.conn.cursor()
-        query = "delete from [MovieKatalogue] where kid = ?;"
-        cursor.execute(query, (KID))
+        query = "delete from moviekatalogue where kid = %s;"
+        cursor.execute(query, (KID,))
         self.conn.commit()
         return KID
 
     def update(self, kid, movieid, mkustatus):
         cursor = self.conn.cursor()
-        query = "update [MovieKatalogue] set mkustatus=? where movieid =? and kid = ?;"
+        query = "update moviekatalogue set mkustatus=%s where movieid =%s and kid = %s;"
         cursor.execute(query, (mkustatus, movieid, kid))
         self.conn.commit()
         return kid
     
     def getUserKID(self, uid):
         cursor = self.conn.cursor()
-        query = "select KID from [Users] Where uid = ?;"
+        query = "select KID from users Where uid = %s;"
         cursor.execute(query, (uid,))
         result = cursor.fetchone()[0]
         return result

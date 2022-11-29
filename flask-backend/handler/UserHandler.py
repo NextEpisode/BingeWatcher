@@ -68,6 +68,7 @@ class UserHandler:
             else:
                 if uname and googleid:
                     uid = dao.insert(googleid, uname)
+                    dao.insertKID(uid)
                     kid = dao.getUserKID(uid)
                     result = self.build_users_attributes(uid, googleid, kid, uname)
                     return jsonify(Users=result), 201
@@ -90,9 +91,9 @@ class UserHandler:
 
     def deleteUser(self, json):
         dao = UserDao.UserDAO()
-        googleid = json["GoogleID"]
-        if not dao.getUserByGoogleId(googleid):
+        uid = json["UID"]
+        if not dao.getUserById(uid):
             return jsonify(Error = "User not found."), 404
         else:
-            dao.delete(googleid)
+            dao.delete(uid)
             return jsonify(DeleteStatus = "OK"), 200
