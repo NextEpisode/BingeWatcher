@@ -4,6 +4,8 @@ from handler.UserHandler import UserHandler
 from handler.MovieKatalogueHandler import MovieKatalogueHandler
 from handler.TVKatalogueHandler import TVKatalogueHandler
 from flask_cors import CORS
+from algorithm import cluster, selective
+
 
 # Activate
 app = Flask(__name__)
@@ -162,11 +164,21 @@ def tvkprg():
             return TVKatalogueHandler().deleteAllTVKataloguesByKID(request.json) #Works
 
 
-    #Maybe Method
 # Purge Area--------------------------------------------------------------------
 
-#Finish purge, finish segmented update, check for any irrelevant code.
-#Blob research. How to use in python and how to
+# Recommendation Algorithm Are--------------------------------------------------------------------
+#Uses Dataset of User collected Data to calculate popular movies and recommend a 'Cluster' of 10 movies. 
+@app.route('/tu15BntHj9/clst/rnd', methods=['GET'])
+def rndclst():
+    return cluster.Cluster.getCluster()
+
+#Selective Algorithm that uses User movie in Katalogue for calculations
+@app.route('/tu15BntHj9/clst/slct', methods=['GET'])
+def slctclst():
+    print("REQUEST: ", request.json)
+    return selective.Selective.getSelectiveCluster(request.json)
+    
+# Recommendation Algorithm Are--------------------------------------------------------------------
 
 
 
