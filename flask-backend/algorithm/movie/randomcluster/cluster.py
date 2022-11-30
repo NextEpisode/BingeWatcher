@@ -16,12 +16,12 @@ class Cluster():
         return result
 
     def getCluster(self):
-        movies_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\ml-latest-small\movies.csv')
-        ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\ml-latest-small\ratings.csv')
+        #movies_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\movieratings.csv')
+        #ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\movieratings.csv')
 
         #Old Dataset
-        #movies_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\ml-latest-small\movies.csv')
-        #ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\ml-latest-small\ratings.csv')
+        movies_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\ml-latest-small\movies.csv')
+        ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\ml-latest-small\ratings.csv')
         #movies_df = pd.read_csv('..\algorithm\ml-latest-small\movies.csv')
         #ratings_df = pd.read_csv('..\algorithm\ml-latest-small\ratings.csv')
         movie_names = movies_df.set_index('movieId')['title'].to_dict()

@@ -6,41 +6,32 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from csv import writer
 
-def get_title_from_index(index):
-	return df[df.index == index]["title"].values[0]
 
-def get_index_from_title(title):
-	return df[df.title == title]["index"].values[0]
+def selective_movie_algorithm():
 
 ##Step 1: Read CSV File
-df = pd.read_csv("C:\\Users\\Akuga\\Documents\\GitHub\\forum-system\\flask-backend\\algorithm\\dataset")
+	df = pd.read_csv("flask-backend\algorithm\dataset\movie_dataset.csv")
 #print df.columns
 ##Step 2: Select Features
 
-features = ['keywords','cast','genres','director']
+	features = ['keywords','cast','genres','director']
 ##Step 3: Create a column in DF which combines all selected features
-for feature in features:
-	df[feature] = df[feature].fillna('')
+	for feature in features:
+		df[feature] = df[feature].fillna('')
 
-def combine_features(row):
-	try:
-		return row['keywords'] +" "+row['cast']+" "+row["genres"]+" "+row["director"]
-	except:
-		print("Error:"), row	
-
-df["combined_features"] = df.apply(combine_features,axis=1)
+	df["combined_features"] = df.apply(combine_features,axis=1)
 
 ##Step 4: Create count matrix from this new combined column
-cv = CountVectorizer()
+	cv = CountVectorizer()
 
-count_matrix = cv.fit_transform(df["combined_features"])
+	count_matrix = cv.fit_transform(df["combined_features"])
 
 ##Step 5: Compute the Cosine Similarity based on the count_matrix
-cosine_sim = cosine_similarity(count_matrix) 
+	cosine_sim = cosine_similarity(count_matrix) 
 ####################### REQUEST MOVIE TO BE RECOMMENDED FROM #######################
-response = requests.get('https://api.themoviedb.org/3/movie/118340?api_key=468018e64d6cfa119009ede09787dea0&language=en-US')
-data = json.loads(response.text)
-movie_user_likes = data["title"]
+	response = requests.get('https://api.themoviedb.org/3/movie/118340?api_key=468018e64d6cfa119009ede09787dea0&language=en-US')
+	data = json.loads(response.text)
+	movie_user_likes = data["title"]
 
 ##Step 5.5 Title is not found on CSV, writting new title to CSV
 # open the file in the write mode
@@ -70,18 +61,31 @@ movie_user_likes = data["title"]
 
 
 ## Step 6: Get index of this movie from its title
-movie_index = get_index_from_title(movie_user_likes)
+	movie_index = get_index_from_title(movie_user_likes)
 
-similar_movies =  list(enumerate(cosine_sim[movie_index]))
+	similar_movies =  list(enumerate(cosine_sim[movie_index]))
 
 ## Step 7: Get a list of similar movies in descending order of similarity score
-sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
+	sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
 
 ## Step 8: Print titles of first 50 movies
-i=0
-for element in sorted_similar_movies:
+	i=0
+	for element in sorted_similar_movies:
     ####################### REPLACE WITH UPDATING TO DATABASE #######################
-		print(get_title_from_index(element[0]))
-		i=i+1
-		if i>7:
-			break
+			print(get_title_from_index(element[0]))
+			i=i+1
+			if i>7:
+				break
+
+
+def get_title_from_index(index):
+	return df[df.index == index]["title"].values[0]
+
+def get_index_from_title(title):
+	return df[df.title == title]["index"].values[0]
+
+def combine_features(row):
+	try:
+		return row['keywords'] +" "+row['cast']+" "+row["genres"]+" "+row["director"]
+	except:
+		print("Error:"), row	
