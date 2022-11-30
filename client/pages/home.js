@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { Card, CardActionArea, CardMedia, Grid, Table, TableCell, Typography } from '@mui/material';
 import Link from 'next/link';
+import DisplayCards from '../ClientComponents/DisplayCards';
 
 
 
@@ -38,9 +39,10 @@ export default function Album() {
     const firstThreeTrending = (media) => {
         const trendingMedia = [];
         let index = 0;
-        for (index; index < 3; index++) {
+        for (index; index < 5; index++) {
             trendingMedia[index] = media[index];
         }
+        console.log(trendingMedia[0]);
         return trendingMedia;
     }
 
@@ -75,39 +77,7 @@ export default function Album() {
                                 }
                             </Carousel>
                         </Container>
-                        <Grid
-                            container
-                            spacing={0}
-                            direction="column"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            <Typography variant='h3' sx={{ mt: 5 }}>
-                                Trending Movies
-                            </Typography>
-
-                            <Table item sx={{ maxWidth: 1500 }}>
-                                {trending.map((media) => (
-                                    <TableCell sx={{ maxWidth: 100 }} align='center'>
-                                        <Link href={`/media/${media.id}?type=${media.media_type}`}>
-                                            <Card >
-                                                <CardActionArea>
-                                                    <CardMedia sx={{ minHeight: 500 }}
-                                                        component="img"
-                                                        height="140"
-                                                        image={`https:image.tmdb.org/t/p/w200${media.poster_path}`}
-                                                        alt="no poster"
-                                                    />
-                                                    <Typography gutterBottom variant="h5" component="div" sx={{ minHeight: 100 }}>
-                                                        {media.title}
-                                                    </Typography>
-                                                </CardActionArea>
-                                            </Card>
-                                        </Link>
-                                    </TableCell>
-                                ))}
-                            </Table>
-                        </Grid>
+                        <DisplayCards title="Trending Movies" medias={trending} />
                     </main>
                 )}
             </ThemeProvider>
