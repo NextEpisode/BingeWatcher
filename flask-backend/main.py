@@ -6,8 +6,8 @@ from handler.TVKatalogueHandler import TVKatalogueHandler
 from flask_cors import CORS
 from algorithm.movie.randomcluster import cluster as rndclust
 from algorithm.movie.selectivecluster import selective as selectclust
-from algorithm.tv.randomcluster import cluster as tvrndclust
-from algorithm.tv.selectivecluster import selective as tvselectclust
+from algorithm.tv.randomcluster import cluster
+from algorithm.tv.selectivecluster import selective
 
 
 # Activate
@@ -180,15 +180,15 @@ def movselectclust():
     return selectclust.Selective.getSelectiveCluster(request.json)
 
 
-@app.route('/HS0oiJuH3t/clst/rnd', methods=['GET'])
+@app.route('/KoMBSuXEp8/clst/rnd', methods=['GET'])
 def tvrndclust():
-    return rndclust.Cluster().getCluster()
+    return cluster.Cluster().getCluster()
 
 #Selective Algorithm that uses User movie in Katalogue for calculations
-@app.route('/HS0oiJuH3t/clst/slct', methods=['GET'])
+@app.route('/KoMBSuXEp8/clst/slct', methods=['GET'])
 def tvselectclust():
     print("REQUEST: ", request.json)
-    return selectclust.Selective.getSelectiveCluster(request.json)
+    return selective.Selective.getSelectiveCluster(request.json)
 
 
     

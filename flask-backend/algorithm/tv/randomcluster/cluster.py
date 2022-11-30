@@ -12,19 +12,20 @@ class Cluster():
 
     def build_clusterlist_dict(self, row):
         result = {}
-        result['Moviename'] = row[0]
+        result['Showname'] = row[0]
         return result
 
     def getCluster(self):
-        ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\tvratings\tvratings.csv')
+        ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\tvratings\tvratings.csv', encoding = "ISO-8859-1")
 
         #Old Dataset
         #movies_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\ml-latest-small\movies.csv')
         #ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\ml-latest-small\ratings.csv')
         #movies_df = pd.read_csv('..\algorithm\ml-latest-small\movies.csv')
         #ratings_df = pd.read_csv('..\algorithm\ml-latest-small\ratings.csv')
-        n_users = len(ratings_df.userId.unique())
-        n_items = len(ratings_df.movieId.unique())
+        series_names = ratings_df.set_index('tconst')['SeriesName'].to_dict()
+        n_users = len(ratings_df.tconst.unique())
+        n_items = len(ratings_df.tconst.unique())
 
         #Creating Model
         model = factorizer.MatrixFactorization(n_users, n_items, n_factors=8)
@@ -65,31 +66,27 @@ class Cluster():
         # By training the model, we will have tuned latent factors for movies and users.
         #Research wtf this means exactly.
 
-        trained_movie_embeddings = model.item_factors.weight.data.cpu().numpy()
-        len(trained_movie_embeddings) # unique movie factor weights
+        trained_tvshow_embeddings = model.item_factors.weight.data.cpu().numpy()
+        len(trained_tvshow_embeddings) # unique movie factor weights
 
 
         # Fit the clusters based on the movie weights
-        kmeans = KMeans(n_clusters=10, random_state=0).fit(trained_movie_embeddings)
+        kmeans = KMeans(n_clusters=10, random_state=0).fit(trained_tvshow_embeddings)
 
 
-        '''It can be seen here that the movies that are in the same cluster tend to have
-        similar genres. Also note that the algorithm is unfamiliar with the movie name
-        and only obtained the relationships by looking at the numbers representing how
-        users have responded to the movie selections.'''
         for cluster in range(1):
             print("Cluster #{}".format(cluster))
-        movs = []
-        for movidx in np.where(kmeans.labels_ == cluster)[0]:
-            movid = train_set.idx2movieid[movidx]
-            rat_count = ratings_df.loc[ratings_df['movieId']==movid].count()[0]
-            movs.append((movie_names[movid], rat_count))
+        tvs = []
+        for tvidx in np.where(kmeans.labels_ == cluster)[0]:
+            tvid = train_set.idx2tvid[tvidx]
+            rat_count = ratings_df.loc[ratings_df['tconst']==tvid].count()[0]
+            tvs.append((series_names[tvid], rat_count))
         #for mov in sorted(movs, key=lambda tup: tup[1], reverse=True)[:10]:
             #print("\t", mov[0])
 
-        movlist = sorted(movs, key=lambda tup: tup[1], reverse=True)[:10]
+        tvlist = sorted(tvs, key=lambda tup: tup[1], reverse=True)[:10]
         result_list = []
-        for row in movlist:
+        for row in tvlist:
             result = self.build_clusterlist_dict(row)
             result_list.append(result)
         return jsonify(cluster=result_list)
