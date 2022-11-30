@@ -4,7 +4,10 @@ from handler.UserHandler import UserHandler
 from handler.MovieKatalogueHandler import MovieKatalogueHandler
 from handler.TVKatalogueHandler import TVKatalogueHandler
 from flask_cors import CORS
-from algorithm import cluster, selective
+from algorithm.movie.randomcluster import cluster as rndclust
+from algorithm.movie.selectivecluster import selective as selectclust
+from algorithm.tv.randomcluster import cluster as tvrndclust
+from algorithm.tv.selectivecluster import selective as tvselectclust
 
 
 # Activate
@@ -12,11 +15,9 @@ app = Flask(__name__)
 # Apply CORS to this app
 CORS(app)
 
-
 @app.route('/')
 def greeting():
     return 'Welcome!!!'
-
 
 ##Request JSON Changes (For UID)
 #Implement Get All (And test potential code issues)
@@ -169,14 +170,27 @@ def tvkprg():
 # Recommendation Algorithm Are--------------------------------------------------------------------
 #Uses Dataset of User collected Data to calculate popular movies and recommend a 'Cluster' of 10 movies. 
 @app.route('/tu15BntHj9/clst/rnd', methods=['GET'])
-def rndclst():
-    return cluster.Cluster().getCluster()
+def movrndclust():
+    return rndclust.Cluster().getCluster()
 
 #Selective Algorithm that uses User movie in Katalogue for calculations
 @app.route('/tu15BntHj9/clst/slct', methods=['GET'])
-def slctclst():
+def movselectclust():
     print("REQUEST: ", request.json)
-    return selective.Selective.getSelectiveCluster(request.json)
+    return selectclust.Selective.getSelectiveCluster(request.json)
+
+
+@app.route('/HS0oiJuH3t/clst/rnd', methods=['GET'])
+def tvrndclust():
+    return rndclust.Cluster().getCluster()
+
+#Selective Algorithm that uses User movie in Katalogue for calculations
+@app.route('/HS0oiJuH3t/clst/slct', methods=['GET'])
+def tvselectclust():
+    print("REQUEST: ", request.json)
+    return selectclust.Selective.getSelectiveCluster(request.json)
+
+
     
 # Recommendation Algorithm Are--------------------------------------------------------------------
 
