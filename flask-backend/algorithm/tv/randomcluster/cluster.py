@@ -25,7 +25,7 @@ class Cluster():
         #ratings_df = pd.read_csv('..\algorithm\ml-latest-small\ratings.csv')
         series_names = ratings_df.set_index('tconst')['SeriesName'].to_dict()
         n_users = len(ratings_df.tconst.unique())
-        n_items = len(ratings_df.tconst.unique())
+        n_items = len(ratings_df.numVotes.unique())
 
         #Creating Model
         model = factorizer.MatrixFactorization(n_users, n_items, n_factors=8)

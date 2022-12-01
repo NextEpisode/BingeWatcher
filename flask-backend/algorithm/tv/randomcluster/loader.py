@@ -1,6 +1,7 @@
 from torch.utils.data.dataset import Dataset
 import pandas as pd
 import torch
+import numpy as np
 
 # Note: This isn't 'good' practice, in a MLops sense but we'll roll with this since the data is already loaded in memory.
 class Loader(Dataset):
@@ -10,7 +11,7 @@ class Loader(Dataset):
         
         # Extract all user IDs and movie IDs
         users = ratings_df.tconst.unique()
-        shows = ratings_df.tconst.unique()
+        shows = ratings_df.numVotes.unique()
         
         #--- Producing new continuous IDs for users and movies ---
         
@@ -27,9 +28,14 @@ class Loader(Dataset):
         self.ratings.tconst = ratings_df.tconst.apply(lambda x: self.userid2idx[x])
         
         
-        self.x = self.ratings.drop(['averageRating', 'numVotes'], axis=1).values
+        self.x = self.ratings.drop(['averageRating', 'numVotes', 'primaryTitle', 'genre'], axis=1).values
         self.y = self.ratings['averageRating'].values
-        self.x, self.y = torch.tensor(self.x), torch.tensor(self.y) # Transforms the data to tensors (ready for torch models.)
+        #self.x=np.vstack(self.x).astype(np.float)
+        #self.y=np.vstack(self.y).astype(np.float)
+        #self.x = torch.tensor(torch.from_numpy(self.x))
+        #self.y = torch.tensor(torch.from_numpy(self.y)) # Transforms the data to tensors (ready for torch models.)
+        self.x = torch.tensor(self.x)
+        self.y = torch.tensor(self.y) # Transforms the data to tensors (ready for torch models.)
 
     def __getitem__(self, index):
         return (self.x[index], self.y[index])

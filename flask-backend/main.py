@@ -84,6 +84,7 @@ def mkstat():
             print("REQUEST: ", request.json)
             return MovieKatalogueHandler().getAllMovieKataloguesByStatus(request.json) #Works
 #Movie Area-----------------------------------------------------------------
+
 #TV Area--------------------------------------------------------------------
 
 @app.route('/Pn4yDzjDzy', methods=['GET'])
