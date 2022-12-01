@@ -1,11 +1,15 @@
-from asyncio.windows_events import NULL
-from contextlib import nullcontext
 import mysql.connector
 from flask import jsonify
+from os import environ 
 
 class MovieKatalogueDAO:
     def __init__(self):
-        connection_url = mysql.connector.connect(user='root', password='7676',host="localhost", database="bingewatcher")
+        connection_url = mysql.connector.connect(
+            user=environ.get('DB_USER','root'), 
+            password=environ.get('DB_PASSWORD', '7676'),
+            host=environ.get('DB_HOST', 'localhost'), 
+            database=environ.get('DB_DATABASE', 'bingewatcher')
+        )
         ##connection_url = MySQLdb.connect(host="localhost", user='root', passwd='root', db='BeyondHorizonsDB')
         self.conn = connection_url
 
