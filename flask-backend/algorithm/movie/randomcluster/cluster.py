@@ -53,14 +53,14 @@ class Cluster():
         for it in range(num_epochs):
             losses = []
             for x, y in train_loader:
-                #if cuda:
-                x, y = x.cuda(), y.cuda()
-                optimizer.zero_grad()
-                outputs = model(x)
-                loss = loss_fn(outputs.squeeze(), y.type(torch.float32))
-                losses.append(loss.item())
-                loss.backward()
-                optimizer.step()
+                if cuda:
+                    x, y = x.cuda(), y.cuda()
+                    optimizer.zero_grad()
+                    outputs = model(x)
+                    loss = loss_fn(outputs.squeeze(), y.type(torch.float32))
+                    losses.append(loss.item())
+                    loss.backward()
+                    optimizer.step()
             #print("iter #{}".format(it), "Loss:", sum(losses) / len(losses))
 
 
