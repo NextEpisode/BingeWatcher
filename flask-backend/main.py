@@ -5,9 +5,7 @@ from handler.MovieKatalogueHandler import MovieKatalogueHandler
 from handler.TVKatalogueHandler import TVKatalogueHandler
 from flask_cors import CORS
 from algorithm.movie.randomcluster import cluster as rndclust
-from algorithm.movie.selectivecluster import selective as selectclust
-from algorithm.tv.randomcluster import cluster
-from algorithm.tv.selectivecluster import selective
+from algorithm.movie.selectivecluster import selective as slctclust
 
 
 # Activate
@@ -177,20 +175,7 @@ def movrndclust():
 #Selective Algorithm that uses User movie in Katalogue for calculations
 @app.route('/tu15BntHj9/clst/slct', methods=['GET'])
 def movselectclust():
-    print("REQUEST: ", request.json)
-    return selectclust.Selective.getSelectiveCluster(request.json)
-
-
-@app.route('/KoMBSuXEp8/clst/rnd', methods=['GET'])
-def tvrndclust():
-    return cluster.Cluster().getCluster()
-
-#Selective Algorithm that uses User movie in Katalogue for calculations
-@app.route('/KoMBSuXEp8/clst/slct', methods=['GET'])
-def tvselectclust():
-    print("REQUEST: ", request.json)
-    return selective.Selective.getSelectiveCluster(request.json)
-
+    return slctclust.Cluster().selectiveMovieAlgorithm()
 
     
 # Recommendation Algorithm Are--------------------------------------------------------------------
