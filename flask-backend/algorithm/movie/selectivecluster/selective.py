@@ -7,10 +7,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 from csv import writer
 
 
+df = pd.read_csv("flask-backend\algorithm\dataset\movie_dataset.csv")
+
 def selective_movie_algorithm():
 
 ##Step 1: Read CSV File
-	df = pd.read_csv("flask-backend\algorithm\dataset\movie_dataset.csv")
 #print df.columns
 ##Step 2: Select Features
 
