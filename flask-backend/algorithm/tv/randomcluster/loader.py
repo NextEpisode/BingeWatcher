@@ -10,8 +10,8 @@ class Loader(Dataset):
         self.ratings = ratings_df.copy()
         
         # Extract all user IDs and movie IDs
-        users = ratings_df.tconst.unique()
-        shows = ratings_df.numVotes.unique()
+        users = ratings_df.numVotes.unique()
+        shows = ratings_df.averageRating.unique()
         
         #--- Producing new continuous IDs for users and movies ---
         
@@ -24,8 +24,8 @@ class Loader(Dataset):
         self.idx2tvid = {i:o for o,i in self.tvid2idx.items()}
         
         # return the id from the indexed values as noted in the lambda function down below.
-        self.ratings.tconst = ratings_df.tconst.apply(lambda x: self.tvid2idx[x])
-        self.ratings.tconst = ratings_df.tconst.apply(lambda x: self.userid2idx[x])
+        self.ratings.numVotes = ratings_df.numVotes.apply(lambda x: self.tvid2idx[x])
+        self.ratings.averageRating = ratings_df.averageRating.apply(lambda x: self.userid2idx[x])
         
         
         self.x = self.ratings.drop(['averageRating', 'numVotes', 'primaryTitle', 'genre'], axis=1).values

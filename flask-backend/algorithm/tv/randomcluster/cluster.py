@@ -23,9 +23,9 @@ class Cluster():
         #ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\ml-latest-small\ratings.csv')
         #movies_df = pd.read_csv('..\algorithm\ml-latest-small\movies.csv')
         #ratings_df = pd.read_csv('..\algorithm\ml-latest-small\ratings.csv')
-        series_names = ratings_df.set_index('tconst')['SeriesName'].to_dict()
-        n_users = len(ratings_df.tconst.unique())
-        n_items = len(ratings_df.numVotes.unique())
+        series_names = ratings_df.set_index('numVotes')['SeriesName'].to_dict()
+        n_users = len(ratings_df.numVotes.unique())
+        n_items = len(ratings_df.averageRating.unique())
 
         #Creating Model
         model = factorizer.MatrixFactorization(n_users, n_items, n_factors=8)
