@@ -1,14 +1,13 @@
 import torch
 import numpy as np
-from torch.autograd import Variable
 
 class MatrixFactorization(torch.nn.Module):
     def __init__(self, n_users, n_items, n_factors=20):
         super().__init__()
-        # create user embeddings
-        self.user_factors = torch.nn.Embedding(n_users, n_factors) # think of this as a lookup table for the input.
-        # create item embeddings
-        self.item_factors = torch.nn.Embedding(n_items, n_factors) # think of this as a lookup table for the input.
+        #These are the equivalent of lookup tables in a matrix of sorts.
+        self.user_factors = torch.nn.Embedding(n_users, n_factors)
+        self.item_factors = torch.nn.Embedding(n_items, n_factors)
+        #Weight factor assignation is to specify the importance of a datapoint in the matrix.
         self.user_factors.weight.data.uniform_(0, 0.05)
         self.item_factors.weight.data.uniform_(0, 0.05)
         
@@ -16,9 +15,6 @@ class MatrixFactorization(torch.nn.Module):
         # matrix multiplication
         users, items = data[:,0], data[:,1]
         return (self.user_factors(users)*self.item_factors(items)).sum(1)
-    # def forward(self, user, item):
-    # 	# matrix multiplication
-    #     return (self.user_factors(user)*self.item_factors(item)).sum(1)
     
     def predict(self, user, item):
         return self.forward(user, item)

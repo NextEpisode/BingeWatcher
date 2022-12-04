@@ -171,7 +171,8 @@ def movrndclust():
 #Selective Algorithm that uses User movie in Katalogue for calculations
 @app.route('/tu15BntHj9/clst/slct', methods=['GET'])
 def movselectclust():
-    return slctclust.Cluster().selectiveMovieAlgorithm()
+    print("REQUEST: ", request.json)
+    return slctclust.Cluster().selectiveMovieAlgorithm(request.json)
 
     
 # Recommendation Algorithm Are--------------------------------------------------------------------

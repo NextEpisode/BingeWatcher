@@ -6,8 +6,8 @@ import torch
 class Loader(Dataset):
 
     def __init__(self):
-        #ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\csv_0.csv')
-        ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\ratings.csv')
+        ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\csv_0.csv')
+        #ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\ratings.csv')
         self.ratings = ratings_df.copy()
         
         # Extract all user IDs and movie IDs
@@ -25,11 +25,8 @@ class Loader(Dataset):
         self.idx2movieid = {i:o for o,i in self.movieid2idx.items()}
         
         # return the id from the indexed values as noted in the lambda function down below.
-        #self.ratings.movieId = ratings_df.movieId.apply(lambda x: self.movieid2idx[x])
-        #self.ratings.userId = ratings_df.userId.apply(lambda x: self.userid2idx[x])
         self.ratings.movieId = ratings_df.movieId.apply(lambda x: self.movieid2idx[x])
         self.ratings.userId = ratings_df.userId.apply(lambda x: self.userid2idx[x])
-        
         
         self.x = self.ratings.drop(['rating', 'timestamp'], axis=1).values
         self.y = self.ratings['rating'].values

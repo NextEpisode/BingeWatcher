@@ -16,11 +16,13 @@ class Cluster():
         return result
 
     def getCluster(self):
-        #movies_df = pd.read_csv(r'flask-backend\algorithm\dataset\csv_0.csv')
-        #ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\csv_0.csv')
         movies_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\movies.csv')
-        ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\ratings.csv')
+        ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\csv_0.csv')
+        #movies_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\movies.csv')
+        #ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\ratings.csv')
+        #Acquiring and attaching the dataset to Panda Dataframes.
         movie_names = movies_df.set_index('movieId')['title'].to_dict()
+        #Setting movienames to the modieID in a separate dictionary.
         n_users = len(ratings_df.userId.unique())
         n_items = len(ratings_df.movieId.unique())
         
