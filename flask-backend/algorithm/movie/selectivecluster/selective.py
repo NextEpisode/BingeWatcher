@@ -6,12 +6,13 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from csv import writer
 from flask import jsonify
+from algorithm.movie.selectivecluster.selectivehelper import selecthelper as helper
 
 class Cluster():
 
     def build_clusterlist_dict(self, row):
         result = {}
-        result['Moviename'] = row[0]
+        result['Moviename'] = row
         return result
 
     def selectiveMovieAlgorithm(self):
@@ -23,7 +24,7 @@ class Cluster():
         for feature in features:
             df[feature] = df[feature].fillna('')
    
-        df["combined_features"] = df.apply(self.combine_features,axis=1)
+        df["combined_features"] = df.apply(helper.combine_features,axis=1)
         ##Step 4: Create count matrix from this new combined column
         cv = CountVectorizer()
         count_matrix = cv.fit_transform(df["combined_features"])
@@ -34,7 +35,7 @@ class Cluster():
         movie_user_likes = data["title"]
         
         ## Step 6: Get index of this movie from its title
-        movie_index = self.get_index_from_title(movie_user_likes)
+        movie_index = helper.get_index_from_title(movie_user_likes)
         similar_movies =  list(enumerate(cosine_sim[movie_index]))
         ## Step 7: Get a list of similar movies in descending order of similarity score
         sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
@@ -43,26 +44,13 @@ class Cluster():
         i=0
         result_list = []
         for element in sorted_similar_movies:
-            result = self.build_clusterlist_dict(element[0])
+            mov = helper.get_title_from_index(element[0])
+            result = self.build_clusterlist_dict(str(mov))
             result_list.append(result)
             i=i+1
             if i>7:
                 break
         return jsonify(cluster=result_list)
-
-    def get_title_from_index(index):
-        df = pd.read_csv(r'flask-backend\algorithm\dataset\movie_dataset.csv')
-        return df[df.index == index]["title"].values[0]
-    
-    def get_index_from_title(title):
-        df = pd.read_csv(r'flask-backend\algorithm\dataset\movie_dataset.csv')
-        return df[df.title == title]["index"].values[0]
-
-    def combine_features(row):
-        try:
-            return row['keywords'] +" "+row['cast']+" "+row["genres"]+" "+row["director"]
-        except:
-            print("Error:"), row
 
         
 

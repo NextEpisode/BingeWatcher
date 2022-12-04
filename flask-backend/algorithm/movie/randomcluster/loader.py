@@ -4,10 +4,9 @@ import torch
 
 # Note: This isn't 'good' practice, in a MLops sense but we'll roll with this since the data is already loaded in memory.
 class Loader(Dataset):
+
     def __init__(self):
-        #movies_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\movieratings.csv')
-        #ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\movieratings.csv')
-        movies_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\movies.csv')
+        #ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\csv_0.csv')
         ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\ratings.csv')
         self.ratings = ratings_df.copy()
         
@@ -26,6 +25,8 @@ class Loader(Dataset):
         self.idx2movieid = {i:o for o,i in self.movieid2idx.items()}
         
         # return the id from the indexed values as noted in the lambda function down below.
+        #self.ratings.movieId = ratings_df.movieId.apply(lambda x: self.movieid2idx[x])
+        #self.ratings.userId = ratings_df.userId.apply(lambda x: self.userid2idx[x])
         self.ratings.movieId = ratings_df.movieId.apply(lambda x: self.movieid2idx[x])
         self.ratings.userId = ratings_df.userId.apply(lambda x: self.userid2idx[x])
         

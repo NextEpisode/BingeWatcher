@@ -16,18 +16,14 @@ class Cluster():
         return result
 
     def getCluster(self):
-        #movies_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\movieratings.csv')
-        #ratings_df = pd.read_csv(r'C:\Users\erick\VSCode\forum-system\flask-backend\algorithm\dataset\movieratings.csv')
-
-        #Old Dataset
+        #movies_df = pd.read_csv(r'flask-backend\algorithm\dataset\csv_0.csv')
+        #ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\csv_0.csv')
         movies_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\movies.csv')
         ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\ratings.csv')
-        #movies_df = pd.read_csv('..\algorithm\ml-latest-small\movies.csv')
-        #ratings_df = pd.read_csv('..\algorithm\ml-latest-small\ratings.csv')
         movie_names = movies_df.set_index('movieId')['title'].to_dict()
         n_users = len(ratings_df.userId.unique())
         n_items = len(ratings_df.movieId.unique())
-
+        
         #Creating Model
         model = factorizer.MatrixFactorization(n_users, n_items, n_factors=8)
 
@@ -63,22 +59,15 @@ class Cluster():
                     optimizer.step()
             #print("iter #{}".format(it), "Loss:", sum(losses) / len(losses))
 
-
         # By training the model, we will have tuned latent factors for movies and users.
         #Research wtf this means exactly.
 
         trained_movie_embeddings = model.item_factors.weight.data.cpu().numpy()
         len(trained_movie_embeddings) # unique movie factor weights
 
-
         # Fit the clusters based on the movie weights
         kmeans = KMeans(n_clusters=10, random_state=0).fit(trained_movie_embeddings)
 
-
-        '''It can be seen here that the movies that are in the same cluster tend to have
-        similar genres. Also note that the algorithm is unfamiliar with the movie name
-        and only obtained the relationships by looking at the numbers representing how
-        users have responded to the movie selections.'''
         for cluster in range(1):
             print("Cluster #{}".format(cluster))
         movs = []

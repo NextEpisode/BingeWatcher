@@ -7,7 +7,6 @@ from flask_cors import CORS
 from algorithm.movie.randomcluster import cluster as rndclust
 from algorithm.movie.selectivecluster import selective as slctclust
 
-
 # Activate
 app = Flask(__name__)
 # Apply CORS to this app
@@ -19,9 +18,7 @@ def greeting():
 
 ##Request JSON Changes (For UID)
 #Implement Get All (And test potential code issues)
-
-
-#User Area ------------------------------------------------------
+#User Area -----------------------------------------------------------------
 @app.route('/rBUWxJYlyR', methods=['GET'])
 def users():
     if request.method == 'GET':
@@ -45,9 +42,8 @@ def useropt():
                     print("REQUEST: ", request.json)
                     return UserHandler().deleteUser(request.json)#Works
 
-#User Area ------------------------------------------------------
+#User Area -----------------------------------------------------------------
 
-                 
 #Movie Area-----------------------------------------------------------------
 #Segment of Code for Routes regarding Movie or TV katalogues
 
@@ -164,7 +160,7 @@ def tvkprg():
             return TVKatalogueHandler().deleteAllTVKataloguesByKID(request.json) #Works
 
 
-# Purge Area--------------------------------------------------------------------
+# Purge Area--------------------------------------------------------------------------------------
 
 # Recommendation Algorithm Are--------------------------------------------------------------------
 #Uses Dataset of User collected Data to calculate popular movies and recommend a 'Cluster' of 10 movies. 
