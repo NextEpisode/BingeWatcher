@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import CarouselItem from '../ClientComponents/CarouselItem';
@@ -6,12 +6,10 @@ import Carousel from 'react-material-ui-carousel';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
-import BasicTable from '../ClientComponents/Table';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import EnhancedTable from '../ClientComponents/SortingTable';
-import { Card, CardActionArea, CardContent, CardMedia, Table, TableCell } from '@mui/material';
-
+import movieKatalogues from '../movieKatalogues.json'
 
 function TabPanel({ children, value, index, ...other }) {
 
@@ -52,11 +50,70 @@ function BasicTabs() {
     setValue(newValue);
   };
 
+  const [trendingSeries, setTrendingSeries] = useState([]);
+  const [movieKatalogue, setMovieKatalogue] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [series, setSeries] = useState([]);
+  const [movieStatuses, setMoviesStatuses] = useState([]);
+
+
+  const fetchTrendingSeriesData = async () => {
+    fetch(`https://api.themoviedb.org/3/trending/tv/week?api_key=468018e64d6cfa119009ede09787dea0&`)
+      .then((res) => res.json())
+      .then((info) => {
+        if (!info.errors) {
+          setTrendingSeries(firstThreeTrending(info.results));
+        } else {
+          setTrendingSeries([]);
+        }
+      });
+    console.log(trendingSeries)
+  }
+
+  const fetchSeriesData = async () => {
+    // This is where you will get the series data for the katalogues using
+    // setSeries(data)
+  }
+
+  const fetchMovieData = async () => {
+    let dummyMovies = [];
+    let statuses = [];
+    movieKatalogues[0].moviekatalogues.map(async (movie) => {
+      await fetch(`https://api.themoviedb.org/3/movie/${movie.MovieID}?api_key=468018e64d6cfa119009ede09787dea0&`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data.errors) {
+            dummyMovies.push(data);
+            setMovies(dummyMovies);
+            statuses.push(movie.MKUStatus);
+            setMoviesStatuses(statuses);
+          }
+        });
+    })
+  }
+
   useEffect(() => {
     if (status != 'authenticated' && status != 'loading') {
       router.push("/auth/signin")
     }
+    console.log(status)
   }, [status])
+
+
+  useEffect(() => {
+    fetchTrendingSeriesData().catch(console.error);
+    fetchMovieData().catch(console.error);
+  }, [])
+
+  const firstThreeTrending = (media) => {
+    const trendingMedia = [];
+    let index = 0;
+    for (index; index < 4; index++) {
+      trendingMedia[index] = media[index];
+    }
+    return trendingMedia;
+  }
+
 
   return (
     <div>
@@ -70,53 +127,27 @@ function BasicTabs() {
           </Box>
 
           <TabPanel value={value} index={0}>
-            <Katalogue isMovie={true} medias={[{
-              title: 'Shrek',
-              poster_path: 'https://www.themoviedb.org/t/p/original/iB64vpL3dIObOtMZgX3RqdVdQDc.jpg',
-              status: 'Watched',
-              category: 'Action/Adventure',
-              release_date: '2001'
-            }, {
-              title: 'Dune',
-              poster_path: 'https://imageio.forbes.com/specials-images/imageserve/61116cea2313e8bae55a536a/-Dune-/0x0.jpg?format=jpg&width=960',
-              status: 'Planning to watch',
-              category: 'SciFi',
-              release_date: '2022',
-            }, {
-              title: 'Robinhood',
-              poster_path: 'https://movieposters2.com/images/1595344-b.jpg',
-              status: 'Watching',
-              category: 'Action/Adventure',
-              release_date: '2099'
-            }]} />
+            <Katalogue isMovie={true} medias={movies} mediaStatuses={movieStatuses} />
+            <Container sx={{ py: 8 }} maxWidth="md">
+              <Carousel stopAutoPlayOnHover={true} style={{ align: 'center' }}>
+                {(trendingSeries && trendingSeries.length > 0) ? trendingSeries.map((media) =>
+                  (<CarouselItem key={media.id} media={media} />)) : ""}
+              </Carousel>
+            </Container>
           </TabPanel>
 
           <TabPanel value={value} index={1}>
-            <Katalogue isMovie={false} medias={[{
-              title: 'House of Dragons',
-              poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/z2yahl2uefxDCl0nogcRBstwruJ.jpg',
-              release_date: '2022',
-              category: 'Drama',
-              status: 'Dropped',
-              episode: 0,
-              season: 11
-            }, {
-              title: 'Lord of the Rings - Rings of Power',
-              poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/mYLOqiStMxDK3fYZFirgrMt8z5d.jpg',
-              release_date: '2099',
-              category: 'Action/Adventure',
-              status: 'Plan to watch',
-              episode: 0,
-              season: 10
-            }, {
-              title: 'Chainsaw Man',
-              poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/npdB6eFzizki0WaZ1OvKcJrWe97.jpg',
-              release_date: '2022',
-              category: 'Action/Adventure',
-              status: 'Plan to watch',
-              episode: 0,
-              season: 5
-            }]} />
+            <Katalogue isMovie={true} medias={[]} />
+
+            {/* The trendingSeries should be the recommendation's data. This is just here
+                for you to understand later how to add that part here and how its done */}
+            <div className='carousel'>
+              <Carousel stopAutoPlayOnHover={true} style={{ align: 'center' }}>
+                {(trendingSeries && trendingSeries.length > 0) ? trendingSeries.map((media) =>
+                  (<CarouselItem key={media.id} media={media} />)) : ""}
+              </Carousel>
+            </div>
+
           </TabPanel>
         </Box>
       )}
@@ -124,27 +155,17 @@ function BasicTabs() {
   );
 }
 
-
-
-function Katalogue({ medias, isMovie }) {
+function Katalogue({ medias, isMovie, mediaStatuses }) {
   return (
     <div>
       <Container>
         <Typography variant="h4" >
           Katalogue
         </Typography>
-        <EnhancedTable medias={medias} isMovie={isMovie}></EnhancedTable>
+        <EnhancedTable medias={medias} isMovie={true} mediaStatuses={mediaStatuses} />
         {/* <BasicTable medias={medias} isMovie={isMovie} /> */}
       </Container>
-      <div className='carousel'>
-        <Carousel stopAutoPlayOnHover={true} style={{ align: 'center' }}>
-          {medias.map((media) => (
-            <CarouselItem key={media.id} media={media} />
-          ))}
-        </Carousel>
-      </div>
     </div>
-
   )
 }
 
