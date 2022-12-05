@@ -38,8 +38,7 @@ export default function Album() {
                     'Content-type': 'application/json'
                 }
             })
-        }
-        catch (e) {
+        } catch (e) {
             console.log(e)
         }
     }
