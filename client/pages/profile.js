@@ -78,18 +78,19 @@ function BasicTabs() {
   const fetchMovieData = async () => {
     let dummyMovies = [];
     let statuses = [];
-    movieKatalogues[0].moviekatalogues.map(async (movie) => {
-      await fetch(`https://api.themoviedb.org/3/movie/${movie.MovieID}?api_key=468018e64d6cfa119009ede09787dea0&`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (!data.errors) {
-            dummyMovies.push(data);
-            setMovies(dummyMovies);
-            statuses.push(movie.MKUStatus);
-            setMoviesStatuses(statuses);
-          }
-        });
-    })
+    if(movieKatalogues && movieKatalogues.length > 0){
+      movieKatalogues[0].moviekatalogues.map(async (movie) => {
+        await fetch(`https://api.themoviedb.org/3/movie/${movie.MovieID}?api_key=468018e64d6cfa119009ede09787dea0&`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (!data.errors) {
+              data.media_status = movie.MKUStatus;
+              dummyMovies.push(data);
+              setMovies(dummyMovies);
+            }
+          });
+      })
+    }
   }
 
   useEffect(() => {
@@ -103,7 +104,7 @@ function BasicTabs() {
   useEffect(() => {
     fetchTrendingSeriesData().catch(console.error);
     fetchMovieData().catch(console.error);
-  }, [])
+  }, [movies.length])
 
   const firstThreeTrending = (media) => {
     const trendingMedia = [];
@@ -125,7 +126,7 @@ function BasicTabs() {
               <Tab label="Series" {...a11yProps(1)} />
             </Tabs>
           </Box>
-
+           {/* Movie tab */}
           <TabPanel value={value} index={0}>
             <Katalogue isMovie={true} medias={movies} mediaStatuses={movieStatuses} />
             <Container sx={{ py: 8 }} maxWidth="md">
@@ -135,17 +136,17 @@ function BasicTabs() {
               </Carousel>
             </Container>
           </TabPanel>
-
+                  {/* Series Tab */}
           <TabPanel value={value} index={1}>
-            <Katalogue isMovie={true} medias={[]} />
+            <Katalogue isMovie={false} medias={[]} />
 
             {/* The trendingSeries should be the recommendation's data. This is just here
                 for you to understand later how to add that part here and how its done */}
             <div className='carousel'>
-              <Carousel stopAutoPlayOnHover={true} style={{ align: 'center' }}>
+              {/* <Carousel stopAutoPlayOnHover={true} style={{ align: 'center' }}>
                 {(trendingSeries && trendingSeries.length > 0) ? trendingSeries.map((media) =>
                   (<CarouselItem key={media.id} media={media} />)) : ""}
-              </Carousel>
+              </Carousel> */}
             </div>
 
           </TabPanel>
@@ -162,7 +163,7 @@ function Katalogue({ medias, isMovie, mediaStatuses }) {
         <Typography variant="h4" >
           Katalogue
         </Typography>
-        <EnhancedTable medias={medias} isMovie={true} mediaStatuses={mediaStatuses} />
+        <EnhancedTable medias={medias} isMovie={isMovie} katalogueStatuses={mediaStatuses} />
         {/* <BasicTable medias={medias} isMovie={isMovie} /> */}
       </Container>
     </div>

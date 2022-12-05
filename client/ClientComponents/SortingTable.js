@@ -54,7 +54,7 @@ function stableSort(array, comparator) {
 
 
 
-export default function EnhancedTable({ medias,isMovie,mediaStatuses }) {
+export default function EnhancedTable({ medias,isMovie }) {
     const [data, setData] = React.useState(medias);
     const [episodes, setEpisodes] = React.useState(medias.map((element) => element.episode));
     const [seasons, setSeasons] = React.useState(medias.map((element) => element.season));
@@ -64,9 +64,14 @@ export default function EnhancedTable({ medias,isMovie,mediaStatuses }) {
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    //Whenever sorting table receives new data for statuses and media it re-renders
+    React.useEffect(() => {
+        setData(medias);
+    },[medias.length])
     
 
-
+    //Fields used in the status column
     const defaultStatuses = [
         "Plan to watch",
         "Watching",
@@ -96,14 +101,15 @@ export default function EnhancedTable({ medias,isMovie,mediaStatuses }) {
 
         const newData = [...data];
 
+
         selected.forEach((selectedMedia) => {
             let index = newData.findIndex((media) => media.title === selectedMedia);
             newData.splice(index, 1);
             setData(newData);
         });
 
-        setSelected([]);
 
+        setSelected([]);
     }
 
     const handleSelectAllClick = (event) => {
@@ -273,7 +279,7 @@ export default function EnhancedTable({ medias,isMovie,mediaStatuses }) {
                                                             aria-controls="panel1a-content"
                                                             id="panel1a-header"
                                                         >
-                                                            <Typography>{mediaStatuses[index]}</Typography>
+                                                            <Typography>{row.media_status}</Typography>
                                                         </AccordionSummary>
                                                         <AccordionDetails>
                                                             <List>
