@@ -52,7 +52,7 @@ class Cluster():
             result = self.build_clusterlist_dict(str(mov))
             result_list.append(result)
             i=i+1
-            if i>7:
+            if i>5:
                 break
         return jsonify(cluster=result_list)
 
