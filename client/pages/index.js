@@ -16,6 +16,8 @@ import Carousel from 'react-material-ui-carousel';
 import { Card, CardActionArea, Table, TableCell } from '@mui/material';
 import Link from 'next/link';
 import DisplayCards from '../ClientComponents/DisplayCards';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 
 
@@ -25,10 +27,17 @@ export default function Album() {
 
     const [trending, setTrending] = useState([]);
     const [mediaType, setMediaType] = useState("movie");
+    const { data: session,status } = useSession();
+    const router = useRouter();
+
 
 
     useEffect(() => {
-        fetch(`https://api.themoviedb.org/3/trending/${mediaType}/week?api_key=468018e64d6cfa119009ede09787dea0&`
+        if(status == 'authenticated'){
+            router.push('/home');
+        }
+
+        fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=468018e64d6cfa119009ede09787dea0&`
         )
             .then((res) => res.json())
             .then((data) => {
@@ -128,10 +137,7 @@ export default function Album() {
                     </Box>
                 </Grid>
                 <DisplayCards title="Trending Movies" medias={trending} />
-
-
             </main>
-
         </ThemeProvider>
     );
 }
