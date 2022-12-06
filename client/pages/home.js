@@ -28,7 +28,7 @@ export default function Album() {
 
     async function handleLogin() {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/YJb5c9dNkT/opt`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/userRoute/opt`, {
                 body: JSON.stringify({
                     GoogleID: session.user.id,
                     UName: session.user.name

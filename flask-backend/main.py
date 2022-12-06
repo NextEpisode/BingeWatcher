@@ -3,7 +3,7 @@ from flask import jsonify
 from handler.UserHandler import UserHandler
 from handler.MovieKatalogueHandler import MovieKatalogueHandler
 from handler.TVKatalogueHandler import TVKatalogueHandler
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 # Activate
 app = Flask(__name__)
@@ -21,12 +21,13 @@ def greeting():
 
 
 #User Area ------------------------------------------------------
-@app.route('/rBUWxJYlyR', methods=['GET'])
+@app.route('/getAllUsers', methods=['GET'])
 def users():
     if request.method == 'GET':
             return UserHandler().getAllUsers() #Works, Revised
 
-@app.route('/YJb5c9dNkT/opt', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route('/userRoute/opt', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@cross_origin
 def useropt():
     if request.method == 'GET':
             print("REQUEST: ", request.json)
@@ -50,13 +51,13 @@ def useropt():
 #Movie Area-----------------------------------------------------------------
 #Segment of Code for Routes regarding Movie or TV katalogues
 
-@app.route('/loiGET2r8Z', methods=['GET'])
+@app.route('/getAllMovieKatalogues', methods=['GET'])
 def mk():
     if request.method == 'GET':
             return MovieKatalogueHandler().getAllMovieKatalogues() #Works, Revised
 
 
-@app.route('/JhvFJAEmLK/opt', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route('/movieKatalogueRoute/<int:google_id>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def mkopt():
     if request.method == 'GET':
             print("REQUEST: ", request.json)
@@ -83,12 +84,12 @@ def mkstat():
 #Movie Area-----------------------------------------------------------------
 #TV Area--------------------------------------------------------------------
 
-@app.route('/Pn4yDzjDzy', methods=['GET'])
+@app.route('/getAllTVKatalogues', methods=['GET'])
 def tv():
     if request.method == 'GET':
             return TVKatalogueHandler().getAllTVKatalogues() #Works, Revised
 
-@app.route('/zZPJMflCtI/opt', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route('/TVKatalogueRoute/opt', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def tvopt():
     if request.method == 'GET':
             print("REQUEST: ", request.json)
@@ -106,19 +107,19 @@ def tvopt():
                     print("REQUEST: ", request.json)
                     return TVKatalogueHandler().deleteTVkatalogue(request.json) #Works, Revised
 
-@app.route('/zZPJMflCtI/stat', methods=['PUT'])
+@app.route('/TVKatalogueRoute/stat', methods=['PUT'])
 def tvstat():    
             if request.method == "PUT":
                 print("REQUEST: ", request.json)
                 return TVKatalogueHandler().updateTVkatalogueStatJson(request.json)#Works, Revised
 
-@app.route('/zZPJMflCtI/seas', methods=['PUT'])
+@app.route('/TVKatalogueRoute/seas', methods=['PUT'])
 def tvseas():    
             if request.method == "PUT":
                 print("REQUEST: ", request.json)
                 return TVKatalogueHandler().updateTVkatalogueSeasJson(request.json)#Works, Revised
 
-@app.route('/zZPJMflCtI/epis', methods=['PUT'])
+@app.route('/TVKatalogueRoute/epis', methods=['PUT'])
 def tvepis():    
             if request.method == "PUT":
                 print("REQUEST: ", request.json)
