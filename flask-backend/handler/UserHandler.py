@@ -36,7 +36,7 @@ class UserHandler:
             return jsonify(Error = "User Not Found"), 404
         else:
             users = self.build_users_dict(row)
-            return jsonify(Users = users)
+            return jsonify(User = users)
         
     def getUserKID(self, json):
         UID = json['UID']
@@ -46,17 +46,17 @@ class UserHandler:
             return jsonify(Error = "User Not Found"), 404
         else:
             users = self.build_users_dict(row)
-            return jsonify(Users = users)
+            return jsonify(User = users)
         
-    def getUserByGoogleId(self, json):
-        googleid = json['GoogleID']
+    def getUserByGoogleId(self, google_id):
+        googleid = google_id
         dao = UserDao.UserDAO()
         row = dao.getUserByGoogleId(googleid)
         if not row:
             return jsonify(Error = "User Not Found"), 404
         else:
             users = self.build_users_dict(row)
-            return jsonify(Users = users)
+            return jsonify(User = users)
         
     def insertUserJson(self, json):
             googleid = json['GoogleID']

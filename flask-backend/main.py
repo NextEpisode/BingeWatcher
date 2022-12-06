@@ -26,12 +26,11 @@ def users():
     if request.method == 'GET':
             return UserHandler().getAllUsers() #Works, Revised
 
-@app.route('/userRoute/opt', methods=['GET', 'POST', 'PUT', 'DELETE'])
-@cross_origin
-def useropt():
+@app.route('/userRoute/<string:google_id>/', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@cross_origin()
+def useropt(google_id):
     if request.method == 'GET':
-            print("REQUEST: ", request.json)
-            return UserHandler().getUserByGoogleId(request.json) #Works, Revised
+            return UserHandler().getUserByGoogleId(google_id) #Works, Revised
     else:
         if request.method == 'POST':
             print("REQUEST: ", request.json)
@@ -57,11 +56,11 @@ def mk():
             return MovieKatalogueHandler().getAllMovieKatalogues() #Works, Revised
 
 
-@app.route('/movieKatalogueRoute/<int:google_id>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route('/movieKatalogueRoute/opt', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def mkopt():
     if request.method == 'GET':
             print("REQUEST: ", request.json)
-            return MovieKatalogueHandler().getAllMovieKataloguesByKID(request.json) #Works, Revised
+            return MovieKatalogueHandler().getEntriesByMovieKID(request.json) #Works, Revised
     else:
         if request.method == 'POST':
             print("REQUEST: ", request.json)
