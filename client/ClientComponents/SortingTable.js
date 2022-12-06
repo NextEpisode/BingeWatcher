@@ -19,6 +19,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EnhancedTableHead from './EnhancedTableHead';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
 import { Button, CardMedia, Collapse, Divider, List, ListItem, ListItemButton, InboxIcon, DraftsIcon, ListItemIcon, ListItemText, Modal, Popover, Popper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import Link from 'next/link';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -255,12 +256,14 @@ export default function EnhancedTable({ medias,isMovie }) {
                                                 />
                                             </TableCell>
                                             <TableCell align="right">
+                                            <Link href={`/media/${row.id}?type=${isMovie ? "movie" : "tv"}`}>
                                                 <CardMedia
                                                     component="img"
                                                     height="100"
                                                     width="100"
                                                     image={`https:image.tmdb.org/t/p/w200${row.poster_path}`}
                                                 />
+                                                </Link>
                                             </TableCell>
                                             <TableCell
                                                 component="th"
