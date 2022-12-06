@@ -133,8 +133,10 @@ export default function MediaPage() {
                         <FormControl fullWidth>
                             <InputLabel>Add to Katalogue</InputLabel>
                             <Select>
-                                {katalogueStatuses.map(status => (
-                                    <MenuItem value={status} onClick={() => handlePickStatus(mId, status)}>{status}</MenuItem>
+                                {katalogueStatuses.map((status, index) => (
+                                    <React.Fragment key={"mID_MenuItem" + index}>
+                                        <MenuItem value={status} onClick={() => handlePickStatus(mId, status)}>{status}</MenuItem>
+                                    </React.Fragment>
                                 ))}
                             </Select>
                         </FormControl>
