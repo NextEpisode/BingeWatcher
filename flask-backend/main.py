@@ -4,6 +4,8 @@ from handler.UserHandler import UserHandler
 from handler.MovieKatalogueHandler import MovieKatalogueHandler
 from handler.TVKatalogueHandler import TVKatalogueHandler
 from flask_cors import CORS, cross_origin
+from algorithm.movie.randomcluster import cluster as rndclust
+from algorithm.movie.selectivecluster import selective as slctclust
 
 # Activate
 app = Flask(__name__)
@@ -164,7 +166,25 @@ def tvkprg():
 
     #Maybe Method
 # Purge Area--------------------------------------------------------------------
+# Recommendation Algorithm Are--------------------------------------------------------------------
+#Uses Dataset of User collected Data to calculate popular movies and recommend a 'Cluster' of 10 movies. 
+@app.route('/tu15BntHj9/clst/rnd', methods=['GET'])
+def movrndclust():
+    return rndclust.Cluster().getCluster()
 
+#Selective Algorithm that uses User movie in Katalogue for calculations
+@app.route('/tu15BntHj9/clst/slct', methods=['GET'])
+def movselectclust():
+    print("REQUEST: ", request.json)
+    return slctclust.Cluster().selectiveMovieAlgorithm(request.json)
+
+@app.route('/krp', methods=['GET'])
+def kataloguerandompick():
+    print("REQUEST: ", request.json)
+    return MovieKatalogueHandler().getRandomMovieFromKatalogue(request.json)
+
+    
+# Recommendation Algorithm Are--------------------------------------------------------------------
 #Finish purge, finish segmented update, check for any irrelevant code.
 #Blob research. How to use in python and how to
 
