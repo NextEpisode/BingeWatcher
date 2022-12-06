@@ -29,7 +29,6 @@ export default function Search() {
             )
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
                     if (!data.errors) {
                         setResults(data.results);
                     } else {
@@ -44,7 +43,6 @@ export default function Search() {
             )
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
                     if (!data.errors) {
                         setResults(data.results);
                     } else {
