@@ -1,0 +1,9 @@
+{
+    "tvkatalogues":
+    [
+        {"KID":1,"TVID":45,"TVKUEpisode":10,"TVKUSeason":1,"TVKUStatus":"Watched"},
+        {"KID":1,"TVID":47,"TVKUEpisode":10,"TVKUSeason":2,"TVKUStatus":"Watching"},
+        {"KID":1,"TVID":50,"TVKUEpisode":6,"TVKUSeason":5,"TVKUStatus":"Watching"},
+        {"KID":1,"TVID":35,"TVKUEpisode":16,"TVKUSeason":2,"TVKUStatus":"Watching"}
+    ]
+}

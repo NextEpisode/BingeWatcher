@@ -1,4 +1,4 @@
-import Displayforum from '../Components/Displayforum'
+import Displayforum from '../../Components/Displayforum'
 import styles from '../../styles/Home.module.css'
 
 import { react, useState, useEffect } from "react";

@@ -35,16 +35,16 @@ const headCells = [
         label: 'Status',
     },
     {
-        id: 'episode',
-        numeric: true,
-        disablePadding: false,
-        label: 'Episode',
-    },
-    {
         id: 'season',
         numeric: true,
         disablePadding: false,
         label: 'Season',
+    },
+    {
+        id: 'episode',
+        numeric: true,
+        disablePadding: false,
+        label: 'Episode',
     },
 ];
 

@@ -34,7 +34,6 @@ export default function Search() {
             )
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data.results);
                     if (!data.errors) {
                         setResults(data.results);
                         let rows = data.results.reduce(function (rows, key, index) {
@@ -56,7 +55,6 @@ export default function Search() {
             )
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data.results);
                     if (!data.errors) {
                         setResults(data.results);
                         let rows = results.reduce(function (rows, key, index) {

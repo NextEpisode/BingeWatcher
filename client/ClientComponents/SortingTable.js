@@ -67,6 +67,7 @@ export default function EnhancedTable({ medias,isMovie }) {
 
     //Whenever sorting table receives new data for statuses and media it re-renders
     React.useEffect(() => {
+        console.log(medias)
         setData(medias);
     },[medias.length])
     
@@ -101,9 +102,10 @@ export default function EnhancedTable({ medias,isMovie }) {
 
         const newData = [...data];
 
+        console.log(selected)
 
         selected.forEach((selectedMedia) => {
-            let index = newData.findIndex((media) => media.title === selectedMedia);
+            let index = newData.findIndex((media) => (isMovie ? media.title : media.name) === selectedMedia);
             newData.splice(index, 1);
             setData(newData);
         });
@@ -195,7 +197,7 @@ export default function EnhancedTable({ medias,isMovie }) {
 
     const handlePickStatus = (status, index) => {
         let newData = [...data];
-        newData[index].status = status;
+        newData[index].media_status = status;
         setData(newData);
     }
 
@@ -230,7 +232,7 @@ export default function EnhancedTable({ medias,isMovie }) {
                             {stableSort(data, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.title);
+                                    const isItemSelected = isSelected(isMovie ? row.title : row.name);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
@@ -239,14 +241,14 @@ export default function EnhancedTable({ medias,isMovie }) {
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.title}
+                                            key={isMovie ? row.title : row.name}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox">
                                                 <Checkbox
                                                     color="primary"
                                                     checked={isItemSelected}
-                                                    onClick={(event) => handleClick(event, row.title)}
+                                                    onClick={(event) => handleClick(event, isMovie ? row.title : row.name)}
                                                     inputProps={{
                                                         'aria-labelledby': labelId,
                                                     }}
@@ -267,9 +269,9 @@ export default function EnhancedTable({ medias,isMovie }) {
                                                 padding="none"
                                                 align="left"
                                             >
-                                                {row.title}
+                                                {isMovie ? row.title : row.name}
                                             </TableCell>
-                                            <TableCell align="left">{row.release_date}</TableCell>
+                                            <TableCell align="left">{isMovie ? row.release_date : row.first_air_date}</TableCell>
                                             <TableCell align="left">{(row.genres && row.genres.length > 0) ? row.genres[0].name : "No genre"}</TableCell>
                                             <TableCell align="left">{
                                                 <div>
@@ -295,15 +297,6 @@ export default function EnhancedTable({ medias,isMovie }) {
                                                     </Accordion>
                                                 </div>
                                             }</TableCell>
-                                            {row.episode >= 0 ? (
-                                                <TableCell id={'episode'} align="left">
-                                                    <IconButton onClick={(event) => handleRemoveEpisodeClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
-                                                    </IconButton>
-                                                    {episodes[data.indexOf(row)]}
-                                                    <IconButton onClick={(event) => handleAddEpisodeClick(data.indexOf(row))}><AddIcon fontSize="small" />
-                                                    </IconButton>
-                                                </TableCell>) : ''
-                                            }
                                             {row.season >= 0 ? (
                                                 <TableCell align="left">
                                                     <IconButton onClick={(event) => handleRemoveSeasonClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
@@ -312,6 +305,15 @@ export default function EnhancedTable({ medias,isMovie }) {
                                                     <IconButton onClick={(event) => handleAddSeasonClick(data.indexOf(row))}><AddIcon fontSize="small" />
                                                     </IconButton>
                                                 </TableCell>) : ''}
+                                                {row.episode >= 0 ? (
+                                                <TableCell id={'episode'} align="left">
+                                                    <IconButton onClick={(event) => handleRemoveEpisodeClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
+                                                    </IconButton>
+                                                    {episodes[data.indexOf(row)]}
+                                                    <IconButton onClick={(event) => handleAddEpisodeClick(data.indexOf(row))}><AddIcon fontSize="small" />
+                                                    </IconButton>
+                                                </TableCell>) : ''
+                                            }
                                         </TableRow>
                                     );
                                 })}

@@ -44,6 +44,7 @@
   --secondary: #ffffff;
   --tertiary: #8ef0eb;
   --contrast: #3e829b;
+  --background: #252529;
   
 }
 
@@ -51,6 +52,9 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, sans-serif;
   padding: 0;
   margin: 0;
+  background-color: var(--background);
+  color: var(--secondary);
+
 }
 
 .container {
@@ -159,10 +163,17 @@ header .nav-links li:last-child {
 }
 
 /* Search Page */
+
+.search-type {
+  margin: 0 auto;
+  text-align: center;
+}
+
 .search-content {
   padding: 50px 0;
   max-width: 600px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .search-content .input-wrapper input {
@@ -232,7 +243,8 @@ header .nav-links li:last-child {
 
 /* media Page */
 .media-page {
-  padding: 30px 0;
+  margin-left: 350px;
+  margin-right: 350px;
 }
 
 .media-page .header {
@@ -242,19 +254,48 @@ header .nav-links li:last-child {
   margin-bottom: 30px;
 }
 
-.count-pill {
+.mediapage .mediapage-content {
+  background-color: #252525;
+}
+
+.mediapage .no-medias {
+  color: #333333;
+  font-size: 3rem;
+  text-align: center;
+}
+
+.media-format span {
+  text-transform: capitalize;
+}
+
+.media-page p.media-memory {
+  width: 100%;
+  background-color: var(--primary);
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  color: var(--white);
+  font-size: 1.25rem;
+}
+
+.media-page .poster-wrapper img,
+.filler-poster {
+  width: 200px;
+  height: 250px;
+  background-color: var(--contrast);
+  border-radius: 5px;
+  margin-right: 15px;
   display: block;
-  background-color: var(--secondary);
-  padding: 5px 15px;
-  font-size: 1.125rem;
-  font-weight: 600;
-  border-radius: 999px;
-  color: var(--primary);
+  color: transparent;
 }
 
 .media-page .heading {
   color: var(--primary);
   margin: 0;
+}
+
+.media-page .media-info {
+  background-color: #252525;
 }
 
 .media-grid {
@@ -310,35 +351,4 @@ header .nav-links li:last-child {
 .ctrl-btn:hover {
   color: var(--secondary);
   cursor: pointer;
-}
-
-.media-page .no-medias {
-  color: #333333;
-  font-size: 3rem;
-  text-align: center;
-}
-
-.media-format span {
-  text-transform: capitalize;
-}
-
-.media-page p.media-memory {
-  width: 100%;
-  background-color: var(--primary);
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  color: var(--white);
-  font-size: 1.25rem;
-}
-
-.media-page .poster-wrapper img,
-.filler-poster {
-  width: 200px;
-  height: 250px;
-  background-color: var(--contrast);
-  border-radius: 5px;
-  margin-right: 15px;
-  display: block;
-  color: transparent;
 }

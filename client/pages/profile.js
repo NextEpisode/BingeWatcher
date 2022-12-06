@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import CarouselItem from '../ClientComponents/CarouselItem';
-import Carousel from 'react-material-ui-carousel';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import EnhancedTable from '../ClientComponents/SortingTable';
+import MediaCarousel from '../ClientComponents/MediaCarousel';
 import movieKatalogues from '../movieKatalogues.json'
 import tvkat from '../tvkat.json'
 
@@ -84,7 +83,7 @@ function BasicTabs() {
 
   const fetchMovieData = async () => {
     let dummyMovies = [];
-    if(movieKatalogues && movieKatalogues.length > 0){
+    if (movieKatalogues && movieKatalogues.length > 0) {
       movieKatalogues[0].moviekatalogues.map(async (movie) => {
         await fetch(`https://api.themoviedb.org/3/movie/${movie.MovieID}?api_key=468018e64d6cfa119009ede09787dea0&`)
           .then((res) => res.json())
@@ -101,7 +100,7 @@ function BasicTabs() {
 
   const fetchSeriesData = async () => {
     let dummySeries = [];
-    if(tvkat && tvkat.tvkatalogues.length > 0){
+    if (tvkat && tvkat.tvkatalogues.length > 0) {
       tvkat.tvkatalogues.map(async (tv) => {
         await fetch(`https://api.themoviedb.org/3/tv/${tv.TVID}?api_key=468018e64d6cfa119009ede09787dea0&`)
           .then((res) => res.json())
@@ -142,7 +141,6 @@ function BasicTabs() {
     return trendingMedia;
   }
 
-
   return (
     <div>
       {session && (
@@ -153,37 +151,23 @@ function BasicTabs() {
               <Tab label="Series" {...a11yProps(1)} />
             </Tabs>
           </Box>
-           {/* Movie tab */}
+          {/* Movie tab */}
           <TabPanel value={value} index={0}>
-            <Katalogue isMovie={true} medias={movies}/>
-            <Container sx={{ py: 8 }} maxWidth="md">
-              <Carousel stopAutoPlayOnHover={true} style={{ align: 'center' }}>
-                {(trendingMovies && trendingMovies.length > 0) ? trendingMovies.map((media) =>
-                  (<CarouselItem key={media.id} media={media} isMovie={true} />)) : ""}
-              </Carousel>
-            </Container>
+            <Katalogue isMovie={true} medias={movies} />
+            <MediaCarousel trendingMedia={trendingMovies} title="trendingMovies" isMovie={true}/>
           </TabPanel>
-                  {/* Series Tab */}
+          {/* Series Tab */}
           <TabPanel value={value} index={1}>
             <Katalogue isMovie={false} medias={series} />
-
-            {/* The trendingSeries should be the recommendation's data. This is just here
-                for you to understand later how to add that part here and how its done */}
-            <div className='carousel'>
-            <Container sx={{ py: 8 }} maxWidth="md">
-              <Carousel stopAutoPlayOnHover={true} style={{ align: 'center' }}>
-                {(trendingSeries && trendingSeries.length > 0) ? trendingSeries.map((media) =>
-                  (<CarouselItem key={media.id} media={media} isMovie={false}/>)) : ""}
-              </Carousel>
-            </Container>
-            </div>
-
+            <MediaCarousel trendingMedia={trendingSeries} title="trendingSeries" isMovie={false}/>
           </TabPanel>
         </Box>
       )}
     </div>
   );
 }
+
+
 
 function Katalogue({ medias, isMovie }) {
   return (
@@ -192,8 +176,7 @@ function Katalogue({ medias, isMovie }) {
         <Typography variant="h4" >
           Katalogue
         </Typography>
-        <EnhancedTable medias={medias} isMovie={isMovie}/>
-        {/* <BasicTable medias={medias} isMovie={isMovie} /> */}
+        <EnhancedTable medias={medias} isMovie={isMovie} />
       </Container>
     </div>
   )

@@ -23,17 +23,23 @@ import { useRouter } from 'next/router';
 
 const theme = createTheme();
 
+// 
+//          This page is meant to serve as the "/" 
+//          or Landing Page for the website
+//
+//
+
 export default function Album() {
 
     const [trending, setTrending] = useState([]);
     const [mediaType, setMediaType] = useState("movie");
-    const { data: session,status } = useSession();
+    const { data: session, status } = useSession();
     const router = useRouter();
 
 
 
     useEffect(() => {
-        if(status == 'authenticated'){
+        if (status == 'authenticated') {
             router.push('/home');
         }
 
@@ -71,6 +77,7 @@ export default function Album() {
                     direction="column"
                     alignItems="center"
                     justifyContent="center"
+
                 >
                     <Box item
                         direction="column"
@@ -86,6 +93,9 @@ export default function Album() {
                             maxWidth: 1000,
                         }}
                     >
+
+
+
                         <Typography
                             component="h1"
                             variant="h2"
@@ -97,9 +107,8 @@ export default function Album() {
                             Welcome to BingeWatcher!
                         </Typography>
                         <Typography variant="h5" align="center" color="white" paragraph>
-                            Something short and leading about the collection below—its contents,
-                            the creator, etc. Make it short and sweet, but not too short so folks
-                            don&apos;t simply skip over it entirely.
+                            Created by Group D to help users keep track of their consumed media. A tracker for those
+                            who like to keep it all in one place. Whether it is movies, tv shows, or anime, there is something for everyone.
                         </Typography>
                         <Grid
                             container
@@ -110,33 +119,31 @@ export default function Album() {
                             <Grid item xs={4}>
                                 <Item>
                                     <TvIcon sx={{ mr: 2 }}></TvIcon>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
+                                    Search for movies all of genres and languages from all over the world. Who knows, maybe you can find the one you&apos;ve been looking for or find a hidden gem.
                                 </Item>
                             </Grid>
                             <Grid item xs={4}>
                                 <Item>
                                     <MovieIcon sx={{ mr: 2 }}></MovieIcon>
-
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
+                                    Looking for a new show to watch? We&apos;ve got them all here, from science fiction to history and everything in between.
                                 </Item>
                             </Grid>
                             <Grid item xs={4}>
                                 <Item>
                                     <ChatBubbleIcon sx={{ mr: 2 }}></ChatBubbleIcon>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
+                                    Use our forum system to chat with other users in this simple and easy to use approach to forum. No upvotes or downvotes, just simple and clean chatting.
                                 </Item>
                             </Grid>
                             <Grid item xs={4}>
                                 <Item>
                                     <SearchIcon sx={{ mr: 2 }}></SearchIcon>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta sem, id maximus libero. Donec hendrerit lobortis turpis, et iaculis nibh imperdiet luctus.
-
+                                    Search for anything and everything using our implementation of leading third-party solutions and our own first-party recommendation system to find your next favorite thing.
                                 </Item>
                             </Grid>
                         </Grid>
                     </Box>
+                    <DisplayCards title="Trending Movies" medias={trending} />
                 </Grid>
-                <DisplayCards title="Trending Movies" medias={trending} />
             </main>
         </ThemeProvider>
     );

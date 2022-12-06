@@ -1,0 +1,12 @@
+[
+    {"moviekatalogues":
+        [
+            {"KID":1,"MKUStatus":"Watching","MovieID":20},
+            {"KID":1,"MKUStatus":"Plan to Watch","MovieID":22},
+            {"KID":1,"MKUStatus":"Watching","MovieID":26},
+            {"KID":1,"MKUStatus":"On Hold","MovieID":2},
+            {"KID":1,"MKUStatus":"Watched","MovieID":11},
+            {"KID":1,"MKUStatus":"Dropped","MovieID":33}
+        ]
+    }
+]

@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 
 
-export default function Profile({ media }) {
+export default function Profile({ media,isMovie }) {
 
   const statuses = [
     "Plan to watch",
@@ -51,10 +51,10 @@ export default function Profile({ media }) {
         </Link>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            {media.title}
+            {isMovie ? media.title : media.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {media.name}
+            {media.overview}
           </Typography>
         </CardContent>
         <CardActions>

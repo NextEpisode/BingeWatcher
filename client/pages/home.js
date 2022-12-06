@@ -52,10 +52,29 @@ export default function Album() {
         if (status != 'authenticated' && status != 'loading') {
             router.push("/auth/signin")
         }
-        console.log(status)
+        if (status == 'authenticated') {
+            console.log(session.user.id)
+            handleLogin()
+        }
     }, [status])
 
 
+    async function handleLogin() {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/userRoute/opt`, {
+                body: JSON.stringify({
+                    GoogleID: session.user.id,
+                    UName: session.user.name
+                }),
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     return (
         <div>
@@ -75,6 +94,7 @@ export default function Album() {
                                     <CarouselItem key={media.id} media={media} />
                                 ))
                                 }
+
                             </Carousel>
                         </Container>
                         <DisplayCards title="Trending Movies" medias={trending} />

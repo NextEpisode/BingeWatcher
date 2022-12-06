@@ -1,11 +1,14 @@
-const path = require('path');
-
+// strapi-api/config/database.js
 module.exports = ({ env }) => ({
   connection: {
-    client: 'sqlite',
+    client: 'mysql',
     connection: {
-      filename: path.join(__dirname, '..', env('DATABASE_FILENAME', '.tmp/data.db')),
+      host: env('DATABASE_HOST', 'localhost'),
+      port: env.int('DATABASE_PORT', 5432),
+      database: env('DATABASE_NAME', 'strapi'),
+      user: env('DATABASE_USERNAME', 'bingewatcher'),
+      password: env('DATABASE_PASSWORD', 'shadow1997'),
     },
-    useNullAsDefault: true,
+    debug: false,
   },
 });
