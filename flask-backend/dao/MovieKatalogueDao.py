@@ -40,6 +40,15 @@ class MovieKatalogueDAO:
             result.append(row)
         return result
 
+    def getMovieKataloguesByKIDAndStatus(self, kid, status):
+        cursor = self.conn.cursor()
+        query = "select * from MovieKatalogue Where kid = %s and status = %s;"
+        cursor.execute(query, (kid, status))
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+
     def getMovieKataloguesByStatus(self, KID, status):
         cursor = self.conn.cursor()
         query = "select * from [MovieKatalogue] Where KID = ? and mkustatus = ?;"

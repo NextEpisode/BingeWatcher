@@ -143,7 +143,6 @@ def purge():
         return jsonify(DeleteStatus = "Purge Complete."), 200
     else:
          return jsonify(Error="User doesn't exist."), 404
-    
 
 #KID Purge
 @app.route('/divAR9KhdT/prg', methods=['DELETE'])
@@ -173,6 +172,11 @@ def movrndclust():
 def movselectclust():
     print("REQUEST: ", request.json)
     return slctclust.Cluster().selectiveMovieAlgorithm(request.json)
+
+@app.route('/krp', methods=['GET'])
+def kataloguerandompick():
+    print("REQUEST: ", request.json)
+    return MovieKatalogueHandler().getRandomMovieFromKatalogue(request.json)
 
     
 # Recommendation Algorithm Are--------------------------------------------------------------------

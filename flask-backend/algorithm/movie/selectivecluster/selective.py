@@ -31,7 +31,10 @@ class Cluster():
         ##Step 5: Compute the Cosine Similarity based on the count_matrix
         cosine_sim = cosine_similarity(count_matrix) 
         movieid = json['MovieID']
-        response = requests.get('https://api.themoviedb.org/3/movie/118340?api_key=468018e64d6cfa119009ede09787dea0&language=en-US')
+        #movieid = 118340
+        first = 'https://api.themoviedb.org/3/movie/'
+        second = '?api_key=468018e64d6cfa119009ede09787dea0&language=en-US'
+        response = requests.get(first+str(movieid)+second)
         data = json.loads(response.text)
         movie_user_likes = data["title"]
         

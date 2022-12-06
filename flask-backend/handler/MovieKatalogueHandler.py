@@ -1,5 +1,6 @@
 from flask import jsonify
 from dao import MovieKatalogueDao
+import random
 
 
 class MovieKatalogueHandler:
@@ -25,6 +26,15 @@ class MovieKatalogueHandler:
             result = self.build_moviekatalogues_dict(row)
             result_list.append(result)
         return jsonify(moviekatalogues=result_list)
+
+    def getRandomMovieFromKatalogue(self, json):
+        kid = json["KID"]
+        status = json["MKUStatus"]
+        dao = MovieKatalogueDao.MovieKatalogueDAO()
+        moviekatalogues_list = dao.getMovieKataloguesByKIDAndStatus(kid, status)
+        rng = random.choice(list(moviekatalogues_list))
+        result = self.build_moviekatalogues_dict(rng)
+        return jsonify(moviekatalogues=result)
     
     def getAllMovieKataloguesByKID(self, json):
         kid = json["KID"]
