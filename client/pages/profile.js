@@ -10,7 +10,7 @@ import EnhancedTable from '../ClientComponents/SortingTable';
 import MediaCarousel from '../ClientComponents/MediaCarousel';
 import movieKatalogues from '../movieKatalogues.json'
 import tvkat from '../tvkat.json'
-import MovieRecommendations from '../MovieRecommendations.json'
+// import MovieRecommendations from '../MovieRecommendations.json'
 
 function TabPanel({ children, value, index, ...other }) {
 
@@ -176,13 +176,13 @@ function BasicTabs() {
           {/* Movie tab */}
           <TabPanel value={value} index={0}>
             <Katalogue isMovie={true} medias={movies} />
-            <MediaCarousel media={trendingMovies} title="Trending Movies" isMovie={true}/>
-            <MediaCarousel media={recommendedMovies} title="Recommended Movies" isMovie={true}/>
+            <MediaCarousel media={trendingMovies} title="Trending Movies" isMovie={true} />
+            <MediaCarousel media={recommendedMovies} title="Recommended Movies" isMovie={true} />
           </TabPanel>
           {/* Series Tab */}
           <TabPanel value={value} index={1}>
-            <Katalogue isMovie={false} medias={series}/>
-            <MediaCarousel media={trendingSeries} title="Trending Series" isMovie={false}/>
+            <Katalogue isMovie={false} medias={series} />
+            <MediaCarousel media={trendingSeries} title="Trending Series" isMovie={false} />
           </TabPanel>
         </Box>
       )}
