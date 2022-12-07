@@ -11,7 +11,7 @@ export default function Search() {
     const [results, setResults] = useState([]);
     const [buttonClicked, setbuttonClicked] = useState(true);
     const [alignment, setAlignment] = React.useState('web');
-    const [rows,setRows] = useState([]);
+    const [rows, setRows] = useState([]);
 
     const handleFalse = () => setbuttonClicked((buttonClicked) => false);
     const handleTrue = () => setbuttonClicked((buttonClicked) => true);
@@ -96,14 +96,16 @@ export default function Search() {
 
                 {results.length > 0 && (
                     <ul className="results">
-                        {rows.map(row => (
-                            <Table>
-                                {row.map(media => (
-                                    <TableCell key={media.id}>
-                                        <MediaCard media={media} type={buttonClicked} />
-                                    </TableCell>
-                                ))}
-                            </Table>
+                        {rows.map((row, index) => (
+                            <React.Fragment key={"Table-" + index}>
+                                <Table>
+                                    {row.map(media => (
+                                        <TableCell key={media.id}>
+                                            <MediaCard media={media} type={buttonClicked} />
+                                        </TableCell>
+                                    ))}
+                                </Table>
+                            </React.Fragment>
                         ))}
                     </ul>
                 )}
