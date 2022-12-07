@@ -43,7 +43,7 @@ class Cluster():
         #Optimization algorithm used in Pytorch
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-        # Train data
+        #Data is loaded into tensors
         train_set = loader.Loader()
         train_loader = DataLoader(train_set, 128, shuffle=True) 
 
@@ -59,10 +59,8 @@ class Cluster():
                     losses.append(loss.item())
                     loss.backward()
                     optimizer.step()
-            #print("iter #{}".format(it), "Loss:", sum(losses) / len(losses))
 
         # By training the model, we will have tuned latent factors for movies and users.
-        #Research wtf this means exactly.
 
         trained_movie_embeddings = model.item_factors.weight.data.cpu().numpy()
         len(trained_movie_embeddings) # unique movie factor weights
@@ -77,8 +75,6 @@ class Cluster():
             movid = train_set.idx2movieid[movidx]
             rat_count = ratings_df.loc[ratings_df['movieId']==movid].count()[0]
             movs.append((movie_names[movid], rat_count))
-        #for mov in sorted(movs, key=lambda tup: tup[1], reverse=True)[:10]:
-            #print("\t", mov[0])
 
         movlist = sorted(movs, key=lambda tup: tup[1], reverse=True)[:10]
         result_list = []
