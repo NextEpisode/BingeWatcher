@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 
 
-export default function Profile({ media }) {
+export default function Profile({ media,isMovie }) {
 
   const statuses = [
     "Plan to watch",
@@ -23,13 +23,11 @@ export default function Profile({ media }) {
   ];
 
   const handlePickStatus = (id, pickedStatus) => {
-    //add media to katalogue here
-
-    setStatus(pickedStatus);
+    setMediaStatus(pickedStatus);
   }
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [status, setStatus] = React.useState("Plan to Watch");
+  const [mediaStatus, setMediaStatus] = React.useState("Plan to Watch");
 
   const handleListClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -51,10 +49,10 @@ export default function Profile({ media }) {
         </Link>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            {media.title}
+            {isMovie ? media.title : media.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {media.name}
+            {media.overview}
           </Typography>
         </CardContent>
         <CardActions>
@@ -67,8 +65,9 @@ export default function Profile({ media }) {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select">
+                
                 {statuses.map(status => (
-                  <MenuItem value={status} onClick={() => handlePickStatus(media.id, status)}>{status}</MenuItem>
+                  <MenuItem value={status} selected={status == mediaStatus} onClick={() => handlePickStatus(media.id, status)}>{status}</MenuItem>
                 ))}
               </Select>
             </FormControl>

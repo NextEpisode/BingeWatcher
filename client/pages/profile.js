@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import CarouselItem from '../ClientComponents/CarouselItem';
-import Carousel from 'react-material-ui-carousel';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import EnhancedTable from '../ClientComponents/SortingTable';
-import { Card, CardActionArea, CardContent, CardMedia } from '@mui/material';
-
+import MediaCarousel from '../ClientComponents/MediaCarousel';
+import movieKatalogues from '../movieKatalogues.json'
+import tvkat from '../tvkat.json'
+// import MovieRecommendations from '../MovieRecommendations.json'
 
 function TabPanel({ children, value, index, ...other }) {
 
@@ -51,11 +51,117 @@ function BasicTabs() {
     setValue(newValue);
   };
 
+  const [trendingSeries, setTrendingSeries] = useState([]);
+  const [trendingMovies, setTrendingMovies] = useState([]);
+  const [recommendedMovies, setRecommendedMovies] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [series, setSeries] = useState([]);
+
+
+  const fetchTrendingSeriesData = async () => {
+    fetch(`https://api.themoviedb.org/3/trending/tv/week?api_key=468018e64d6cfa119009ede09787dea0&`)
+      .then((res) => res.json())
+      .then((info) => {
+        if (!info.errors) {
+          setTrendingSeries(firstThreeTrending(info.results));
+        } else {
+          setTrendingSeries([]);
+        }
+      });
+  }
+
+  const fetchTrendingMoviesData = async () => {
+    fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=468018e64d6cfa119009ede09787dea0&`)
+      .then((res) => res.json())
+      .then((info) => {
+        if (!info.errors) {
+          setTrendingMovies(firstThreeTrending(info.results));
+        } else {
+          setTrendingMovies([]);
+        }
+      });
+  }
+
+  const fetchMovieData = async () => {
+    let dummyMovies = [];
+    //verify if the katalogue exists and has media in it
+    if (movieKatalogues && movieKatalogues.length > 0) {
+      movieKatalogues[0].moviekatalogues.map(async (movie) => {
+        await fetch(`https://api.themoviedb.org/3/movie/${movie.MovieID}?api_key=468018e64d6cfa119009ede09787dea0&`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (!data.errors) {
+              data.media_status = movie.MKUStatus;
+              dummyMovies.push(data);
+            }
+          });
+      })
+      setMovies(dummyMovies);
+    }
+  }
+
+  const fetchSeriesData = async () => {
+    let dummySeries = [];
+    //verify if the katalogue exists and has media in it
+    if (tvkat && tvkat.tvkatalogues.length > 0) {
+      tvkat.tvkatalogues.map(async (tv) => {
+        await fetch(`https://api.themoviedb.org/3/tv/${tv.TVID}?api_key=468018e64d6cfa119009ede09787dea0&`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (!data.errors) {
+              data.media_status = tv.TVKUStatus;
+              data.episode = tv.TVKUEpisode;
+              data.season = tv.TVKUSeason;
+              dummySeries.push(data);
+            }
+          });
+      })
+      setSeries(dummySeries);
+    }
+  }
+
+  const fetchRecommendedMovies = async () => {
+    let dummyMovies = [];
+    if (MovieRecommendations && MovieRecommendations.recommendedMovies.length > 0) {
+      MovieRecommendations.recommendedMovies.map(async (movie) => {
+        await fetch(`https://api.themoviedb.org/3/search/tv?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (!data.errors) {
+              dummyMovies.push(data);
+              console.log(data)
+            }
+          });
+      })
+      setRecommendedMovies(dummyMovies);
+    }
+  }
+
   useEffect(() => {
     if (status != 'authenticated' && status != 'loading') {
       router.push("/auth/signin")
     }
+    console.log(status)
   }, [status])
+
+
+  useEffect(() => {
+    fetchTrendingSeriesData().catch(console.error);
+    fetchTrendingMoviesData().catch(console.error);
+    fetchRecommendedMovies().catch(console.error)
+    fetchMovieData().catch(console.error);
+    fetchSeriesData().catch(console.error);
+  }, [])
+
+  const firstThreeTrending = (media) => {
+    const trendingMedia = [];
+    let index = 0;
+    for (index; index < 4; index++) {
+      trendingMedia[index] = media[index];
+    }
+    return trendingMedia;
+  }
 
   return (
     <div>
@@ -67,55 +173,16 @@ function BasicTabs() {
               <Tab label="Series" {...a11yProps(1)} />
             </Tabs>
           </Box>
-
+          {/* Movie tab */}
           <TabPanel value={value} index={0}>
-            <Katalogue isMovie={true} medias={[{
-              title: 'Shrek',
-              poster_path: 'https://www.themoviedb.org/t/p/original/iB64vpL3dIObOtMZgX3RqdVdQDc.jpg',
-              status: 'Watched',
-              category: 'Action/Adventure',
-              release_date: '2001'
-            }, {
-              title: 'Dune',
-              poster_path: 'https://imageio.forbes.com/specials-images/imageserve/61116cea2313e8bae55a536a/-Dune-/0x0.jpg?format=jpg&width=960',
-              status: 'Planning to watch',
-              category: 'SciFi',
-              release_date: '2022',
-            }, {
-              title: 'Robinhood',
-              poster_path: 'https://movieposters2.com/images/1595344-b.jpg',
-              status: 'Watching',
-              category: 'Action/Adventure',
-              release_date: '2099'
-            }]} />
+            <Katalogue isMovie={true} medias={movies} />
+            <MediaCarousel media={trendingMovies} title="Trending Movies" isMovie={true} />
+            <MediaCarousel media={recommendedMovies} title="Recommended Movies" isMovie={true} />
           </TabPanel>
-
+          {/* Series Tab */}
           <TabPanel value={value} index={1}>
-            <Katalogue isMovie={false} medias={[{
-              title: 'House of Dragons',
-              poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/z2yahl2uefxDCl0nogcRBstwruJ.jpg',
-              release_date: '2022',
-              category: 'Drama',
-              status: 'Dropped',
-              episode: 0,
-              season: 11
-            }, {
-              title: 'Lord of the Rings - Rings of Power',
-              poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/mYLOqiStMxDK3fYZFirgrMt8z5d.jpg',
-              release_date: '2099',
-              category: 'Action/Adventure',
-              status: 'Plan to watch',
-              episode: 0,
-              season: 10
-            }, {
-              title: 'Chainsaw Man',
-              poster_path: 'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/npdB6eFzizki0WaZ1OvKcJrWe97.jpg',
-              release_date: '2022',
-              category: 'Action/Adventure',
-              status: 'Plan to watch',
-              episode: 0,
-              season: 5
-            }]} />
+            <Katalogue isMovie={false} medias={series} />
+            <MediaCarousel media={trendingSeries} title="Trending Series" isMovie={false} />
           </TabPanel>
         </Box>
       )}
@@ -128,45 +195,13 @@ function BasicTabs() {
 function Katalogue({ medias, isMovie }) {
   return (
     <div>
-      <Carousel >
-        {medias.map((media, index) => (
-          <React.Fragment key={"carousel-" + index}>
-            <CarouselItem media={media} />
-          </React.Fragment>
-        ))}
-      </Carousel>
       <Container>
         <Typography variant="h4" >
           Katalogue
         </Typography>
-        <EnhancedTable medias={medias} isMovie={isMovie}></EnhancedTable>
-        {/* <BasicTable medias={medias} isMovie={isMovie} /> */}
+        <EnhancedTable medias={medias} isMovie={isMovie} />
       </Container>
-      <Carousel >
-        {medias.map((media) => (
-          <CarouselItem key={media.id} media={media} />
-        ))}
-      </Carousel>
-      {medias.map((media, index) => (
-        <React.Fragment key={"KatalogueEntry" + index}>
-          <Card sx={{ maxWidth: 345, ml: 10 }}>
-            <CardActionArea>
-              <CardMedia
-                component="img"
-                height="140"
-                image={media.poster_path}
-                alt="green iguana"
-              />
-              <Typography gutterBottom variant="h5" component="div">
-                {media.title}
-              </Typography>
-            </CardActionArea>
-          </Card>
-        </React.Fragment>
-      ))}
-
     </div>
-
   )
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -6,6 +6,10 @@ import Carousel from 'react-material-ui-carousel';
 import CarouselItem from '../ClientComponents/CarouselItem';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { Card, CardActionArea, CardMedia, Grid, Table, TableCell, Typography } from '@mui/material';
+import Link from 'next/link';
+import DisplayCards from '../ClientComponents/DisplayCards';
+import MediaCarousel from '../ClientComponents/MediaCarousel'
 
 
 
@@ -14,6 +18,71 @@ export default function Album() {
     const theme = createTheme();
     const { data: session, status } = useSession()
     const router = useRouter()
+
+    const [trendingMovies, setTrendingMovies] = useState([]);
+    const [trendingSeries, setTrendingSeries] = useState([]);
+    const [carouselData, setCarouselData] = useState([]);
+
+
+    useEffect(() => {
+
+        fetchCarouselData().catch(console.error)
+
+        fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setTrendingMovies(firstFiveTrending(data.results));
+                } else {
+                    setTrendingMovies([]);
+                }
+            }).catch(console.error);
+        fetch(`https://api.themoviedb.org/3/trending/tv/week?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setTrendingSeries(firstFiveTrending(data.results));
+                } else {
+                    setTrendingSeries([]);
+                }
+            }).catch(console.error);
+    }, [])
+
+    const fetchCarouselData = async () => {
+        fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setCarouselData(firstTwentyTrending(data.results));
+                } else {
+                    setCarouselData([]);
+                }
+            });
+    }
+
+
+    const firstFiveTrending = (media) => {
+        const trendingMedia = [];
+        let index = 0;
+        for (index; index < 5; index++) {
+            trendingMedia[index] = media[index];
+        }
+        return trendingMedia;
+    }
+
+    const firstTwentyTrending = (media) => {
+        const trendingMedia = [];
+        let index = 0;
+        for (index; index < 20; index++) {
+            trendingMedia[index] = media[index];
+        }
+        return trendingMedia;
+    }
+
+
 
     useEffect(() => {
         if (status != 'authenticated' && status != 'loading') {
@@ -49,30 +118,10 @@ export default function Album() {
                 <CssBaseline />
                 {session && (
                     <main>
-                        <div>
-                        </div>
-                        <Container sx={{ py: 8 }} >
-                            <Carousel>
-                                <CarouselItem media={{
-                                    title: 'Shrek',
-                                    poster_path: 'https://www.themoviedb.org/t/p/original/iB64vpL3dIObOtMZgX3RqdVdQDc.jpg',
-                                    name: 'Shrek name',
-                                    release_date: '2001'
-                                }} />
-                                <CarouselItem media={{
-                                    title: 'Robinhood',
-                                    poster_path: 'https://movieposters2.com/images/1595344-b.jpg',
-                                    name: 'Robinhood name',
-                                    release_date: '2099'
-                                }} />
-                                <CarouselItem media={{
-                                    title: 'Dune',
-                                    poster_path: 'https://imageio.forbes.com/specials-images/imageserve/61116cea2313e8bae55a536a/-Dune-/0x0.jpg?format=jpg&width=960',
-                                    name: 'Dune name',
-                                    release_date: '2022',
-                                }} />
-                            </Carousel>
-                        </Container>
+                        {/* Hero unit */}
+                        <MediaCarousel media={carouselData} title="Trending Movies" isMovie={true}/>
+                        <DisplayCards title="Trending Movies of the week" medias={trendingMovies} />
+                        <DisplayCards title="Trending Series of the week" medias={trendingSeries} />
                     </main>
                 )}
             </ThemeProvider>

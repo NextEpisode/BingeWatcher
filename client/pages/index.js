@@ -15,6 +15,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Carousel from 'react-material-ui-carousel';
 import { Card, CardActionArea, Table, TableCell } from '@mui/material';
 import Link from 'next/link';
+import DisplayCards from '../ClientComponents/DisplayCards';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 
 
@@ -28,31 +31,49 @@ const theme = createTheme();
 
 export default function Album() {
 
-    const [trending, setTrending] = useState([]);
+    const [trendingMovies, setTrendingMovies] = useState([]);
+    const [trendingSeries, setTrendingSeries] = useState([]);
     const [mediaType, setMediaType] = useState("movie");
-    const type = "movie";
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
 
 
     useEffect(() => {
-        fetch(`https://api.themoviedb.org/3/trending/${mediaType}/week?api_key=468018e64d6cfa119009ede09787dea0&`
+        if (status == 'authenticated') {
+            router.push('/home');
+        }
+
+        fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=468018e64d6cfa119009ede09787dea0&`
         )
             .then((res) => res.json())
             .then((data) => {
                 if (!data.errors) {
-                    setTrending(firstThreeTrending(data.results));
+                    setTrendingMovies(firstThreeTrending(data.results));
                 } else {
-                    setTrending([]);
+                    setTrendingMovies([]);
                 }
             });
+            fetch(`https://api.themoviedb.org/3/trending/tv/week?api_key=468018e64d6cfa119009ede09787dea0&`
+            )
+                .then((res) => res.json())
+                .then((data) => {
+                    if (!data.errors) {
+                        setTrendingSeries(firstThreeTrending(data.results));
+                    } else {
+                        setTrendingSeries([]);
+                    }
+                });
     }, [])
 
 
     const firstThreeTrending = (media) => {
         const trendingMedia = [];
         let index = 0;
-        for (index; index < 3; index++) {
+        for (index; index < 5; index++) {
             trendingMedia[index] = media[index];
         }
+        console.log(trendingMedia[0]);
         return trendingMedia;
     }
 
@@ -61,120 +82,81 @@ export default function Album() {
             <CssBaseline />
             <main>
                 {/* Hero unit */}
-                <Box
-                    sx={{
-                        bgcolor: '#1876D1',
-                        pt: 8,
-                        pb: 6,
-                        marginLeft: "35px",
-                        marginRight: "35px",
-                        marginTop: "25px",
-                        borderRadius: 7,
-                        boxShadow: "1px 6px 8px 3px rgba(160,159,159,0.75)",
-                        padding: "70px 100px"
-                    }}
+                <Grid
+                    container
+                    spacing={0}
+                    direction="column"
+                    alignItems="center"
+                    justifyContent="center"
+
                 >
-                    <Typography
-                        component="h1"
-                        variant="h2"
+                    <Box item
+                        direction="column"
                         align="center"
-                        color="white"
-                        gutterBottom
-                        fontWeight={"bold"}
+                        sx={{
+                            bgcolor: '#1876D1',
+                            pt: 8,
+                            pb: 6,
+                            marginTop: "25px",
+                            borderRadius: 7,
+                            boxShadow: "1px 6px 8px 3px rgba(160,159,159,0.75)",
+                            padding: "70px 100px",
+                            maxWidth: 1000,
+                        }}
                     >
-                        Welcome to BingeWatcher!
-                    </Typography>
-                    <Typography variant="h5" align="center" color="white" paragraph>
-                        Created by Group D to help users keep track of their consumed media. A tracker for those
-                        who like to keep it all in one place. Whether it is movies, tv shows, or anime, there is something for everyone.
-                    </Typography>
-                    <Grid
-                        container
-                        direction="row"
-                        justifyContent="space-around"
-                        alignItems="center" rowSpacing={5} columns={10}
-                        color="white">
-                        <Grid item xs={4}>
-                            <Item>
-                                <TvIcon sx={{ mr: 2 }}></TvIcon>
-                                Search for movies all of genres and languages from all over the world. Who knows, maybe you can find the one you&apos;ve been looking for or find a hidden gem.
-                            </Item>
+
+
+
+                        <Typography
+                            component="h1"
+                            variant="h2"
+                            align="center"
+                            color="white"
+                            gutterBottom
+                            fontWeight={"bold"}
+                        >
+                            Welcome to BingeWatcher!
+                        </Typography>
+                        <Typography variant="h5" align="center" color="white" paragraph>
+                            Created by Group D to help users keep track of their consumed media. A tracker for those
+                            who like to keep it all in one place. Whether it is movies, tv shows, or anime, there is something for everyone.
+                        </Typography>
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="space-around"
+                            alignItems="center" rowSpacing={5} columns={10}
+                            color="white">
+                            <Grid item xs={4}>
+                                <Item>
+                                    <TvIcon sx={{ mr: 2 }}></TvIcon>
+                                    Search for movies all of genres and languages from all over the world. Who knows, maybe you can find the one you&apos;ve been looking for or find a hidden gem.
+                                </Item>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Item>
+                                    <MovieIcon sx={{ mr: 2 }}></MovieIcon>
+                                    Looking for a new show to watch? We&apos;ve got them all here, from science fiction to history and everything in between.
+                                </Item>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Item>
+                                    <ChatBubbleIcon sx={{ mr: 2 }}></ChatBubbleIcon>
+                                    Use our forum system to chat with other users in this simple and easy to use approach to forum. No upvotes or downvotes, just simple and clean chatting.
+                                </Item>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Item>
+                                    <SearchIcon sx={{ mr: 2 }}></SearchIcon>
+                                    Search for anything and everything using our implementation of leading third-party solutions and our own first-party recommendation system to find your next favorite thing.
+                                </Item>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={4}>
-                            <Item>
-                                <MovieIcon sx={{ mr: 2 }}></MovieIcon>
-                                Looking for a new show to watch? We&apos;ve got them all here, from science fiction to history and everything in between.
-                            </Item>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Item>
-                                <ChatBubbleIcon sx={{ mr: 2 }}></ChatBubbleIcon>
-                                Use our forum system to chat with other users in this simple and easy to use approach to forum. No upvotes or downvotes, just simple and clean chatting.
-                            </Item>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Item>
-                                <SearchIcon sx={{ mr: 2 }}></SearchIcon>
-                                Search for anything and everything using our implementation of leading third-party solutions and our own first-party recommendation system to find your next favorite thing.
-                            </Item>
-                        </Grid>
-                    </Grid>
-                </Box>
-                <Container sx={{ py: 8 }} maxWidth="md">
-                    <Typography variant='h3'>
-                        Recommendation Carousel
-                    </Typography>
-                    {/* End hero unit */}
-                    <Carousel
-                        sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                        {trending.map(media => (
-                            <CarouselItem key={media.id} media={media} />
-                        ))
-                        }
-                    </Carousel>
-                </Container>
-                <Typography variant='h3'>
-                    Trending Movies
-                </Typography>
-                <Table>
-                    {trending.map((media, index) => (
-                        <React.Fragment key={"TrendingMoviesCart" + index}>
-                            <TableCell sx={{ maxWidth: 100 }} align='center'>
-                                <Link href={`/media/${media.id}?type=${type}`}>
-                                    <Card >
-                                        <CardActionArea>
-                                            <CardMedia
-                                                component="img"
-                                                height="140"
-                                                image={`https:image.tmdb.org/t/p/w200${media.poster_path}`}
-                                                alt="asdfa"
-                                            />
-                                            <Typography gutterBottom variant="h5" component="div">
-                                                {media.title}
-                                            </Typography>
-                                        </CardActionArea>
-                                    </Card>
-                                </Link>
-                            </TableCell>
-                        </React.Fragment>
-                    ))}
-                </Table>
+                    </Box>
+                    <DisplayCards title="Trending Movies of the week" medias={trendingMovies} />
+                    <DisplayCards title="Trending Series of the week" medias={trendingSeries} />
+                </Grid>
             </main>
-            {/* Footer */}
-            <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-                <Typography variant="h6" align="center" gutterBottom>
-                    Footer
-                </Typography>
-                <Typography
-                    variant="subtitle1"
-                    align="center"
-                    color="text.secondary"
-                    component="p"
-                >
-                    Something here to give the footer a purpose!
-                </Typography>
-            </Box>
-            {/* End footer */}
         </ThemeProvider>
     );
 }
