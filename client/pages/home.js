@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import { Card, CardActionArea, CardMedia, Grid, Table, TableCell, Typography } from '@mui/material';
 import Link from 'next/link';
 import DisplayCards from '../ClientComponents/DisplayCards';
+import MediaCarousel from '../ClientComponents/MediaCarousel'
 
 
 
@@ -18,31 +19,66 @@ export default function Album() {
     const { data: session, status } = useSession()
     const router = useRouter()
 
-    const [trending, setTrending] = useState([]);
-    const [mediaType, setMediaType] = useState("movie");
+    const [trendingMovies, setTrendingMovies] = useState([]);
+    const [trendingSeries, setTrendingSeries] = useState([]);
+    const [carouselData, setCarouselData] = useState([]);
 
 
     useEffect(() => {
-        fetch(`https://api.themoviedb.org/3/trending/${mediaType}/week?api_key=468018e64d6cfa119009ede09787dea0&`
+
+        fetchCarouselData().catch(console.error)
+
+        fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=468018e64d6cfa119009ede09787dea0&`
         )
             .then((res) => res.json())
             .then((data) => {
                 if (!data.errors) {
-                    setTrending(firstThreeTrending(data.results));
+                    setTrendingMovies(firstFiveTrending(data.results));
                 } else {
-                    setTrending([]);
+                    setTrendingMovies([]);
                 }
-            });
+            }).catch(console.error);
+        fetch(`https://api.themoviedb.org/3/trending/tv/week?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setTrendingSeries(firstFiveTrending(data.results));
+                } else {
+                    setTrendingSeries([]);
+                }
+            }).catch(console.error);
     }, [])
 
+    const fetchCarouselData = async () => {
+        fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setCarouselData(firstTwentyTrending(data.results));
+                } else {
+                    setCarouselData([]);
+                }
+            });
+    }
 
-    const firstThreeTrending = (media) => {
+
+    const firstFiveTrending = (media) => {
         const trendingMedia = [];
         let index = 0;
         for (index; index < 5; index++) {
             trendingMedia[index] = media[index];
         }
-        console.log(trendingMedia[0]);
+        return trendingMedia;
+    }
+
+    const firstTwentyTrending = (media) => {
+        const trendingMedia = [];
+        let index = 0;
+        for (index; index < 20; index++) {
+            trendingMedia[index] = media[index];
+        }
         return trendingMedia;
     }
 
@@ -83,21 +119,9 @@ export default function Album() {
                 {session && (
                     <main>
                         {/* Hero unit */}
-                        <Container sx={{ py: 8 }} maxWidth="md">
-                            <Typography variant='h3'>
-                                Recommendation Carousel
-                            </Typography>
-                            {/* End hero unit */}
-                            <Carousel animation='slide'
-                                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                                {trending.map(media => (
-                                    <CarouselItem key={media.id} media={media} />
-                                ))
-                                }
-
-                            </Carousel>
-                        </Container>
-                        <DisplayCards title="Trending Movies" medias={trending} />
+                        <MediaCarousel media={carouselData} title="Trending Movies" isMovie={true}/>
+                        <DisplayCards title="Trending Movies of the week" medias={trendingMovies} />
+                        <DisplayCards title="Trending Series of the week" medias={trendingSeries} />
                     </main>
                 )}
             </ThemeProvider>

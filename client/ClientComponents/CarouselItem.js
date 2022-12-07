@@ -23,13 +23,11 @@ export default function Profile({ media,isMovie }) {
   ];
 
   const handlePickStatus = (id, pickedStatus) => {
-    //add media to katalogue here
-
-    setStatus(pickedStatus);
+    setMediaStatus(pickedStatus);
   }
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [status, setStatus] = React.useState("Plan to Watch");
+  const [mediaStatus, setMediaStatus] = React.useState("Plan to Watch");
 
   const handleListClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -67,8 +65,9 @@ export default function Profile({ media,isMovie }) {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select">
+                
                 {statuses.map(status => (
-                  <MenuItem value={status} onClick={() => handlePickStatus(media.id, status)}>{status}</MenuItem>
+                  <MenuItem value={status} selected={status == mediaStatus} onClick={() => handlePickStatus(media.id, status)}>{status}</MenuItem>
                 ))}
               </Select>
             </FormControl>

@@ -10,6 +10,7 @@ import EnhancedTable from '../ClientComponents/SortingTable';
 import MediaCarousel from '../ClientComponents/MediaCarousel';
 import movieKatalogues from '../movieKatalogues.json'
 import tvkat from '../tvkat.json'
+import MovieRecommendations from '../MovieRecommendations.json'
 
 function TabPanel({ children, value, index, ...other }) {
 
@@ -52,9 +53,9 @@ function BasicTabs() {
 
   const [trendingSeries, setTrendingSeries] = useState([]);
   const [trendingMovies, setTrendingMovies] = useState([]);
+  const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [movies, setMovies] = useState([]);
   const [series, setSeries] = useState([]);
-  const [movieStatuses, setMoviesStatuses] = useState([]);
 
 
   const fetchTrendingSeriesData = async () => {
@@ -83,6 +84,7 @@ function BasicTabs() {
 
   const fetchMovieData = async () => {
     let dummyMovies = [];
+    //verify if the katalogue exists and has media in it
     if (movieKatalogues && movieKatalogues.length > 0) {
       movieKatalogues[0].moviekatalogues.map(async (movie) => {
         await fetch(`https://api.themoviedb.org/3/movie/${movie.MovieID}?api_key=468018e64d6cfa119009ede09787dea0&`)
@@ -91,15 +93,16 @@ function BasicTabs() {
             if (!data.errors) {
               data.media_status = movie.MKUStatus;
               dummyMovies.push(data);
-              setMovies(dummyMovies);
             }
           });
       })
+      setMovies(dummyMovies);
     }
   }
 
   const fetchSeriesData = async () => {
     let dummySeries = [];
+    //verify if the katalogue exists and has media in it
     if (tvkat && tvkat.tvkatalogues.length > 0) {
       tvkat.tvkatalogues.map(async (tv) => {
         await fetch(`https://api.themoviedb.org/3/tv/${tv.TVID}?api_key=468018e64d6cfa119009ede09787dea0&`)
@@ -110,10 +113,28 @@ function BasicTabs() {
               data.episode = tv.TVKUEpisode;
               data.season = tv.TVKUSeason;
               dummySeries.push(data);
-              setSeries(dummySeries);
             }
           });
       })
+      setSeries(dummySeries);
+    }
+  }
+
+  const fetchRecommendedMovies = async () => {
+    let dummyMovies = [];
+    if (MovieRecommendations && MovieRecommendations.recommendedMovies.length > 0) {
+      MovieRecommendations.recommendedMovies.map(async (movie) => {
+        await fetch(`https://api.themoviedb.org/3/search/tv?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (!data.errors) {
+              dummyMovies.push(data);
+              console.log(data)
+            }
+          });
+      })
+      setRecommendedMovies(dummyMovies);
     }
   }
 
@@ -128,6 +149,7 @@ function BasicTabs() {
   useEffect(() => {
     fetchTrendingSeriesData().catch(console.error);
     fetchTrendingMoviesData().catch(console.error);
+    fetchRecommendedMovies().catch(console.error)
     fetchMovieData().catch(console.error);
     fetchSeriesData().catch(console.error);
   }, [])
@@ -154,12 +176,13 @@ function BasicTabs() {
           {/* Movie tab */}
           <TabPanel value={value} index={0}>
             <Katalogue isMovie={true} medias={movies} />
-            <MediaCarousel trendingMedia={trendingMovies} title="trendingMovies" isMovie={true}/>
+            <MediaCarousel media={trendingMovies} title="Trending Movies" isMovie={true}/>
+            <MediaCarousel media={recommendedMovies} title="Recommended Movies" isMovie={true}/>
           </TabPanel>
           {/* Series Tab */}
           <TabPanel value={value} index={1}>
-            <Katalogue isMovie={false} medias={series} />
-            <MediaCarousel trendingMedia={trendingSeries} title="trendingSeries" isMovie={false}/>
+            <Katalogue isMovie={false} medias={series}/>
+            <MediaCarousel media={trendingSeries} title="Trending Series" isMovie={false}/>
           </TabPanel>
         </Box>
       )}

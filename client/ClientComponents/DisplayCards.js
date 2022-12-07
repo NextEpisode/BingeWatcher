@@ -28,7 +28,7 @@ export default function DisplayCards({ title, medias }) {
                                         alt="no poster"
                                     />
                                     <Typography gutterBottom variant="h5" component="div" sx={{ minHeight: 100 }}>
-                                        {media.title}
+                                        {(media.media_type == "movie" ? media.title : media.name)}
                                     </Typography>
                                 </CardActionArea>
                             </Card>

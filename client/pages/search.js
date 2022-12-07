@@ -36,6 +36,8 @@ export default function Search() {
                 .then((data) => {
                     if (!data.errors) {
                         setResults(data.results);
+                        console.log(data.results)
+
                         let rows = data.results.reduce(function (rows, key, index) {
                             return (index % 4 == 0 ? rows.push([key])
                                 : rows[rows.length - 1].push(key)) && rows;
@@ -58,7 +60,7 @@ export default function Search() {
                     if (!data.errors) {
                         setResults(data.results);
                         let rows = results.reduce(function (rows, key, index) {
-                            return (index % 2 == 0 ? rows.push([key])
+                            return (index % 4 == 0 ? rows.push([key])
                                 : rows[rows.length - 1].push(key)) && rows;
                         }, []);
                         setRows(rows);

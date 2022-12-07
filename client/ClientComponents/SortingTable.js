@@ -55,7 +55,7 @@ function stableSort(array, comparator) {
 
 
 
-export default function EnhancedTable({ medias,isMovie }) {
+export default function EnhancedTable({ medias, isMovie }) {
     const [data, setData] = React.useState(medias);
     const [episodes, setEpisodes] = React.useState(medias.map((element) => element.episode));
     const [seasons, setSeasons] = React.useState(medias.map((element) => element.season));
@@ -68,10 +68,9 @@ export default function EnhancedTable({ medias,isMovie }) {
 
     //Whenever sorting table receives new data for statuses and media it re-renders
     React.useEffect(() => {
-        console.log(medias)
         setData(medias);
-    },[medias.length])
-    
+    }, [medias.length])
+
 
     //Fields used in the status column
     const defaultStatuses = [
@@ -102,8 +101,6 @@ export default function EnhancedTable({ medias,isMovie }) {
     const handleDeleteClick = (selected) => {
 
         const newData = [...data];
-
-        console.log(selected)
 
         selected.forEach((selectedMedia) => {
             let index = newData.findIndex((media) => (isMovie ? media.title : media.name) === selectedMedia);
@@ -211,7 +208,7 @@ export default function EnhancedTable({ medias,isMovie }) {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} handleDeleteClick={handleDeleteClick} selected={selected} mediaType={(data && data.length > 0) ? data[0].media_type : "movie"}/>
+                <EnhancedTableToolbar numSelected={selected.length} handleDeleteClick={handleDeleteClick} selected={selected} mediaType={(data && data.length > 0) ? data[0].media_type : "movie"} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -256,24 +253,30 @@ export default function EnhancedTable({ medias,isMovie }) {
                                                 />
                                             </TableCell>
                                             <TableCell align="right">
-                                            <Link href={`/media/${row.id}?type=${isMovie ? "movie" : "tv"}`}>
-                                                <CardMedia
-                                                    component="img"
-                                                    height="100"
-                                                    width="100"
-                                                    image={`https:image.tmdb.org/t/p/w200${row.poster_path}`}
-                                                />
+                                                <Link href={`/media/${row.id}?type=${isMovie ? "movie" : "tv"}`}>
+                                                    <CardMedia
+                                                        component="img"
+                                                        height="100"
+                                                        width="100"
+                                                        image={`https:image.tmdb.org/t/p/w200${row.poster_path}`}
+                                                    />
                                                 </Link>
                                             </TableCell>
-                                            <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                padding="none"
-                                                align="left"
-                                            >
-                                                {isMovie ? row.title : row.name}
-                                            </TableCell>
+                                            <Link href={`/media/${row.id}?type=${isMovie ? "movie" : "tv"}`}>
+
+                                                <TableCell
+                                                    component="th"
+                                                    id={labelId}
+                                                    scope="row"
+                                                    padding="none"
+                                                    align="left"
+                                                >
+
+                                                    {isMovie ? row.title : row.name}
+
+                                                </TableCell>
+                                            </Link>
+
                                             <TableCell align="left">{isMovie ? row.release_date : row.first_air_date}</TableCell>
                                             <TableCell align="left">{(row.genres && row.genres.length > 0) ? row.genres[0].name : "No genre"}</TableCell>
                                             <TableCell align="left">{
@@ -291,7 +294,7 @@ export default function EnhancedTable({ medias,isMovie }) {
                                                                 {defaultStatuses.map((status) => (
                                                                     <ListItem disablePadding>
                                                                         <ListItemButton>
-                                                                            <ListItemText primary={status} onClick={() => handlePickStatus(status,data.indexOf(row))}/>
+                                                                            <ListItemText primary={status} onClick={() => handlePickStatus(status, data.indexOf(row))} />
                                                                         </ListItemButton>
                                                                     </ListItem>
                                                                 ))}
@@ -308,7 +311,7 @@ export default function EnhancedTable({ medias,isMovie }) {
                                                     <IconButton onClick={(event) => handleAddSeasonClick(data.indexOf(row))}><AddIcon fontSize="small" />
                                                     </IconButton>
                                                 </TableCell>) : ''}
-                                                {row.episode >= 0 ? (
+                                            {row.episode >= 0 ? (
                                                 <TableCell id={'episode'} align="left">
                                                     <IconButton onClick={(event) => handleRemoveEpisodeClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
                                                     </IconButton>

@@ -31,7 +31,8 @@ const theme = createTheme();
 
 export default function Album() {
 
-    const [trending, setTrending] = useState([]);
+    const [trendingMovies, setTrendingMovies] = useState([]);
+    const [trendingSeries, setTrendingSeries] = useState([]);
     const [mediaType, setMediaType] = useState("movie");
     const { data: session, status } = useSession();
     const router = useRouter();
@@ -48,11 +49,21 @@ export default function Album() {
             .then((res) => res.json())
             .then((data) => {
                 if (!data.errors) {
-                    setTrending(firstThreeTrending(data.results));
+                    setTrendingMovies(firstThreeTrending(data.results));
                 } else {
-                    setTrending([]);
+                    setTrendingMovies([]);
                 }
             });
+            fetch(`https://api.themoviedb.org/3/trending/tv/week?api_key=468018e64d6cfa119009ede09787dea0&`
+            )
+                .then((res) => res.json())
+                .then((data) => {
+                    if (!data.errors) {
+                        setTrendingSeries(firstThreeTrending(data.results));
+                    } else {
+                        setTrendingSeries([]);
+                    }
+                });
     }, [])
 
 
@@ -142,7 +153,8 @@ export default function Album() {
                             </Grid>
                         </Grid>
                     </Box>
-                    <DisplayCards title="Trending Movies" medias={trending} />
+                    <DisplayCards title="Trending Movies of the week" medias={trendingMovies} />
+                    <DisplayCards title="Trending Series of the week" medias={trendingSeries} />
                 </Grid>
             </main>
         </ThemeProvider>
