@@ -6,7 +6,6 @@ import Carousel from 'react-material-ui-carousel';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
-import BasicTable from '../ClientComponents/Table';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import EnhancedTable from '../ClientComponents/SortingTable';
