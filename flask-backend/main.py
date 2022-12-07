@@ -27,13 +27,11 @@ def users():
             return UserHandler().getAllUsers() #Works, Revised
 
 @app.route('/userRoute/<string:google_id>/', methods=['GET', 'POST', 'PUT', 'DELETE'])
-@cross_origin()
 def useropt(google_id):
     if request.method == 'GET':
             return UserHandler().getUserByGoogleId(google_id) #Works, Revised
     else:
         if request.method == 'POST':
-            print("REQUEST: ", request.json)
             return UserHandler().insertUserJson(request.json) #Works, Revised
         else:
             if request.method == "PUT":
