@@ -23,14 +23,18 @@ class Loader(Dataset):
         # Obtained continuous ID for users and movies
         self.idx2userid = {i:o for o,i in self.userid2idx.items()}
         self.idx2movieid = {i:o for o,i in self.movieid2idx.items()}
+
+        ##This last block of code takes all of the unique id's, and produces a form of continuos list of id's
+        #Without repeating entries
         
-        # return the id from the indexed values as noted in the lambda function down below.
+        # return the id from the indexed id's as noted in the lambda function down below.
         self.ratings.movieId = ratings_df.movieId.apply(lambda x: self.movieid2idx[x])
         self.ratings.userId = ratings_df.userId.apply(lambda x: self.userid2idx[x])
         
         self.x = self.ratings.drop(['rating', 'timestamp'], axis=1).values
         self.y = self.ratings['rating'].values
-        self.x, self.y = torch.tensor(self.x), torch.tensor(self.y) # Transforms the data to tensors (ready for torch models.)
+        self.x, self.y = torch.tensor(self.x), torch.tensor(self.y) 
+        # Transforms the data to tensors (ready for torch models.)
 
     def __getitem__(self, index):
         return (self.x[index], self.y[index])
