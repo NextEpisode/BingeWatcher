@@ -8,6 +8,7 @@ class MatrixFactorization(torch.nn.Module):
         self.user_factors = torch.nn.Embedding(n_users, n_factors)
         self.item_factors = torch.nn.Embedding(n_items, n_factors)
         #Weight factor assignation is to specify the importance of a datapoint in the matrix.
+        #These are tunable factors. Leave at .05 as taught.
         self.user_factors.weight.data.uniform_(0, 0.05)
         self.item_factors.weight.data.uniform_(0, 0.05)
         

@@ -28,6 +28,8 @@ class Cluster():
         
         #Creating Model
         model = factorizer.MatrixFactorization(n_users, n_items, n_factors=8)
+        #Matrix Factorization implicitly finds relationships in the dataset itself, and what it does is that it 
+        #Allows us to have a subset of that matrix and use that to work, instead of the entire matrix
 
         num_epochs = 128
         cuda = torch.cuda.is_available()
@@ -44,10 +46,13 @@ class Cluster():
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
         #Data is loaded into tensors
+        #This makes it so that the data is readable in pytorch format
         train_set = loader.Loader()
         train_loader = DataLoader(train_set, 128, shuffle=True) 
 
         #Loop used to train the data using pytorch methods.
+        #X is MovieID and UserID
+        #Y is Ratings
         for it in range(num_epochs):
             losses = []
             for x, y in train_loader:
