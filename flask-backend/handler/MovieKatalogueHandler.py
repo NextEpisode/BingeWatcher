@@ -27,8 +27,8 @@ class MovieKatalogueHandler:
             result_list.append(result)
         return jsonify(moviekatalogues=result_list)
     
-    def getEntriesByMovieKID(self, json):
-        kid = json["KID"]
+    def getEntriesByMovieKID(self, KID):
+        kid = KID
         dao = MovieKatalogueDao.MovieKatalogueDAO()
         moviekatalogues_list = dao.getMovieKataloguesByKID(kid)
         result_list = []
