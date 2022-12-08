@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
-import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Carousel from 'react-material-ui-carousel';
-import CarouselItem from '../ClientComponents/CarouselItem';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { Card, CardActionArea, CardMedia, Grid, Table, TableCell, Typography } from '@mui/material';
-import Link from 'next/link';
 import DisplayCards from '../ClientComponents/DisplayCards';
 import MediaCarousel from '../ClientComponents/MediaCarousel'
 
@@ -63,7 +58,6 @@ export default function Album() {
             });
     }
 
-
     const firstFiveTrending = (media) => {
         const trendingMedia = [];
         let index = 0;
@@ -81,8 +75,6 @@ export default function Album() {
         }
         return trendingMedia;
     }
-
-
 
     useEffect(() => {
         if (status != 'authenticated' && status != 'loading') {
@@ -113,18 +105,17 @@ export default function Album() {
     }
 
     return (
-        <div>
+        <React.Fragment>
             <ThemeProvider theme={theme}>
-                <CssBaseline />
                 {session && (
                     <main>
                         {/* Hero unit */}
-                        <MediaCarousel media={carouselData} title="Trending Movies" isMovie={true}/>
+                        <MediaCarousel media={carouselData} title="Trending Movies" isMovie={true} />
                         <DisplayCards title="Trending Movies of the week" medias={trendingMovies} />
                         <DisplayCards title="Trending Series of the week" medias={trendingSeries} />
                     </main>
                 )}
             </ThemeProvider>
-        </div>
+        </React.Fragment>
     );
 }
