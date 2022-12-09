@@ -37,8 +37,8 @@ class TVKatalogueHandler:
             result_list.append(result)
         return jsonify(tvkatalogues=result_list)
     
-    def getAllTVKataloguesByKID(self, json):
-        kid = json["KID"]
+    def getAllTVKataloguesByKID(self, KID,):
+        kid = KID
         dao = TVKatalogueDao.TVKatalogueDAO()
         tvkatalogues_list = dao.getTVKataloguesByKID(kid)
         result_list = []

@@ -27,8 +27,8 @@ class MovieKatalogueHandler:
             result_list.append(result)
         return jsonify(moviekatalogues=result_list)
     
-    def getEntriesByMovieKID(self, json):
-        kid = json["KID"]
+    def getEntriesByMovieKID(self, KID):
+        kid = KID
         dao = MovieKatalogueDao.MovieKatalogueDAO()
         moviekatalogues_list = dao.getMovieKataloguesByKID(kid)
         result_list = []
@@ -46,11 +46,11 @@ class MovieKatalogueHandler:
         result = self.build_moviekatalogues_dict(rng)
         return jsonify(moviekatalogues=result)
 
-    def getAllMovieKataloguesByStatus(self, json):
+    def getByStatusUsingKID(self, json):
         kid = json["KID"]
         status = json["MKUStatus"]
         dao = MovieKatalogueDao.MovieKatalogueDAO()
-        row = dao.getMovieKataloguesByStatus(kid, status)
+        row = dao.getFromKatalogueUsingStatus(kid, status)
         if not row:
             return jsonify(Error = "Katalogues Not Found"), 404
         else:

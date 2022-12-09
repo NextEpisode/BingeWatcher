@@ -56,30 +56,26 @@ def mk():
             return MovieKatalogueHandler().getAllMovieKatalogues() #Works, Revised
 
 
-@app.route('/movieKatalogueRoute/opt', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def mkopt():
+@app.route('/movieKatalogueRoute/<int:kID>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def mkopt(kID):
     if request.method == 'GET':
-            print("REQUEST: ", request.json)
-            return MovieKatalogueHandler().getEntriesByMovieKID(request.json) #Works, Revised
+            return MovieKatalogueHandler().getEntriesByMovieKID(kID) #Works, Revised
     else:
         if request.method == 'POST':
-            print("REQUEST: ", request.json)
             return MovieKatalogueHandler().insertMovieKatalogueJson(request.json) #Works, Revised
         else:
             if request.method == "PUT":
-                print("REQUEST: ", request.json)
                 return MovieKatalogueHandler().updateMovieKatalogueJson(request.json) #Works, Revised
             else:
                  if request.method == "DELETE":
-                    print("REQUEST: ", request.json)
                     return MovieKatalogueHandler().deleteMovieKatalogue(request.json) #Works, Revised
                  
 #Search by Status. Try to put this with the rest later.
-@app.route('/oGtFIapbXb/stat', methods=['GET'])
+@app.route('/getKatalogueWithStatus/stat', methods=['GET'])
 def mkstat():
     if request.method == 'GET':
             print("REQUEST: ", request.json)
-            return MovieKatalogueHandler().getAllMovieKataloguesByStatus(request.json) #Works, Revised
+            return MovieKatalogueHandler().getByStatusUsingKID(request.json) #Works, Revised
 #Movie Area-----------------------------------------------------------------
 #TV Area--------------------------------------------------------------------
 
@@ -88,22 +84,18 @@ def tv():
     if request.method == 'GET':
             return TVKatalogueHandler().getAllTVKatalogues() #Works, Revised
 
-@app.route('/TVKatalogueRoute/opt', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def tvopt():
+@app.route('/TVKatalogueRoute/<int:kID>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def tvopt(kID):
     if request.method == 'GET':
-            print("REQUEST: ", request.json)
-            return TVKatalogueHandler().getAllTVKataloguesByKID(request.json)#Works, Revised
+            return TVKatalogueHandler().getAllTVKataloguesByKID(kID)#Works, Revised
     else:
         if request.method == 'POST':
-            print("REQUEST: ", request.json)
             return TVKatalogueHandler().insertTVKatalogueJson(request.json)#Works, Revised
         else:
             if request.method == "PUT":
-                print("REQUEST: ", request.json)
                 return TVKatalogueHandler().updateTVkatalogueJson(request.json)#Works, Revised
             else:
                  if request.method == "DELETE":
-                    print("REQUEST: ", request.json)
                     return TVKatalogueHandler().deleteTVkatalogue(request.json) #Works, Revised
 
 @app.route('/TVKatalogueRoute/stat', methods=['PUT'])
