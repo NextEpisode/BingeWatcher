@@ -71,11 +71,11 @@ def mkopt(kID):
                     return MovieKatalogueHandler().deleteMovieKatalogue(request.json) #Works, Revised
                  
 #Search by Status. Try to put this with the rest later.
-@app.route('/oGtFIapbXb/stat', methods=['GET'])
+@app.route('/getKatalogueWithStatus/stat', methods=['GET'])
 def mkstat():
     if request.method == 'GET':
             print("REQUEST: ", request.json)
-            return MovieKatalogueHandler().getAllMovieKataloguesByStatus(request.json) #Works, Revised
+            return MovieKatalogueHandler().getByStatusUsingKID(request.json) #Works, Revised
 #Movie Area-----------------------------------------------------------------
 #TV Area--------------------------------------------------------------------
 
