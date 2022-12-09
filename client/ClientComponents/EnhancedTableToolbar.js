@@ -111,7 +111,7 @@ export default function EnhancedTableToolbar(props) {
                         </IconButton>
                     </Tooltip>
                     <Popper id={id} open={open} anchorEl={anchorEl}>
-                        <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>
+                        <Box sx={{ border: 1, p: 1, color: '#252525', bgcolor: 'background.paper' }}>
                             <List>
                                 <ListItem disablePadding>
                                     <ListItemButton>
