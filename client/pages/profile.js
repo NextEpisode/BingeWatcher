@@ -196,8 +196,6 @@ function BasicTabs() {
     }
   }, [tvKatalogue])
 
-
-
   useEffect(() => {
     fetchTrendingSeriesData().catch(console.error);
     fetchTrendingMoviesData().catch(console.error);
@@ -207,7 +205,6 @@ function BasicTabs() {
   useEffect(() => {
     setMovies(movies)
   }, [movies.length])
-
 
   const firstFourTrending = (media) => {
     const trendingMedia = [];
@@ -230,13 +227,13 @@ function BasicTabs() {
           </Box>
           {/* Movie tab */}
           <TabPanel value={value} index={0}>
-            <Katalogue isMovie={true} medias={movies} />
+            <Katalogue isMovie={true} medias={movies} setMedias={setMovies} />
             <MediaCarousel shouldCom media={trendingMovies} title="Trending Movies" isMovie={true} />
             <MediaCarousel media={recommendedMovies} title="Recommended Movies" isMovie={true} />
           </TabPanel>
           {/* Series Tab */}
           <TabPanel value={value} index={1}>
-            <Katalogue isMovie={false} medias={series} />
+            <Katalogue isMovie={false} medias={series} setMedias={setSeries} />
             <MediaCarousel media={trendingSeries} title="Trending Series" isMovie={false} />
           </TabPanel>
         </Box>
@@ -247,14 +244,14 @@ function BasicTabs() {
 
 
 
-function Katalogue({ medias, isMovie }) {
+function Katalogue({ medias, isMovie, setMedias }) {
   return (
     <div>
       <Container>
         <Typography variant="h4" >
           Katalogue
         </Typography>
-        <EnhancedTable medias={medias} isMovie={isMovie} />
+        <EnhancedTable medias={medias} isMovie={isMovie} setMedias={setMedias} />
       </Container>
     </div>
   )

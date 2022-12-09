@@ -52,10 +52,7 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-export default function EnhancedTable({ medias, isMovie }) {
-    const [data, setData] = React.useState(medias);
-    const [episodes, setEpisodes] = React.useState(medias.map((element) => element.episode));
-    const [seasons, setSeasons] = React.useState(medias.map((element) => element.season));
+export default function EnhancedTable({ medias, isMovie, setMedias }) {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('title');
     const [selected, setSelected] = React.useState([]);
@@ -69,7 +66,7 @@ export default function EnhancedTable({ medias, isMovie }) {
     //Whenever sorting table receives new data for statuses and media it re-renders
     React.useEffect(() => {
         console.log(medias)
-        setData(medias);
+        setMedias(medias);
     }, [medias.length])
 
     //Fields used in the status column
@@ -83,9 +80,6 @@ export default function EnhancedTable({ medias, isMovie }) {
 
     const [anchorEle, setAnchorEle] = React.useState(null);
 
-    const openStatus = Boolean(anchorEle);
-    const idStatus = open ? 'simple-popper' : undefined;
-
     const handleStatusClick = (event) => {
         setAnchorEle(anchorEle ? null : event.currentTarget);
     };
@@ -97,18 +91,20 @@ export default function EnhancedTable({ medias, isMovie }) {
     };
 
     const handleDeleteClick = (selected) => {
-        const newData = [...data];
+        console.log(selected)
+        const newData = [...medias];
         selected.forEach((selectedMedia) => {
             let index = newData.findIndex((media) => (isMovie ? media.title : media.name) === selectedMedia);
+            deleteEntry(newData[index].id)
             newData.splice(index, 1);
-            setData(newData);
+            setMedias(newData);
         });
         setSelected([]);
     }
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = data.map((n) => n.title);
+            const newSelected = medias.map((n) => n.title);
             setSelected(newSelected);
             return;
         }
@@ -148,42 +144,42 @@ export default function EnhancedTable({ medias, isMovie }) {
     };
 
     const handleAddEpisodeClick = (index) => {
-        let newData = [...data];
+        let newData = [...medias];
         newData[index].episode++;
-        setData(newData);
+        setMedias(newData);
         increaseEpisode(newData[index].id, newData[index].episode)
     }
 
     const handleRemoveEpisodeClick = (index) => {
-        let newData = [...data];
+        let newData = [...medias];
         if (newData[index].episode > 1) {
             newData[index].episode--;
-            setData(newData);
+            setMedias(newData);
             decreaseEpisode(newData[index].id, newData[index].episode);
         }
     }
 
     const handleAddSeasonClick = (index) => {
-        let newData = [...data]
+        let newData = [...medias]
         newData[index].season++;
-        setData(newData);
+        setMedias(newData);
         increaseSeason(newData[index].id, newData[index].season)
 
     }
 
     const handleRemoveSeasonClick = (index) => {
-        let newData = [...data];
-        if (newData[index] > 1) {
-            newData[index]--;
-            setData(newData);
-            decreaseEpisode(newData[index].id, newData[index].episode);
+        let newData = [...medias];
+        if (newData[index].season > 1) {
+            newData[index].season--;
+            setMedias(newData);
+            decreaseSeason(newData[index].id, newData[index].season);
         }
     }
 
     const handlePickStatus = (status, index) => {
-        let newData = [...data];
+        let newData = [...medias];
         newData[index].media_status = status;
-        setData(newData);
+        setMedias(newData);
         updateStatus(newData[index].id, newData[index].media_status)
     }
 
@@ -200,6 +196,40 @@ export default function EnhancedTable({ medias, isMovie }) {
             setkatalogueId(data.User.KID)
         } catch (e) {
             console.log(e)
+        }
+    }
+
+    async function deleteEntry(iden) {
+        if (!isMovie) {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/stat`, {
+                    body: JSON.stringify({
+                        KID: katalogueId,
+                        TVID: iden
+                    }),
+                    method: 'DELETE',
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/movieKatalogueRoute/${katalogueId}`, {
+                    body: JSON.stringify({
+                        KID: katalogueId,
+                        MovieID: iden
+                    }),
+                    method: 'DELETE',
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+            } catch (e) {
+                console.log(e)
+            }
         }
     }
 
@@ -231,7 +261,6 @@ export default function EnhancedTable({ medias, isMovie }) {
         }
     }
 
-    // TO-DO
     async function increaseEpisode(iden, episodeNum) {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/epis`, {
@@ -268,7 +297,6 @@ export default function EnhancedTable({ medias, isMovie }) {
         }
     }
 
-    // TO-DO
     async function increaseSeason(iden, seasonNum) {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/seas`, {
@@ -287,7 +315,6 @@ export default function EnhancedTable({ medias, isMovie }) {
         }
     }
 
-    // TO-DO
     async function decreaseSeason(iden, seasonNum) {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/seas`, {
@@ -314,12 +341,12 @@ export default function EnhancedTable({ medias, isMovie }) {
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - medias.length) : 0;
 
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} handleDeleteClick={handleDeleteClick} selected={selected} mediaType={(data && data.length > 0) ? data[0].media_type : "movie"} />
+                <EnhancedTableToolbar numSelected={selected.length} handleDeleteClick={handleDeleteClick} selected={selected} mediaType={(medias && medias.length > 0) ? medias[0].media_type : "movie"} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -332,11 +359,11 @@ export default function EnhancedTable({ medias, isMovie }) {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={data.length}
+                            rowCount={medias.length}
                             isMovie={isMovie}
                         />
                         <TableBody>
-                            {stableSort(data, getComparator(order, orderBy))
+                            {stableSort(medias, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(isMovie ? row.title : row.name);
@@ -399,7 +426,7 @@ export default function EnhancedTable({ medias, isMovie }) {
                                                                 {defaultStatuses.map((status) => (
                                                                     <ListItem disablePadding>
                                                                         <ListItemButton>
-                                                                            <ListItemText primary={status} onClick={() => handlePickStatus(status, data.indexOf(row))} />
+                                                                            <ListItemText primary={status} onClick={() => handlePickStatus(status, medias.indexOf(row))} />
                                                                         </ListItemButton>
                                                                     </ListItem>
                                                                 ))}
@@ -410,18 +437,18 @@ export default function EnhancedTable({ medias, isMovie }) {
                                             }</TableCell>
                                             {row.season >= 0 ? (
                                                 <TableCell align="left">
-                                                    <IconButton onClick={(event) => handleRemoveSeasonClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
+                                                    <IconButton onClick={(event) => handleRemoveSeasonClick(medias.indexOf(row))}><RemoveIcon fontSize="small" />
                                                     </IconButton>
                                                     {row.season}
-                                                    <IconButton onClick={(event) => handleAddSeasonClick(data.indexOf(row))}><AddIcon fontSize="small" />
+                                                    <IconButton onClick={(event) => handleAddSeasonClick(medias.indexOf(row))}><AddIcon fontSize="small" />
                                                     </IconButton>
                                                 </TableCell>) : ''}
                                             {row.episode >= 0 ? (
                                                 <TableCell id={'episode'} align="left">
-                                                    <IconButton onClick={(event) => handleRemoveEpisodeClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
+                                                    <IconButton onClick={(event) => handleRemoveEpisodeClick(medias.indexOf(row))}><RemoveIcon fontSize="small" />
                                                     </IconButton>
                                                     {row.episode}
-                                                    <IconButton onClick={(event) => handleAddEpisodeClick(data.indexOf(row))}><AddIcon fontSize="small" />
+                                                    <IconButton onClick={(event) => handleAddEpisodeClick(medias.indexOf(row))}><AddIcon fontSize="small" />
                                                     </IconButton>
                                                 </TableCell>) : ''
                                             }
@@ -443,7 +470,7 @@ export default function EnhancedTable({ medias, isMovie }) {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={data.length}
+                    count={medias.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
