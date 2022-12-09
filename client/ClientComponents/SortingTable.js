@@ -1,10 +1,10 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react'
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
@@ -18,7 +18,8 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EnhancedTableHead from './EnhancedTableHead';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
-import { Button, CardMedia, Collapse, Divider, List, ListItem, ListItemButton, InboxIcon, DraftsIcon, ListItemIcon, ListItemText, Modal, Popover, Popper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { useSession } from 'next-auth/react'
+import { CardMedia, List, ListItem, ListItemButton, ListItemText, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import Link from 'next/link';
 
 function descendingComparator(a, b, orderBy) {
@@ -51,10 +52,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-
-
-
-
 export default function EnhancedTable({ medias, isMovie }) {
     const [data, setData] = React.useState(medias);
     const [episodes, setEpisodes] = React.useState(medias.map((element) => element.episode));
@@ -66,11 +63,13 @@ export default function EnhancedTable({ medias, isMovie }) {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+    const [katalogueId, setkatalogueId] = useState()
+    const { data: session, status } = useSession()
+
     //Whenever sorting table receives new data for statuses and media it re-renders
     React.useEffect(() => {
         setData(medias);
     }, [medias.length])
-
 
     //Fields used in the status column
     const defaultStatuses = [
@@ -90,8 +89,6 @@ export default function EnhancedTable({ medias, isMovie }) {
         setAnchorEle(anchorEle ? null : event.currentTarget);
     };
 
-
-
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -99,16 +96,12 @@ export default function EnhancedTable({ medias, isMovie }) {
     };
 
     const handleDeleteClick = (selected) => {
-
         const newData = [...data];
-
         selected.forEach((selectedMedia) => {
             let index = newData.findIndex((media) => (isMovie ? media.title : media.name) === selectedMedia);
             newData.splice(index, 1);
             setData(newData);
         });
-
-
         setSelected([]);
     }
 
@@ -197,9 +190,59 @@ export default function EnhancedTable({ medias, isMovie }) {
         let newData = [...data];
         newData[index].media_status = status;
         setData(newData);
+        updateStatus(newData[index].id, newData[index].media_status)
     }
 
     const isSelected = (title) => selected.indexOf(title) !== -1;
+
+    async function getKatalogueID() {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/userRoute/${session.user.id}/`, {
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            })
+            const data = await response.json()
+            setkatalogueId(data.User.KID)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async function updateStatus(iden, newStatus) {
+        console.log(iden)
+        if (!isMovie) {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/stat`, {
+                body: JSON.stringify({
+                    KID: katalogueId,
+                    TVID: iden,
+                    TVKUStatus: newStatus
+                }),
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            })
+        } else {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/movieKatalogueRoute/${katalogueId}`, {
+                body: JSON.stringify({
+                    KID: katalogueId,
+                    MovieID: iden,
+                    MKUStatus: newStatus
+                }),
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            })
+        }
+    }
+
+    useEffect(() => {
+        if (status == 'authenticated') {
+            getKatalogueID().catch(console.error)
+        }
+    }, [status])
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -225,14 +268,11 @@ export default function EnhancedTable({ medias, isMovie }) {
                             isMovie={isMovie}
                         />
                         <TableBody>
-                            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                 rows.sort(getComparator(order, orderBy)).slice() */}
                             {stableSort(data, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(isMovie ? row.title : row.name);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-
                                     return (
                                         <TableRow
                                             hover
@@ -263,7 +303,6 @@ export default function EnhancedTable({ medias, isMovie }) {
                                                 </Link>
                                             </TableCell>
                                             <Link href={`/media/${row.id}?type=${isMovie ? "movie" : "tv"}`}>
-
                                                 <TableCell
                                                     component="th"
                                                     id={labelId}
@@ -271,9 +310,7 @@ export default function EnhancedTable({ medias, isMovie }) {
                                                     padding="none"
                                                     align="left"
                                                 >
-
                                                     {isMovie ? row.title : row.name}
-
                                                 </TableCell>
                                             </Link>
 
