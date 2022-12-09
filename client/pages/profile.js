@@ -62,7 +62,7 @@ function BasicTabs() {
       .then((res) => res.json())
       .then((info) => {
         if (!info.errors) {
-          setTrendingSeries(firstThreeTrending(info.results));
+          setTrendingSeries(firstFourTrending(info.results));
         } else {
           setTrendingSeries([]);
         }
@@ -74,7 +74,7 @@ function BasicTabs() {
       .then((res) => res.json())
       .then((info) => {
         if (!info.errors) {
-          setTrendingMovies(firstThreeTrending(info.results));
+          setTrendingMovies(firstFourTrending(info.results));
         } else {
           setTrendingMovies([]);
         }
@@ -197,13 +197,19 @@ function BasicTabs() {
   }, [tvKatalogue])
 
 
+
   useEffect(() => {
     fetchTrendingSeriesData().catch(console.error);
     fetchTrendingMoviesData().catch(console.error);
     // fetchRecommendedMovies().catch(console.error)
   }, [])
 
-  const firstThreeTrending = (media) => {
+  useEffect(() => {
+    setMovies(movies)
+  }, [movies.length])
+
+
+  const firstFourTrending = (media) => {
     const trendingMedia = [];
     let index = 0;
     for (index; index < 4; index++) {
@@ -225,7 +231,7 @@ function BasicTabs() {
           {/* Movie tab */}
           <TabPanel value={value} index={0}>
             <Katalogue isMovie={true} medias={movies} />
-            <MediaCarousel media={trendingMovies} title="Trending Movies" isMovie={true} />
+            <MediaCarousel shouldCom media={trendingMovies} title="Trending Movies" isMovie={true} />
             <MediaCarousel media={recommendedMovies} title="Recommended Movies" isMovie={true} />
           </TabPanel>
           {/* Series Tab */}
