@@ -68,6 +68,7 @@ export default function EnhancedTable({ medias, isMovie }) {
 
     //Whenever sorting table receives new data for statuses and media it re-renders
     React.useEffect(() => {
+        console.log(medias)
         setData(medias);
     }, [medias.length])
 
@@ -147,42 +148,35 @@ export default function EnhancedTable({ medias, isMovie }) {
     };
 
     const handleAddEpisodeClick = (index) => {
-        let newEpisodes = [...episodes];
-        newEpisodes[index]++;
         let newData = [...data];
-        newData[index].episode = newEpisodes[index];
-        setEpisodes(newEpisodes);
+        newData[index].episode++;
         setData(newData);
+        increaseEpisode(newData[index].id, newData[index].episode)
     }
 
     const handleRemoveEpisodeClick = (index) => {
-        let newEpisodes = [...episodes];
-        if (newEpisodes[index] > 0) {
-            newEpisodes[index]--;
-            let newData = [...data];
-            newData[index].episode = newEpisodes[index];
-            setEpisodes(newEpisodes);
+        let newData = [...data];
+        if (newData[index].episode > 1) {
+            newData[index].episode--;
             setData(newData);
+            decreaseEpisode(newData[index].id, newData[index].episode);
         }
     }
 
     const handleAddSeasonClick = (index) => {
-        let newSeasons = [...seasons];
-        newSeasons[index]++;
-        let newData = [...data];
-        newData[index].season = newSeasons[index];
-        setSeasons(newSeasons);
+        let newData = [...data]
+        newData[index].season++;
         setData(newData);
+        increaseSeason(newData[index].id, newData[index].season)
+
     }
 
     const handleRemoveSeasonClick = (index) => {
-        let newSeasons = [...seasons];
-        if (newSeasons[index] > 0) {
-            newSeasons[index]--;
-            let newData = [...data];
-            newData[index].season = newSeasons[index];
-            setSeasons(newSeasons);
+        let newData = [...data];
+        if (newData[index] > 1) {
+            newData[index]--;
             setData(newData);
+            decreaseEpisode(newData[index].id, newData[index].episode);
         }
     }
 
@@ -210,7 +204,6 @@ export default function EnhancedTable({ medias, isMovie }) {
     }
 
     async function updateStatus(iden, newStatus) {
-        console.log(iden)
         if (!isMovie) {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/stat`, {
                 body: JSON.stringify({
@@ -235,6 +228,81 @@ export default function EnhancedTable({ medias, isMovie }) {
                     'Content-type': 'application/json'
                 }
             })
+        }
+    }
+
+    // TO-DO
+    async function increaseEpisode(iden, episodeNum) {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/epis`, {
+                body: JSON.stringify({
+                    KID: katalogueId,
+                    TVID: iden,
+                    TVKUEpisode: episodeNum
+                }),
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async function decreaseEpisode(iden, episodeNum) {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/epis`, {
+                body: JSON.stringify({
+                    KID: katalogueId,
+                    TVID: iden,
+                    TVKUEpisode: episodeNum
+                }),
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    // TO-DO
+    async function increaseSeason(iden, seasonNum) {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/seas`, {
+                body: JSON.stringify({
+                    KID: katalogueId,
+                    TVID: iden,
+                    TVKUSeason: seasonNum
+                }),
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    // TO-DO
+    async function decreaseSeason(iden, seasonNum) {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/seas`, {
+                body: JSON.stringify({
+                    KID: katalogueId,
+                    TVID: iden,
+                    TVKUSeason: seasonNum
+                }),
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            })
+        } catch (e) {
+            console.log(e)
         }
     }
 
@@ -344,7 +412,7 @@ export default function EnhancedTable({ medias, isMovie }) {
                                                 <TableCell align="left">
                                                     <IconButton onClick={(event) => handleRemoveSeasonClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
                                                     </IconButton>
-                                                    {seasons[data.indexOf(row)]}
+                                                    {row.season}
                                                     <IconButton onClick={(event) => handleAddSeasonClick(data.indexOf(row))}><AddIcon fontSize="small" />
                                                     </IconButton>
                                                 </TableCell>) : ''}
@@ -352,7 +420,7 @@ export default function EnhancedTable({ medias, isMovie }) {
                                                 <TableCell id={'episode'} align="left">
                                                     <IconButton onClick={(event) => handleRemoveEpisodeClick(data.indexOf(row))}><RemoveIcon fontSize="small" />
                                                     </IconButton>
-                                                    {episodes[data.indexOf(row)]}
+                                                    {row.episode}
                                                     <IconButton onClick={(event) => handleAddEpisodeClick(data.indexOf(row))}><AddIcon fontSize="small" />
                                                     </IconButton>
                                                 </TableCell>) : ''
