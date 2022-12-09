@@ -45,7 +45,7 @@ export default function MediaPage() {
 
     async function handlePickStatus(id, pickedStatus) {
         if (type == "tv") {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/opt`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/${katalogueId}`, {
                 body: JSON.stringify({
                     KID: katalogueId,
                     TVID: mId,
@@ -61,7 +61,7 @@ export default function MediaPage() {
             setMediaStatus(pickedStatus);
 
         } else {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/movieKatalogueRoute/opt`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/movieKatalogueRoute/${katalogueId}`, {
                 body: JSON.stringify({
                     KID: katalogueId,
                     MovieID: mId,
