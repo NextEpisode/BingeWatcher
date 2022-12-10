@@ -1,8 +1,8 @@
 import { Card, CardActionArea, CardMedia, Grid, Table, TableCell, Typography } from "@mui/material";
 import Link from "next/link";
 
-export default function DisplayCards({ title, medias }) {
-
+export default function DisplayCards({ title, medias,isMovie }) {
+    console.log(medias)
     return (
         <Grid
             container
@@ -18,7 +18,7 @@ export default function DisplayCards({ title, medias }) {
             <Table item sx={{ maxWidth: 1500 }}>
                 {medias.map((media) => (
                     <TableCell sx={{ maxWidth: 125, minWidth: 125 }} align='center'>
-                        <Link href={`/media/${media.id}?type=${media.media_type}`}>
+                        <Link href={`/media/${media.id}?type=${isMovie ? "movie" : "tv"}`}>
                             <Card>
                                 <CardActionArea>
                                     <CardMedia sx={{ minHeight: 450 }}
@@ -28,7 +28,7 @@ export default function DisplayCards({ title, medias }) {
                                         alt="no poster"
                                     />
                                     <Typography gutterBottom variant="h5" component="div" sx={{ minHeight: 100 }}>
-                                        {(media.media_type == "movie" ? media.title : media.name)}
+                                        {(isMovie ? media.title : media.name)}
                                     </Typography>
                                 </CardActionArea>
                             </Card>
