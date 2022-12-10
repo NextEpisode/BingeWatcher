@@ -53,6 +53,8 @@ class Cluster():
             result_list.append(result)
             i=i+1
             if i>5:
+                result = self.build_clusterlist_dict(str(movie_user_likes))
+                result_list.append(result)
                 break
         return jsonify(cluster=result_list)
 
