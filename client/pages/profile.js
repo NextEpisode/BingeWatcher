@@ -56,6 +56,7 @@ function BasicTabs() {
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [movies, setMovies] = useState([]);
   const [series, setSeries] = useState([]);
+  const [recommendedMovieTitle, setRecommendedMovieTitle]  = useState("");
 
 
   const fetchTrendingSeriesData = async () => {
@@ -92,17 +93,17 @@ function BasicTabs() {
           .then((data) => {
             if (!data.errors) {
               data.media_status = movie.MKUStatus;
-              if(data.genres && data.genres.length > 0){
+              if (data.genres && data.genres.length > 0) {
                 data.first_genre = data.genres[0].name;
               }
-              else{
+              else {
                 data.first_genre = ''
               }
               dummyMovies.push(data);
               setMovies(dummyMovies);
             }
           });
-          setMovies(dummyMovies);
+        setMovies(dummyMovies);
       })
     }
   }
@@ -117,10 +118,10 @@ function BasicTabs() {
           .then((data) => {
             if (!data.errors) {
               data.media_status = tv.TVKUStatus;
-              if(data.genres && data.genres.length > 0){
+              if (data.genres && data.genres.length > 0) {
                 data.first_genre = data.genres[0].name;
               }
-              else{
+              else {
                 data.first_genre = ''
               }
               data.episode = tv.TVKUEpisode;
@@ -137,14 +138,20 @@ function BasicTabs() {
   const fetchRecommendedMovies = async () => {
     let dummyMovies = [];
     if (MovieRecommendations && MovieRecommendations.recommendedMovies.length > 0) {
-      MovieRecommendations.recommendedMovies.map(async (movie,index) => {
+      MovieRecommendations.recommendedMovies.map(async (movie, index) => {
         await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie}`
         )
           .then((res) => res.json())
           .then((data) => {
             if (!data.errors) {
-              if(data.results && data.results.length > 0){
-                dummyMovies[index] = data.results[0];
+              if (data.results && data.results.length > 0) {
+                //first element returned is the movie we're basing our recommendation on
+                if (index == 0) {
+                  setRecommendedMovieTitle("Because you watched ".concat(movie));
+                }
+                else {
+                  dummyMovies[index-1] = data.results[0];
+                }
               }
             }
           });
@@ -173,7 +180,7 @@ function BasicTabs() {
 
   useEffect(() => {
     setMovies(movies)
-  },[movies.length])
+  }, [movies.length])
 
 
   const firstFourTrending = (media) => {
@@ -199,7 +206,7 @@ function BasicTabs() {
           <TabPanel value={value} index={0}>
             <Katalogue isMovie={true} medias={movies} />
             <MediaCarousel shouldCom media={trendingMovies} title="Trending Movies" isMovie={true} />
-            <MediaCarousel media={recommendedMovies} title="Recommended Movies" isMovie={true} />
+            <MediaCarousel media={recommendedMovies} title={recommendedMovieTitle} isMovie={true} />
           </TabPanel>
           {/* Series Tab */}
           <TabPanel value={value} index={1}>
