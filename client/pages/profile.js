@@ -92,6 +92,12 @@ function BasicTabs() {
           .then((data) => {
             if (!data.errors) {
               data.media_status = movie.MKUStatus;
+              if(data.genres && data.genres.length > 0){
+                data.first_genre = data.genres[0].name;
+              }
+              else{
+                data.first_genre = ''
+              }
               dummyMovies.push(data);
               setMovies(dummyMovies);
             }
@@ -111,6 +117,12 @@ function BasicTabs() {
           .then((data) => {
             if (!data.errors) {
               data.media_status = tv.TVKUStatus;
+              if(data.genres && data.genres.length > 0){
+                data.first_genre = data.genres[0].name;
+              }
+              else{
+                data.first_genre = ''
+              }
               data.episode = tv.TVKUEpisode;
               data.season = tv.TVKUSeason;
               dummySeries.push(data);

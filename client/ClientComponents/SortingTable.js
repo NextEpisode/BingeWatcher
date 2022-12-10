@@ -278,7 +278,7 @@ export default function EnhancedTable({ medias, isMovie }) {
                                             </Link>
 
                                             <TableCell align="left">{isMovie ? row.release_date : row.first_air_date}</TableCell>
-                                            <TableCell align="left">{(row.genres && row.genres.length > 0) ? row.genres[0].name : "No genre"}</TableCell>
+                                            <TableCell align="left">{row.first_genre}</TableCell>
                                             <TableCell align="left">{
                                                 <div>
                                                     <Accordion>
