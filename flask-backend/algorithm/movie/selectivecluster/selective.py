@@ -47,14 +47,14 @@ class Cluster():
         ## Step 8: Print titles of first 50 movies
         i=0
         result_list = []
+        result = self.build_clusterlist_dict(str(movie_user_likes))
+        result_list.append(result)
         for element in sorted_similar_movies:
             mov = helper.get_title_from_index(element[0])
             result = self.build_clusterlist_dict(str(mov))
             result_list.append(result)
             i=i+1
             if i>5:
-                result = self.build_clusterlist_dict(str(movie_user_likes))
-                result_list.append(result)
                 break
         return jsonify(cluster=result_list)
 
