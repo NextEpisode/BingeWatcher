@@ -26,7 +26,7 @@ export default function TrendingCarousel({ media, title, isMovie }) {
           {(medias && medias.length > 0) ? medias.map((media, index) =>
           (
             <React.Fragment key={"Carousel-" + index}>
-              <DisplayCards title={title} medias={media} />
+              <DisplayCards title={title} medias={media} isMovie={isMovie} />
             </React.Fragment>
           )
           ) : ""}

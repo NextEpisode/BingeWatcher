@@ -111,8 +111,8 @@ export default function Album() {
                     <main>
                         {/* Hero unit */}
                         <MediaCarousel media={carouselData} title="Trending Movies" isMovie={true} />
-                        <DisplayCards title="Trending Movies of the week" medias={trendingMovies} />
-                        <DisplayCards title="Trending Series of the week" medias={trendingSeries} />
+                        <DisplayCards title="Trending Movies of the week" medias={trendingMovies} isMovie={true} />
+                        <DisplayCards title="Trending Series of the week" medias={trendingSeries} isMovie={false} />
                     </main>
                 )}
             </ThemeProvider>
