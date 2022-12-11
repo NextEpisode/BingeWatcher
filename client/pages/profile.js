@@ -8,9 +8,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import EnhancedTable from '../ClientComponents/SortingTable';
 import MediaCarousel from '../ClientComponents/MediaCarousel';
-import movieKatalogues from '../movieKatalogues.json'
-import tvkat from '../tvkat.json'
-// import MovieRecommendations from '../MovieRecommendations.json'
+import MovieRecommendations from '../MovieRecommendations.json'
 
 function TabPanel({ children, value, index, ...other }) {
 
@@ -46,11 +44,6 @@ function BasicTabs() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   const [trendingSeries, setTrendingSeries] = useState([]);
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [recommendedMovies, setRecommendedMovies] = useState([]);
@@ -58,6 +51,13 @@ function BasicTabs() {
   const [series, setSeries] = useState([]);
   const [recommendedMovieTitle, setRecommendedMovieTitle]  = useState("");
 
+  const [katalogueId, setkatalogueId] = useState()
+  const [movieKatalogue, setMovieKatalogue] = useState()
+  const [tvKatalogue, setTVKatalogue] = useState()
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const fetchTrendingSeriesData = async () => {
     fetch(`https://api.themoviedb.org/3/trending/tv/week?api_key=468018e64d6cfa119009ede09787dea0&`)
@@ -84,54 +84,56 @@ function BasicTabs() {
   }
 
   const fetchMovieData = async () => {
-    let dummyMovies = [];
     //verify if the katalogue exists and has media in it
-    if (movieKatalogues && movieKatalogues.length > 0) {
-      movieKatalogues[0].moviekatalogues.map(async (movie) => {
-        await fetch(`https://api.themoviedb.org/3/movie/${movie.MovieID}?api_key=468018e64d6cfa119009ede09787dea0&`)
-          .then((res) => res.json())
-          .then((data) => {
-            if (!data.errors) {
-              data.media_status = movie.MKUStatus;
-              if (data.genres && data.genres.length > 0) {
-                data.first_genre = data.genres[0].name;
-              }
-              else {
-                data.first_genre = ''
-              }
-              dummyMovies.push(data);
-              setMovies(dummyMovies);
-            }
-          });
-        setMovies(dummyMovies);
-      })
+    if (movieKatalogue && movieKatalogue.length > 0) {
+      const movieEntries = await Promise.all(movieKatalogue.map(async (movie) => {
+        const response = await fetch(`https://api.themoviedb.org/3/movie/${movie.MovieID}?api_key=468018e64d6cfa119009ede09787dea0&`)
+        const data = await response.json()
+        data.media_status = movie.MKUStatus;
+        if (data.genres && data.genres.length > 0) {
+          data.first_genre = data.genres[0].name;
+        }
+        else {
+          data.first_genre = ''
+        }
+        return data;
+      }))
+      setMovies(movieEntries);
     }
   }
 
   const fetchSeriesData = async () => {
-    let dummySeries = [];
     //verify if the katalogue exists and has media in it
-    if (tvkat && tvkat.tvkatalogues.length > 0) {
-      tvkat.tvkatalogues.map(async (tv) => {
-        await fetch(`https://api.themoviedb.org/3/tv/${tv.TVID}?api_key=468018e64d6cfa119009ede09787dea0&`)
-          .then((res) => res.json())
-          .then((data) => {
-            if (!data.errors) {
-              data.media_status = tv.TVKUStatus;
-              if (data.genres && data.genres.length > 0) {
-                data.first_genre = data.genres[0].name;
-              }
-              else {
-                data.first_genre = ''
-              }
-              data.episode = tv.TVKUEpisode;
-              data.season = tv.TVKUSeason;
-              dummySeries.push(data);
-              setSeries(dummySeries);
-            }
-          });
+    if (tvKatalogue && tvKatalogue.length > 0) {
+      const seriesEntry = await Promise.all(tvKatalogue.map(async (tv) => {
+        const response = await fetch(`https://api.themoviedb.org/3/tv/${tv.TVID}?api_key=468018e64d6cfa119009ede09787dea0&`)
+        const data = await response.json()
+        data.media_status = tv.TVKUStatus;
+        if (data.genres && data.genres.length > 0) {
+          data.first_genre = data.genres[0].name;
+        }
+        else {
+          data.first_genre = ''
+        }
+        data.episode = tv.TVKUEpisode;
+        data.season = tv.TVKUSeason;
+        return data;
+      }))
+      setSeries(seriesEntry);
+    }
+  }
+
+  async function getKatalogueID() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/userRoute/${session.user.id}/`, {
+        headers: {
+          'Content-type': 'application/json'
+        }
       })
-      setSeries(dummySeries);
+      const data = await response.json()
+      setkatalogueId(data.User.KID)
+    } catch (e) {
+      console.log(e)
     }
   }
 
@@ -155,8 +157,37 @@ function BasicTabs() {
               }
             }
           });
+          setRecommendedMovies(dummyMovies)
+        });
+      }
+    }
+
+
+  async function getMovieKatalogue() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/movieKatalogueRoute/${katalogueId}`, {
+        headers: {
+          'Content-type': 'application/json'
+        }
       })
-      setRecommendedMovies(dummyMovies);
+      const data = await response.json()
+      setMovieKatalogue(data.moviekatalogues)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async function getTVKatalogue() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/${katalogueId}`, {
+        headers: {
+          'Content-type': 'application/json'
+        }
+      })
+      const data = await response.json()
+      setTVKatalogue(data.tvkatalogues)
+    } catch (e) {
+      console.log(e)
     }
   }
 
@@ -164,18 +195,34 @@ function BasicTabs() {
     if (status != 'authenticated' && status != 'loading') {
       router.push("/auth/signin")
     }
-    console.log(status)
+    if (status == 'authenticated') {
+      getKatalogueID().catch(console.error)
+    }
   }, [status])
 
+  useEffect(() => {
+    if (katalogueId) {
+      getMovieKatalogue().catch(console.error)
+      getTVKatalogue().catch(console.error)
+    }
+  }, [katalogueId])
 
+  useEffect(() => {
+    if (movieKatalogue) {
+      fetchMovieData().catch(console.error);
+    }
+  }, [movieKatalogue])
+
+  useEffect(() => {
+    if (tvKatalogue) {
+      fetchSeriesData().catch(console.error);
+    }
+  }, [tvKatalogue])
 
   useEffect(() => {
     fetchTrendingSeriesData().catch(console.error);
     fetchTrendingMoviesData().catch(console.error);
     fetchRecommendedMovies().catch(console.error)
-    fetchMovieData().catch(console.error);
-    fetchSeriesData().catch(console.error);
-
   }, [])
 
   useEffect(() => {
@@ -198,19 +245,19 @@ function BasicTabs() {
         <Box sx={{ width: '100%' }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" sx={{ ml: 100 }}>
-              <Tab label="Movies" {...a11yProps(0)} />
-              <Tab label="Series" {...a11yProps(1)} />
+              <Tab label="Movies" sx={{ color: "white" }} {...a11yProps(0)} />
+              <Tab label="Series" sx={{ color: "white" }}{...a11yProps(1)} />
             </Tabs>
           </Box>
           {/* Movie tab */}
           <TabPanel value={value} index={0}>
-            <Katalogue isMovie={true} medias={movies} />
+            <Katalogue isMovie={true} medias={movies} setMedias={setMovies} />
             <MediaCarousel shouldCom media={trendingMovies} title="Trending Movies" isMovie={true} />
             <MediaCarousel media={recommendedMovies} title={recommendedMovieTitle} isMovie={true} />
           </TabPanel>
           {/* Series Tab */}
           <TabPanel value={value} index={1}>
-            <Katalogue isMovie={false} medias={series} />
+            <Katalogue isMovie={false} medias={series} setMedias={setSeries} />
             <MediaCarousel media={trendingSeries} title="Trending Series" isMovie={false} />
           </TabPanel>
         </Box>
@@ -221,14 +268,14 @@ function BasicTabs() {
 
 
 
-function Katalogue({ medias, isMovie }) {
+function Katalogue({ medias, isMovie, setMedias }) {
   return (
     <div>
       <Container>
         <Typography variant="h4" >
           Katalogue
         </Typography>
-        <EnhancedTable medias={medias} isMovie={isMovie} />
+        <EnhancedTable medias={medias} isMovie={isMovie} setMedias={setMedias} />
       </Container>
     </div>
   )

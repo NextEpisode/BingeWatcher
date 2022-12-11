@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Box } from '@mui/system';
-import { Card, FormControl, InputLabel, MenuItem, Paper, Select, Table, TableCell, TableRow, Typography } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Paper, Select, Table, TableCell, TableRow, Typography } from '@mui/material';
 import { useSession } from 'next-auth/react'
 import MediaCarousel from '../../ClientComponents/MediaCarousel'
-import MovieRecommendations from '../../MovieRecommendations.json'
 
 
 export default function MediaPage() {
@@ -25,29 +24,29 @@ export default function MediaPage() {
         "On Hold"
     ];
 
-    const fetchRecommendedMovies = async () => {
-        let dummyMovies = [];
-        let results = [];
-        if (MovieRecommendations && MovieRecommendations.recommendedMovies.length > 0) {
-            MovieRecommendations.recommendedMovies.map(async (movie, index) => {
-                await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie}`
-                )
-                    .then((res) => res.json())
-                    .then((data) => {
-                        if (!data.errors) {
-                            if (data.results && data.results.length > 0) {
-                                dummyMovies[index] = data.results[0];
-                            }
-                        }
-                    });
-            })
-            setRecommendedMovies(dummyMovies);
-        }
-    }
+    // const fetchRecommendedMovies = async () => {
+    //     let dummyMovies = [];
+    //     let results = [];
+    //     if (MovieRecommendations && MovieRecommendations.recommendedMovies.length > 0) {
+    //         MovieRecommendations.recommendedMovies.map(async (movie, index) => {
+    //             await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie}`
+    //             )
+    //                 .then((res) => res.json())
+    //                 .then((data) => {
+    //                     if (!data.errors) {
+    //                         if (data.results && data.results.length > 0) {
+    //                             dummyMovies[index] = data.results[0];
+    //                         }
+    //                     }
+    //                 });
+    //         })
+    //         setRecommendedMovies(dummyMovies);
+    //     }
+    // }
 
-    useEffect(() => {
-        fetchRecommendedMovies().catch(console.error)
-    }, [])
+    // useEffect(() => {
+    //     fetchRecommendedMovies().catch(console.error)
+    // }, [])
 
 
 

@@ -92,7 +92,7 @@ EnhancedTableHead.propTypes = {
 
 
 export default function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort,isMovie } =
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, isMovie } =
         props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -112,29 +112,29 @@ export default function EnhancedTableHead(props) {
                         }}
                     />
                 </TableCell>
-                { isMovie ? (movieHeadCells.map((headCell) => (
+                {isMovie ? (movieHeadCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
-                    > 
-                    {headCell.label != "Poster" ?                         
-                    <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel> : 
-                        <TableCell>
-                            {headCell.label}
-                        </TableCell>
+                    >
+                        {headCell.label != "Poster" ?
+                            <TableSortLabel
+                                active={orderBy === headCell.id}
+                                direction={orderBy === headCell.id ? order : 'asc'}
+                                onClick={createSortHandler(headCell.id)}
+                            >
+                                {headCell.label}
+                                {orderBy === headCell.id ? (
+                                    <Box component="span" sx={visuallyHidden}>
+                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </Box>
+                                ) : null}
+                            </TableSortLabel> :
+                            <TableCell>
+                                {headCell.label}
+                            </TableCell>
                         }
 
                     </TableCell>
@@ -159,8 +159,7 @@ export default function EnhancedTableHead(props) {
                         </TableSortLabel>
                     </TableCell>
                 ))
-            }
-
+                }
             </TableRow>
         </TableHead>
     );
