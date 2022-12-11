@@ -166,12 +166,7 @@ def movrndclust():
 @app.route('/tu15BntHj9/clst/slct', methods=['GET'])
 def movselectclust():
     print("REQUEST: ", request.json)
-    return slctclust.Cluster().selectiveMovieAlgorithm(request.json)
-
-@app.route('/krp', methods=['GET'])
-def kataloguerandompick():
-    print("REQUEST: ", request.json)
-    return MovieKatalogueHandler().getRandomMovieFromKatalogue(request.json)
+    return slctclust.Cluster().selectiveCluster(request.json)
 
     
 # Recommendation Algorithm Are--------------------------------------------------------------------

@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from csv import writer
 from flask import jsonify
+from handler.MovieKatalogueHandler import MovieKatalogueHandler
 from algorithm.movie.selectivecluster.selectivehelper import selecthelper as helper
 
 class Cluster():
@@ -14,6 +15,11 @@ class Cluster():
         result = {}
         result['Moviename'] = row
         return result
+
+
+    def selectiveCluster(self, json):
+         randmov = MovieKatalogueHandler().getRandomMovieFromKatalogue(json)
+         return self.selectiveMovieAlgorithm(randmov)
 
     def selectiveMovieAlgorithm(self, json):
         df = pd.read_csv(r'flask-backend\algorithm\dataset\movie_dataset.csv')
@@ -43,7 +49,8 @@ class Cluster():
         similar_movies =  list(enumerate(cosine_sim[movie_index]))
         ## Step 7: Get a list of similar movies in descending order of similarity score
         sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
-
+        if not sorted_similar_movies:
+            return []
         ## Step 8: Print titles of first 50 movies
         i=0
         result_list = []
