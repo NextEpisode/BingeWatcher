@@ -163,15 +163,13 @@ def movrndclust():
     return rndclust.Cluster().getCluster()
 
 #Selective Algorithm that uses User movie in Katalogue for calculations
-@app.route('/tu15BntHj9/clst/slct', methods=['GET'])
-def movselectclust():
-    print("REQUEST: ", request.json)
-    return slctclust.Cluster().selectiveMovieAlgorithm(request.json)
+@app.route('/<string:movie_id>/clst/slct', methods=['GET'])
+def movselectclust(movie_id):
+    return slctclust.Cluster().selectiveMovieAlgorithm(movie_id)
 
-@app.route('/krp', methods=['GET'])
-def kataloguerandompick():
-    print("REQUEST: ", request.json)
-    return MovieKatalogueHandler().getRandomMovieFromKatalogue(request.json)
+@app.route('/<string:KID>/<string:MKUStatus>/krp', methods=['GET'])
+def kataloguerandompick(KID,MKUStatus):
+    return MovieKatalogueHandler().getRandomMovieFromKatalogue(KID,MKUStatus)
 
     
 # Recommendation Algorithm Are--------------------------------------------------------------------

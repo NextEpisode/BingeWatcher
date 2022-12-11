@@ -15,8 +15,8 @@ class Cluster():
         result['Moviename'] = row
         return result
 
-    def selectiveMovieAlgorithm(self, json):
-        df = pd.read_csv(r'flask-backend\algorithm\dataset\movie_dataset.csv')
+    def selectiveMovieAlgorithm(self, movieID):
+        df = pd.read_csv(r'/home/christian/code/django-projects/NextEpisode/newBingewatcherClone/forum-system/flask-backend/algorithm/dataset/movie_dataset.csv')
         ##Step 1: Read CSV File
 		#print df.columns
     	##Step 2: Select Features
@@ -30,11 +30,10 @@ class Cluster():
         count_matrix = cv.fit_transform(df["combined_features"])
         ##Step 5: Compute the Cosine Similarity based on the count_matrix
         cosine_sim = cosine_similarity(count_matrix) 
-        movieid = json['MovieID']
         #movieid = 118340
         first = 'https://api.themoviedb.org/3/movie/'
         second = '?api_key=468018e64d6cfa119009ede09787dea0&language=en-US'
-        response = requests.get(first+str(movieid)+second)
+        response = requests.get(first+str(movieID)+second)
         data = json.loads(response.text)
         movie_user_likes = data["title"]
         
