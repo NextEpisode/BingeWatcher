@@ -30,7 +30,7 @@ export default function Album() {
             .then((res) => res.json())
             .then((data) => {
                 if (!data.errors) {
-                    setTrendingMovies(firstFiveTrending(data.results));
+                    setTrendingMovies(firstTwentyTrending(data.results));
                 } else {
                     setTrendingMovies([]);
                 }
@@ -40,7 +40,7 @@ export default function Album() {
             .then((res) => res.json())
             .then((data) => {
                 if (!data.errors) {
-                    setTrendingSeries(firstFiveTrending(data.results));
+                    setTrendingSeries(firstTwentyTrending(data.results));
                 } else {
                     setTrendingSeries([]);
                 }
@@ -50,9 +50,8 @@ export default function Album() {
 
 useEffect(() => {
         fetchRecommendedMovies().catch(console.error)
-        console.log("rec")
-        console.log(recommendedMovies)
-    },[recommendedMovieTitles])
+        console.log(recommendedMovies.length)
+    },[recommendedMovieTitles.length])
 
     const fetchRecommendedMovies = async () => {
 
@@ -61,7 +60,11 @@ useEffect(() => {
         let dummyMovies = [];
         if (recommendedMovieTitles && recommendedMovieTitles.length > 0) {
             recommendedMovieTitles.map(async (movie, index) => {
-            let str = movie.Moviename.slice(0,-6)
+                let str = ''
+            if(movie.Moviename && movie.Moviename.length > 0){
+                str = movie.Moviename.split('(')[0]
+                str = str.split(',')[0]
+            }
             await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${str}`
             )
               .then((res) => res.json())
@@ -77,7 +80,6 @@ useEffect(() => {
               });
           });
           console.log("set the movie objects")
-          console.log(dummyMovies)
           setRecommendedMovies(dummyMovies)
         }
       }
@@ -97,10 +99,10 @@ useEffect(() => {
         }
     }
 
-    const firstFiveTrending = (media) => {
+    const firstTwentyTrending = (media) => {
         const trendingMedia = [];
         let index = 0;
-        for (index; index < 5; index++) {
+        for (index; index < 20; index++) {
             trendingMedia[index] = media[index];
         }
         return trendingMedia;
@@ -148,9 +150,9 @@ useEffect(() => {
                 {session && (
                     <main>
                         {/* Hero unit */}
-                        <MediaCarousel media={recommendedMovies} title="Trending Movies" isMovie={true} />
-                        <DisplayCards title="Trending Movies of the week" medias={trendingMovies} isMovie={true} />
-                        <DisplayCards title="Trending Series of the week" medias={trendingSeries} isMovie={false} />
+                        <MediaCarousel title="Trending Movies of the week" media={trendingMovies} isMovie={true} />
+                        <MediaCarousel title="Trending Series of the week" media={trendingSeries} isMovie={false} />
+                        <MediaCarousel shouldCom media={recommendedMovies} title="Recommendations" isMovie={true} />
                     </main>
                 )}
             </ThemeProvider>

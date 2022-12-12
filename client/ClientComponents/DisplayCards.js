@@ -4,7 +4,7 @@ import { useEffect,useState } from "react";
 
 export default function DisplayCards({ title, medias,isMovie }) {
 
-    const [media,setMedia] = useState([])
+    const [media,setMedia] = useState(medias)
     useEffect(() => {
         setMedia(medias)
     },[medias.length])
@@ -22,7 +22,7 @@ export default function DisplayCards({ title, medias,isMovie }) {
 
             <Table item sx={{ maxWidth: 1500 }}>
                 {medias.map((element) => (
-                    <TableCell sx={{ maxWidth: 125, minWidth: 125 }} align='center'>
+                    <TableCell  sx={{ maxWidth: 125, minWidth: 125,borderBottom: "none" }} align='center'>
                         <Link href={`/media/${element.id}?type=${isMovie ? "movie" : "tv"}`}>
                             <Card>
                                 <CardActionArea>

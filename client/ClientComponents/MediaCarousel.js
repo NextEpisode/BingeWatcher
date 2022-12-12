@@ -17,7 +17,7 @@ export default function TrendingCarousel({ media, title, isMovie }) {
       }, []);
       setMedias(rows)
     }
-  }, [media])
+  }, [media.length])
 
   return (
 
