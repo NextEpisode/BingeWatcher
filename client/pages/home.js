@@ -16,12 +16,14 @@ export default function Album() {
 
     const [trendingMovies, setTrendingMovies] = useState([]);
     const [trendingSeries, setTrendingSeries] = useState([]);
-    const [carouselData, setCarouselData] = useState([]);
+    const [recommendedMovieTitles, setRecommendedMovieTitles] = useState([]);
+    const [recommendedMovies, setRecommendedMovies] = useState([]);
+
 
 
     useEffect(() => {
 
-        fetchCarouselData().catch(console.error)
+        fetchRecommendedMovieTitles().catch(console.error)
 
         fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=468018e64d6cfa119009ede09787dea0&`
         )
@@ -43,19 +45,56 @@ export default function Album() {
                     setTrendingSeries([]);
                 }
             }).catch(console.error);
-    }, [])
+            fetchRecommendedMovies().catch(console.error)
+        }, [])
 
-    const fetchCarouselData = async () => {
-        fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=468018e64d6cfa119009ede09787dea0&`
-        )
-            .then((res) => res.json())
-            .then((data) => {
+useEffect(() => {
+        fetchRecommendedMovies().catch(console.error)
+        console.log("rec")
+        console.log(recommendedMovies)
+    },[recommendedMovieTitles])
+
+    const fetchRecommendedMovies = async () => {
+
+        console.log('Movie Recs')
+        console.log(recommendedMovieTitles)
+        let dummyMovies = [];
+        if (recommendedMovieTitles && recommendedMovieTitles.length > 0) {
+            recommendedMovieTitles.map(async (movie, index) => {
+            let str = movie.Moviename.slice(0,-6)
+            await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${str}`
+            )
+              .then((res) => res.json())
+              .then((data) => {
                 if (!data.errors) {
-                    setCarouselData(firstTwentyTrending(data.results));
-                } else {
-                    setCarouselData([]);
+                  if (data.results && data.results.length > 0) {
+                    dummyMovies[index] = data.results[0];
+                  }
+                  else{
+                    dummyMovies[index] = ''
+                  }
                 }
-            });
+              });
+          });
+          console.log("set the movie objects")
+          console.log(dummyMovies)
+          setRecommendedMovies(dummyMovies)
+        }
+      }
+
+    const fetchRecommendedMovieTitles = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/tu15BntHj9/clst/rnd`, {
+                headers: {
+                    'Content-type': 'application/json'
+                }
+            })
+            const data = await response.json()
+            setRecommendedMovieTitles(firstTenTrending(data.cluster));
+        } catch (e) {
+            setRecommendedMovieTitles([]);
+            console.log(e)
+        }
     }
 
     const firstFiveTrending = (media) => {
@@ -67,10 +106,10 @@ export default function Album() {
         return trendingMedia;
     }
 
-    const firstTwentyTrending = (media) => {
+    const firstTenTrending = (media) => {
         const trendingMedia = [];
         let index = 0;
-        for (index; index < 20; index++) {
+        for (index; index < 10; index++) {
             trendingMedia[index] = media[index];
         }
         return trendingMedia;
@@ -81,7 +120,6 @@ export default function Album() {
             router.push("/auth/signin")
         }
         if (status == 'authenticated') {
-            console.log(session.user.id)
             handleLogin()
         }
     }, [status])
@@ -110,7 +148,7 @@ export default function Album() {
                 {session && (
                     <main>
                         {/* Hero unit */}
-                        <MediaCarousel media={carouselData} title="Trending Movies" isMovie={true} />
+                        <MediaCarousel media={recommendedMovies} title="Trending Movies" isMovie={true} />
                         <DisplayCards title="Trending Movies of the week" medias={trendingMovies} isMovie={true} />
                         <DisplayCards title="Trending Series of the week" medias={trendingSeries} isMovie={false} />
                     </main>
