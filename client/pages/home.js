@@ -18,6 +18,9 @@ export default function Album() {
     const [trendingSeries, setTrendingSeries] = useState([]);
     const [recommendedMovieTitles, setRecommendedMovieTitles] = useState([]);
     const [recommendedMovies, setRecommendedMovies] = useState([]);
+    const [dailyTrendingSeries, setDailyTrendingSeries] = useState([])
+    const [dailyTrendingMovies, setDailyTrendingMovies] = useState([])
+
 
 
 
@@ -45,50 +48,67 @@ export default function Album() {
                     setTrendingSeries([]);
                 }
             }).catch(console.error);
-            fetchRecommendedMovies().catch(console.error)
-        }, [])
+        fetch(`https://api.themoviedb.org/3/trending/tv/day?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setDailyTrendingSeries(firstTwentyTrending(data.results));
+                } else {
+                    setDailyTrendingSeries([]);
+                }
+            }).catch(console.error);
+        fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setDailyTrendingMovies(firstTwentyTrending(data.results));
+                } else {
+                    setDailyTrendingMovies([]);
+                }
+            }).catch(console.error);
+        fetchRecommendedMovies().catch(console.error)
+    }, [])
 
-useEffect(() => {
+    useEffect(() => {
         fetchRecommendedMovies().catch(console.error)
         console.log(recommendedMovies.length)
-    },[recommendedMovieTitles.length])
+    }, [recommendedMovieTitles.length])
 
     const fetchRecommendedMovies = async () => {
-
-        console.log('Movie Recs')
-        console.log(recommendedMovieTitles)
         let dummyMovies = [];
         if (recommendedMovieTitles && recommendedMovieTitles.length > 0) {
             recommendedMovieTitles.map(async (movie, index) => {
                 let str = ''
                 let str2 = ''
-            if(movie.Moviename && movie.Moviename.length > 0){
-                str = movie.Moviename.split('(')[0]
-                if(str.indexOf(',') > 0 && str.split(',')[1].length <= str.split(',')[0].length){
-                    str2 = str.split(',')[1]
-                    str = str.split(',')[0]
-                    str = str2 + " " + str
+                //Manipulating string into a searchable format
+                if (movie.Moviename && movie.Moviename.length > 0) {
+                    str = movie.Moviename.split('(')[0]
+                    if (str.indexOf(',') > 0 && str.split(',')[1].length <= str.split(',')[0].length) {
+                        str2 = str.split(',')[1]
+                        str = str.split(',')[0]
+                        str = str2 + " " + str
+                    }
                 }
-            }
-            console.log(str)
-            await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${str}`
-            )
-              .then((res) => res.json())
-              .then((data) => {
-                if (!data.errors) {
-                  if (data.results && data.results.length > 0) {
-                    dummyMovies[index] = data.results[0];
-                  }
-                  else{
-                    dummyMovies[index] = ''
-                  }
-                }
-              });
-          });
-          console.log("set the movie objects")
-          setRecommendedMovies(dummyMovies)
+                console.log(str)
+                await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${str}`
+                )
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (!data.errors) {
+                            if (data.results && data.results.length > 0) {
+                                dummyMovies[index] = data.results[0];
+                            }
+                            else {
+                                dummyMovies[index] = ''
+                            }
+                        }
+                    });
+            });
+            setRecommendedMovies(dummyMovies)
         }
-      }
+    }
 
     const fetchRecommendedMovieTitles = async () => {
         try {
@@ -158,7 +178,9 @@ useEffect(() => {
                         {/* Hero unit */}
                         <MediaCarousel title="Trending Movies of the week" media={trendingMovies} isMovie={true} />
                         <MediaCarousel title="Trending Series of the week" media={trendingSeries} isMovie={false} />
-                        <MediaCarousel shouldCom media={recommendedMovies} title="Recommendations" isMovie={true} />
+                        <MediaCarousel title="Trending Series of the day" media={dailyTrendingSeries} isMovie={false} />
+                        <MediaCarousel title="Trending Movies of the day" media={dailyTrendingMovies} isMovie={true} />
+                        <MediaCarousel shouldCom media={recommendedMovies} title="Must Watch" isMovie={true} />
                     </main>
                 )}
             </ThemeProvider>
