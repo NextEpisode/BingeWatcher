@@ -15,6 +15,9 @@ export default function MediaPage() {
     const { mId, type } = router.query
     const [mediaStatus, setMediaStatus] = useState("");
     const [recommendedMovies, setRecommendedMovies] = useState([]);
+    const [movieRecommendations, setMovieRecommendations] = useState([])
+    const [recommendedMovieTitle, setRecommendedMovieTitle] = useState("");
+
 
     const katalogueStatuses = [
         "Plan to watch",
@@ -24,29 +27,38 @@ export default function MediaPage() {
         "On Hold"
     ];
 
-    // const fetchRecommendedMovies = async () => {
-    //     let dummyMovies = [];
-    //     let results = [];
-    //     if (MovieRecommendations && MovieRecommendations.recommendedMovies.length > 0) {
-    //         MovieRecommendations.recommendedMovies.map(async (movie, index) => {
-    //             await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie}`
-    //             )
-    //                 .then((res) => res.json())
-    //                 .then((data) => {
-    //                     if (!data.errors) {
-    //                         if (data.results && data.results.length > 0) {
-    //                             dummyMovies[index] = data.results[0];
-    //                         }
-    //                     }
-    //                 });
-    //         })
-    //         setRecommendedMovies(dummyMovies);
-    //     }
-    // }
+    const fetchRecommendedMovies = async () => {
+        let dummyMovies = [];
+        console.log("recommm")
+        console.log(movieRecommendations)
+        if (movieRecommendations && movieRecommendations.length > 0) {
+            movieRecommendations.map(async (movie, index) => {
+                await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie.Moviename}`
+                )
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (!data.errors) {
+                            if (data.results && data.results.length > 0) {
+                                //first element returned is the movie we're basing our recommendation on
+                                if (index == 0) {
+                                    setRecommendedMovieTitle("More like ".concat(movie.Moviename));
+                                }
+                                else {
+                                    dummyMovies[index - 1] = data.results[0];
+                                }
+                            }
+                        }
+                    });
+                setRecommendedMovies(dummyMovies)
+            });
+        }
+    }
 
-    // useEffect(() => {
-    //     fetchRecommendedMovies().catch(console.error)
-    // }, [])
+
+    useEffect(() => {
+        fetchRecommendedMovies().catch(console.error)
+        setRecommendedMovies([])
+    }, [movieRecommendations.length])
 
 
 
@@ -68,6 +80,25 @@ export default function MediaPage() {
             })
             const data = await response.json()
             setkatalogueId(data.User.KID)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async function getMovieRecommendationTitles() {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/${mId}/clst/slct`, {
+                headers: {
+                    'Content-type': 'application/json',
+                }
+            })
+            const data = await response.json()
+            if (data.cluster) {
+                setMovieRecommendations(data.cluster)
+            }
+            else {
+                setMovieRecommendations([])
+            }
         } catch (e) {
             console.log(e)
         }
@@ -118,6 +149,7 @@ export default function MediaPage() {
 
     useEffect(() => {
         fetchMediaInfo()
+        getMovieRecommendationTitles().catch(console.error)
     }, [mId, type])
 
     return (
@@ -187,7 +219,7 @@ export default function MediaPage() {
                     }
                 </div>
             </div>
-            <MediaCarousel media={recommendedMovies} title="Recommended Movies" isMovie={true} />
+            <MediaCarousel media={recommendedMovies} title={recommendedMovieTitle} isMovie={true} />
         </div>
     )
 }
