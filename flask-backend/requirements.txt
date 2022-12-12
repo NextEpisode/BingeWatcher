@@ -7,3 +7,4 @@ sklearn
 pandas
 numpy
 requests
+scikit-learn
