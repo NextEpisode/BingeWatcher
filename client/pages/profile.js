@@ -8,7 +8,6 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import EnhancedTable from '../ClientComponents/SortingTable';
 import MediaCarousel from '../ClientComponents/MediaCarousel';
-import MovieRecommendations from '../MovieRecommendations.json'
 
 function TabPanel({ children, value, index, ...other }) {
 
@@ -65,7 +64,7 @@ function BasicTabs() {
       .then((res) => res.json())
       .then((info) => {
         if (!info.errors) {
-          setTrendingSeries(firstFourTrending(info.results));
+          setTrendingSeries(firstTwentyTrending(info.results));
         } else {
           setTrendingSeries([]);
         }
@@ -77,7 +76,7 @@ function BasicTabs() {
       .then((res) => res.json())
       .then((info) => {
         if (!info.errors) {
-          setTrendingMovies(firstFourTrending(info.results));
+          setTrendingMovies(firstTwentyTrending(info.results));
         } else {
           setTrendingMovies([]);
         }
@@ -268,8 +267,9 @@ function BasicTabs() {
 
   useEffect(() => {
     fetchRecommendedMovies().catch(console.error)
-    setRecommendedMovies(movieRecommendations)
-
+    setRecommendedMovies([])
+    console.log("Recommended")
+    console.log(recommendedMovies)
   }, [movieRecommendations.length])
 
   useEffect(() => {
@@ -277,10 +277,10 @@ function BasicTabs() {
   }, [movies.length])
 
 
-  const firstFourTrending = (media) => {
+  const firstTwentyTrending = (media) => {
     const trendingMedia = [];
     let index = 0;
-    for (index; index < 4; index++) {
+    for (index; index < 20; index++) {
       trendingMedia[index] = media[index];
     }
     return trendingMedia;
