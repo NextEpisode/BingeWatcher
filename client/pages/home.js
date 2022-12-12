@@ -61,10 +61,16 @@ useEffect(() => {
         if (recommendedMovieTitles && recommendedMovieTitles.length > 0) {
             recommendedMovieTitles.map(async (movie, index) => {
                 let str = ''
+                let str2 = ''
             if(movie.Moviename && movie.Moviename.length > 0){
                 str = movie.Moviename.split('(')[0]
-                str = str.split(',')[0]
+                if(str.indexOf(',') > 0 && str.split(',')[1].length <= str.split(',')[0].length){
+                    str2 = str.split(',')[1]
+                    str = str.split(',')[0]
+                    str = str2 + " " + str
+                }
             }
+            console.log(str)
             await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${str}`
             )
               .then((res) => res.json())
