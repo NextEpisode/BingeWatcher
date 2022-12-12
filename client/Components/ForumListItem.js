@@ -7,26 +7,47 @@ import Typography from '@mui/material/Typography';
 
 export default function ForumListItem({ title, subtitle, paragraph }) {
     return (
-        <ListItem alignItems="flex-start">
+        <ListItem alignItems="flex-start" sx={{ padding: "8px 0px" }}>
             <ListItemAvatar>
                 <Avatar alt="Remy Sharp" src="/images/avatar/avatar.png" />
             </ListItemAvatar>
             <ListItemText
-                primary={title}
+                // primary={title}
+                primary={
+                    <React.Fragment>
+                        <Typography
+                            sx={{ display: 'inline', marginRight: '6px', textDecoration: 'none' }}
+                            component="span"
+                            variant="h5"
+                            color="white"
+                        >
+                            {title}
+                        </Typography>
+                    </React.Fragment>
+                }
                 secondary={
                     <React.Fragment>
                         <Typography
-                            sx={{ display: 'inline', marginRight: '6px' }}
+                            sx={{ display: 'inline', marginRight: '6px', textDecoration: 'none', fontWeight: "bold", color: '#1876D1' }}
                             component="span"
-                            variant="body2"
-                            color="text.primary"
+                            variant="h7"
+                            color="white"
                         >
                             {subtitle}
                         </Typography>
-                        {paragraph}
+
+                        <Typography
+                            sx={{ display: 'inline', marginRight: '6px', textDecoration: 'none' }}
+                            component="span"
+                            variant="b2"
+                            color="white"
+                        >
+                            {paragraph}
+                        </Typography>
+
                     </React.Fragment>
                 }
             />
-        </ListItem>
+        </ListItem >
     );
 }

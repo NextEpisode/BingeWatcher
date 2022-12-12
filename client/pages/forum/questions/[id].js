@@ -3,8 +3,9 @@ import style from "../../../styles/Home.module.css";
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import axios from "axios"
-import { List, Divider, TextField } from "@mui/material";
+import { List, Divider, TextField, Typography } from "@mui/material";
 import ForumListItem from "../../../Components/ForumListItem";
+import { borderColor } from "@mui/system";
 
 function IdComponent({ mediaResponse }) {
 
@@ -43,17 +44,26 @@ function IdComponent({ mediaResponse }) {
     return (
         <div>
             {!media && (
-                <>Page not found</>
+                <Typography
+                    sx={{ display: 'inline', margin: 'auto', textDecoration: 'none' }}
+                    component="span"
+                    variant="h1"
+                    color="white"
+                    fontWeight='bold'
+                >
+                    Page not found
+                </Typography>
+
             )}
             {media && (
-                <div>
+                <div style={{ padding: "15px" }}>
                     <h2 className={style.subheading}>{media.title}</h2>
                     <div className={style.userinfo}>
                         <p>Posted By: {media.Username}</p>
                     </div>
                     <List>
                         <div className={style.questioncont}>
-                            <p className={style.question} >{media.Questions}</p>
+                            <p className={style.question}> {media.Questions}</p>
                         </div>
                         <div className={style.answercont}>
                             <div className={style.inputanswer}>
@@ -62,18 +72,32 @@ function IdComponent({ mediaResponse }) {
                                 )}
                                 {session && (
                                     <form>
+                                        <h1>Your answer</h1>
                                         <TextField
                                             placeholder="What are your thoughts?"
                                             multiline
+                                            fullWidth
                                             minRows={2}
                                             maxRows={6}
                                             value={answer}
                                             autoComplete="off"
+                                            color="primary"
+                                            variant="standard"
+                                            sx={{
+                                                backgroundColor: '#808080',
+                                                borderColor: '#1876d1',
+                                                borderRadius: '8px',
+                                                color: 'red'
+                                            }}
+                                            inputProps={{ style: { color: "white" } }}
                                             onChange={(e) => {
                                                 setAnswer(e.target.value);
                                             }}
                                         />
-                                        <button disabled={answerEmpty}
+                                        <button style={{
+                                            marginLeft: 0
+                                        }}
+                                            disabled={answerEmpty}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 submitAnswer();
@@ -88,10 +112,10 @@ function IdComponent({ mediaResponse }) {
                                 {media.Answers.map((answers, i) => (
                                     <>
                                         <ForumListItem
-                                            subtitle={answers.user}
-                                            paragraph={answers.reply}
+                                            title={answers.user}
+                                            subtitle={answers.reply}
                                         />
-                                        <Divider variant="inset" component="li" />
+                                        <Divider variant="inset" component="li" style={{ background: '#404040' }} />
                                     </>
                                 ))}
                             </div>
