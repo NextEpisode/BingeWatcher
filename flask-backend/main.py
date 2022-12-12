@@ -164,12 +164,14 @@ def movrndclust():
 
 #Selective Algorithm that uses User movie in Katalogue for calculations
 @app.route('/<string:movie_id>/clst/slct', methods=['GET'])
-def movselectclust():
-    print("REQUEST: ", request.json)
-    return slctclust.Cluster().selectiveCluster(request.json)
+def movselectclust(movie_id):
+    return slctclust.Cluster().selectiveMovieAlgorithm(movie_id)
 
-    
-# Recommendation Algorithm Are--------------------------------------------------------------------
+@app.route('/<string:KID>/<string:MKUStatus>/krp', methods=['GET'])
+def kataloguerandompick(KID,MKUStatus):
+    return MovieKatalogueHandler().getRandomMovieFromKatalogue(KID,MKUStatus)
+
+# Recommendation Algorithm Are------------------------------------------------
 #Finish purge, finish segmented update, check for any irrelevant code.
 #Blob research. How to use in python and how to
 

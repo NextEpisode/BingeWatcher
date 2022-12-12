@@ -37,9 +37,9 @@ class MovieKatalogueHandler:
             result_list.append(result)
         return jsonify(moviekatalogues=result_list)
 
-    def getRandomMovieFromKatalogue(self, json):
-        kid = json["KID"]
-        status = json["MKUStatus"]
+    def getRandomMovieFromKatalogue(self,KID,MKUStatus):
+        kid = KID
+        status = MKUStatus
         dao = MovieKatalogueDao.MovieKatalogueDAO()
         moviekatalogues_list = dao.getMovieKataloguesByKIDAndStatus(kid, status)
         rng = random.choice(list(moviekatalogues_list))

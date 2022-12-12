@@ -8,6 +8,7 @@ from csv import writer
 from flask import jsonify
 from handler.MovieKatalogueHandler import MovieKatalogueHandler
 from algorithm.movie.selectivecluster.selectivehelper import selecthelper as helper
+import csv
 
 class Cluster():
 
@@ -17,13 +18,10 @@ class Cluster():
         return result
 
 
-    def selectiveCluster(self, KID,MKUStatus):
-         randmov = MovieKatalogueHandler().getRandomMovieFromKatalogue(KID,MKUStatus)
-         print(randmov)
-         return self.selectiveMovieAlgorithm(randmov)
+        
 
-    def selectiveMovieAlgorithm(self, json):
-        df = pd.read_csv(r'/home/christian/code/django-projects/NextEpisode/newBingewatcherClone/forum-system/flask-backend/algorithm/dataset/movie_dataset.csv')
+    def selectiveMovieAlgorithm(self, movie_id):
+        df = pd.read_csv(r'flask-backend\algorithm\dataset\movie_dataset.csv')
         ##Step 1: Read CSV File
 		#print df.columns
     	##Step 2: Select Features
@@ -37,33 +35,40 @@ class Cluster():
         count_matrix = cv.fit_transform(df["combined_features"])
         ##Step 5: Compute the Cosine Similarity based on the count_matrix
         cosine_sim = cosine_similarity(count_matrix) 
-        movieid = json['MovieID']
+        movieid = movie_id
         first = 'https://api.themoviedb.org/3/movie/'
         second = '?api_key=468018e64d6cfa119009ede09787dea0&language=en-US'
         response = requests.get(first+str(movieid)+second)
         data = json.loads(response.text)
         movie_user_likes = data["title"]
-        
-        ## Step 6: Get index of this movie from its title
-        movie_index = helper.get_index_from_title(movie_user_likes)
-        similar_movies =  list(enumerate(cosine_sim[movie_index]))
-        ## Step 7: Get a list of similar movies in descending order of similarity score
-        sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
-        if not sorted_similar_movies:
-            return []
-        ## Step 8: Print titles of first 50 movies
-        i=0
-        result_list = []
-        result = self.build_clusterlist_dict(str(movie_user_likes))
-        result_list.append(result)
-        for element in sorted_similar_movies:
-            mov = helper.get_title_from_index(element[0])
-            result = self.build_clusterlist_dict(str(mov))
-            result_list.append(result)
-            i=i+1
-            if i>5:
-                break
-        return jsonify(cluster=result_list)
+        f=open(r'flask-backend\algorithm\dataset\movie_dataset.csv',"r")
+        reader=csv.reader(f)
+        movieToFind = movie_user_likes
+        for row in reader:
+            if movieToFind in row:
+                ## Step 6: Get index of this movie from its title
+                movie_index = helper.get_index_from_title(movie_user_likes)
+                similar_movies =  list(enumerate(cosine_sim[movie_index]))
+                ## Step 7: Get a list of similar movies in descending order of similarity score
+                sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
+                if len(sorted_similar_movies) < 0:
+                    return []
+                ## Step 8: Print titles of first 5 movies
+                i=0            
+                result_list = []
+                for element in sorted_similar_movies:
+                    mov = helper.get_title_from_index(element[0])
+                    result = self.build_clusterlist_dict(str(mov))
+                    result_list.append(result)
+                    i=i+1
+                    if i>5:
+                        break
+                    f.close()
+                return jsonify(cluster=result_list)
+        f.close()
+        return []
+    
+
 
         
 
