@@ -49,11 +49,12 @@ function BasicTabs() {
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [movies, setMovies] = useState([]);
   const [series, setSeries] = useState([]);
-  const [recommendedMovieTitle, setRecommendedMovieTitle]  = useState("");
+  const [recommendedMovieTitle, setRecommendedMovieTitle] = useState("");
 
   const [katalogueId, setkatalogueId] = useState()
   const [movieKatalogue, setMovieKatalogue] = useState()
   const [tvKatalogue, setTVKatalogue] = useState()
+  const [movieRecommendations, setMovieRecommendations] = useState([])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -137,11 +138,50 @@ function BasicTabs() {
     }
   }
 
+
+
+  async function getMovieRecommendationTitles(movieID) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/${movieID}/clst/slct`, {
+        headers: {
+          'Content-type': 'application/json',
+        }
+      })
+      const data = await response.json()
+      if(data.cluster){
+        setMovieRecommendations(data.cluster)
+      }
+      else{
+        setMovieRecommendations([])
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async function pickRandomMovieToRecommend() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/${katalogueId}/Watched/krp`, {
+        headers: {
+          'Content-type': 'application/json',
+        }
+      })
+      const data = await response.json()
+      console.log('data')
+      console.log(data)
+      getMovieRecommendationTitles(data.moviekatalogues.MovieID)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   const fetchRecommendedMovies = async () => {
+    console.log('Movie Recs')
+    console.log(movieRecommendations)
     let dummyMovies = [];
-    if (MovieRecommendations && MovieRecommendations.recommendedMovies.length > 0) {
-      MovieRecommendations.recommendedMovies.map(async (movie, index) => {
-        await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie}`
+    if (movieRecommendations && movieRecommendations.length > 0) {
+      movieRecommendations.map(async (movie, index) => {
+        await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie.Moviename}`
         )
           .then((res) => res.json())
           .then((data) => {
@@ -149,18 +189,18 @@ function BasicTabs() {
               if (data.results && data.results.length > 0) {
                 //first element returned is the movie we're basing our recommendation on
                 if (index == 0) {
-                  setRecommendedMovieTitle("Because you watched ".concat(movie));
+                  setRecommendedMovieTitle("Because you watched ".concat(movie.Moviename));
                 }
                 else {
-                  dummyMovies[index-1] = data.results[0];
+                  dummyMovies[index - 1] = data.results[0];
                 }
               }
             }
           });
-          setRecommendedMovies(dummyMovies)
-        });
-      }
+        setRecommendedMovies(dummyMovies)
+      });
     }
+  }
 
 
   async function getMovieKatalogue() {
@@ -204,6 +244,7 @@ function BasicTabs() {
     if (katalogueId) {
       getMovieKatalogue().catch(console.error)
       getTVKatalogue().catch(console.error)
+      pickRandomMovieToRecommend().catch(console.error)
     }
   }, [katalogueId])
 
@@ -224,6 +265,12 @@ function BasicTabs() {
     fetchTrendingMoviesData().catch(console.error);
     fetchRecommendedMovies().catch(console.error)
   }, [])
+
+  useEffect(() => {
+    fetchRecommendedMovies().catch(console.error)
+    setRecommendedMovies(movieRecommendations)
+
+  }, [movieRecommendations.length])
 
   useEffect(() => {
     setMovies(movies)

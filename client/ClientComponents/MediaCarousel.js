@@ -10,12 +10,14 @@ export default function TrendingCarousel({ media, title, isMovie }) {
   const [medias, setMedias] = useState([]);
 
   useEffect(() => {
-    let rows = media.reduce(function (rows, key, index) {
-      return (index % 5 == 0 ? rows.push([key])
-        : rows[rows.length - 1].push(key)) && rows;
-    }, []);
-    setMedias(rows)
-  }, [media.length])
+    if(media && media.length > 0){
+      let rows = media.reduce(function (rows, key, index) {
+        return (index % 5 == 0 ? rows.push([key])
+          : rows[rows.length - 1]?.push(key)) && rows;
+      }, []);
+      setMedias(rows)
+    }
+  }, [media])
 
   return (
 
