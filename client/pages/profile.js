@@ -54,6 +54,8 @@ function BasicTabs() {
   const [movieKatalogue, setMovieKatalogue] = useState()
   const [tvKatalogue, setTVKatalogue] = useState()
   const [movieRecommendations, setMovieRecommendations] = useState([])
+  const [dailyTrendingSeries, setDailyTrendingSeries] = useState([])
+  const [dailyTrendingMovies, setDailyTrendingMovies] = useState([])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -262,14 +264,35 @@ function BasicTabs() {
   useEffect(() => {
     fetchTrendingSeriesData().catch(console.error);
     fetchTrendingMoviesData().catch(console.error);
-    fetchRecommendedMovies().catch(console.error)
+
+    fetch(`https://api.themoviedb.org/3/trending/tv/day?api_key=468018e64d6cfa119009ede09787dea0&`
+    )
+        .then((res) => res.json())
+        .then((data) => {
+            if (!data.errors) {
+                setDailyTrendingSeries(firstTwentyTrending(data.results));
+            } else {
+                setDailyTrendingSeries([]);
+            }
+        }).catch(console.error);
+
+        fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setDailyTrendingMovies(firstTwentyTrending(data.results));
+                } else {
+                    setDailyTrendingMovies([]);
+                }
+            }).catch(console.error);
+
   }, [])
 
   useEffect(() => {
     fetchRecommendedMovies().catch(console.error)
     setRecommendedMovies([])
-    console.log("Recommended")
-    console.log(recommendedMovies)
+
   }, [movieRecommendations.length])
 
   useEffect(() => {
@@ -299,13 +322,15 @@ function BasicTabs() {
           {/* Movie tab */}
           <TabPanel value={value} index={0}>
             <Katalogue isMovie={true} medias={movies} setMedias={setMovies} />
-            <MediaCarousel shouldCom media={trendingMovies} title="Trending Movies" isMovie={true} />
+            <MediaCarousel shouldCom media={trendingMovies} title="Trending movies of the week" isMovie={true} />
+            <MediaCarousel shouldCom media={dailyTrendingMovies} title="Trending movies of the day" isMovie={true} />
             <MediaCarousel media={recommendedMovies} title={recommendedMovieTitle} isMovie={true} />
           </TabPanel>
           {/* Series Tab */}
           <TabPanel value={value} index={1}>
             <Katalogue isMovie={false} medias={series} setMedias={setSeries} />
-            <MediaCarousel media={trendingSeries} title="Trending Series" isMovie={false} />
+            <MediaCarousel media={trendingSeries} title="Trending series of the week" isMovie={false} />
+            <MediaCarousel shouldCom media={dailyTrendingSeries} title="Trending series of the day" isMovie={true} />
           </TabPanel>
         </Box>
       )}
