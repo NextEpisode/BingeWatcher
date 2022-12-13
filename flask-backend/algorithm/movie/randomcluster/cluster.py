@@ -16,8 +16,8 @@ class Cluster():
         return result
 
     def getCluster(self):
-        movies_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\movies.csv')
-        ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\csv_0.csv')
+        movies_df = pd.read_csv(r'./algorithm/dataset/ml-latest-small/movies.csv')
+        ratings_df = pd.read_csv(r'./algorithm/dataset/ml-latest-small/csv_0.csv')
         #movies_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\movies.csv')
         #ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\ratings.csv')
         #Acquiring and attaching the dataset to Panda Dataframes.

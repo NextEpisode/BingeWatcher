@@ -21,7 +21,7 @@ class Cluster():
         
 
     def selectiveMovieAlgorithm(self, movie_id):
-        df = pd.read_csv(r'flask-backend\algorithm\dataset\movie_dataset.csv')
+        df = pd.read_csv(r'./algorithm/dataset/movie_dataset.csv')
         ##Step 1: Read CSV File
 		#print df.columns
     	##Step 2: Select Features
@@ -41,7 +41,7 @@ class Cluster():
         response = requests.get(first+str(movieid)+second)
         data = json.loads(response.text)
         movie_user_likes = data["title"]
-        f=open(r'flask-backend\algorithm\dataset\movie_dataset.csv',"r")
+        f=open(r'./algorithm/dataset/movie_dataset.csv',"r")
         reader=csv.reader(f)
         movieToFind = movie_user_likes
         for row in reader:
