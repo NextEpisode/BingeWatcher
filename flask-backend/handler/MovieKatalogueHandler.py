@@ -82,7 +82,9 @@ class MovieKatalogueHandler:
         mkustatus = json['MKUStatus']
         dao = MovieKatalogueDao.MovieKatalogueDAO()
         if not dao.getExistingEntry(kid, movieid):
-            return jsonify(Error="Movie Katalogue not found."), 404
+            dao.insert(kid, movieid, mkustatus)
+            result = self.build_moviekatalogues_attributes(kid, movieid, mkustatus)
+            return jsonify(moviekatalogues=result), 201
         else:
             if kid and movieid and mkustatus:
                 dao.update(kid, movieid, mkustatus)

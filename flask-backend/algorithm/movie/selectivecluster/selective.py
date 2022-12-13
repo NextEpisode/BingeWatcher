@@ -52,7 +52,7 @@ class Cluster():
                 ## Step 7: Get a list of similar movies in descending order of similarity score
                 sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
                 if len(sorted_similar_movies) < 0:
-                    return []
+                    return {}
                 ## Step 8: Print titles of first 5 movies
                 i=0            
                 result_list = []
@@ -66,7 +66,7 @@ class Cluster():
                     f.close()
                 return jsonify(cluster=result_list)
         f.close()
-        return []
+        return {}
     
 
 
