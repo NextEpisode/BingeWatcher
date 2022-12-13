@@ -118,7 +118,7 @@ export default function EnhancedTableToolbar(props) {
                                 delete
                             </Button>
                             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                                Are you sure you want to delete this from your katalogue? This action cannot be undone.
                             </Typography>
                         </Box>
                     </Modal>
