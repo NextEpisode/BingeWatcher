@@ -330,7 +330,7 @@ function BasicTabs() {
           <TabPanel value={value} index={1}>
             <Katalogue isMovie={false} medias={series} setMedias={setSeries} />
             <MediaCarousel media={trendingSeries} title="Trending series of the week" isMovie={false} />
-            <MediaCarousel shouldCom media={dailyTrendingSeries} title="Trending series of the day" isMovie={true} />
+            <MediaCarousel shouldCom media={dailyTrendingSeries} title="Trending series of the day" isMovie={false} />
           </TabPanel>
         </Box>
       )}
