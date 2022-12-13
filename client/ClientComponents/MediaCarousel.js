@@ -1,6 +1,5 @@
-import CarouselItem from './CarouselItem';
 import Carousel from 'react-material-ui-carousel';
-import { Container, Typography } from '@mui/material';
+import { Container } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import DisplayCards from '../ClientComponents/DisplayCards';
 
@@ -10,11 +9,14 @@ export default function TrendingCarousel({ media, title, isMovie }) {
   const [medias, setMedias] = useState([]);
 
   useEffect(() => {
-    if(media && media.length > 0){
-      let rows = media.reduce(function (rows, key, index) {
-        return (index % 5 == 0 ? rows.push([key])
-          : rows[rows.length - 1]?.push(key)) && rows;
-      }, []);
+    if (media && media.length > 0) {
+      let rows = media.reduce(
+        function (rows, key, index) {
+          if (rows) {
+            return (index % 5 == 0 ? rows.push([key])
+              : rows[rows.length - 1]?.push(key)) && rows;
+          }
+        }, []);
       setMedias(rows)
     }
   }, [media.length])

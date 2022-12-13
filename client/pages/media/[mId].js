@@ -16,7 +16,7 @@ export default function MediaPage() {
     const [mediaStatus, setMediaStatus] = useState("");
     const [recommendedMovies, setRecommendedMovies] = useState([]);
     const [movieRecommendations, setMovieRecommendations] = useState([])
-    const [recommendedMovieTitle, setRecommendedMovieTitle] = useState("");
+    const [recommendedMovieTitle, setRecommendedMovieTitle] = useState("")
 
 
     const katalogueStatuses = [
@@ -29,8 +29,6 @@ export default function MediaPage() {
 
     const fetchRecommendedMovies = async () => {
         let dummyMovies = [];
-        console.log("recommm")
-        console.log(movieRecommendations)
         if (movieRecommendations && movieRecommendations.length > 0) {
             movieRecommendations.map(async (movie, index) => {
                 await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie.Moviename}`
@@ -54,15 +52,6 @@ export default function MediaPage() {
         }
     }
 
-
-    useEffect(() => {
-        fetchRecommendedMovies().catch(console.error)
-        setRecommendedMovies([])
-    }, [movieRecommendations.length])
-
-
-
-
     const fetchMediaInfo = async () => {
         if (mId && type) {
             const response = await fetch(`https://api.themoviedb.org/3/${type}/${mId}?api_key=468018e64d6cfa119009ede09787dea0&language=en-US`)
@@ -82,6 +71,41 @@ export default function MediaPage() {
             setkatalogueId(data.User.KID)
         } catch (e) {
             console.log(e)
+        }
+    }
+
+    async function getStatus() {
+        if (type == "tv") {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/TVKatalogueRoute/${katalogueId}`, {
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                const data = await response.json()
+                if (data.tvkatalogues) {
+                    const foundEntry = data.tvkatalogues.find(element => (element.TVID == mId))
+                    setMediaStatus(foundEntry.TVKUStatus)
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/movieKatalogueRoute/${katalogueId}`, {
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                const data = await response.json()
+                // setMediaStatus(data.User.mId)
+                if (data.moviekatalogues) {
+                    const foundEntry = data.moviekatalogues.find(element => (element.MovieID == mId))
+                    setMediaStatus(foundEntry.MKUStatus)
+                }
+            } catch (e) {
+                console.log(e)
+            }
         }
     }
 
@@ -114,7 +138,7 @@ export default function MediaPage() {
                     TVKUSeason: 1,
                     TVKUEpisode: 1
                 }),
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-type': 'application/json'
                 }
@@ -128,7 +152,7 @@ export default function MediaPage() {
                     MovieID: mId,
                     MKUStatus: pickedStatus
                 }),
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-type': 'application/json'
                 }
@@ -137,19 +161,30 @@ export default function MediaPage() {
         }
     }
 
+
     useEffect(() => {
         if (status == 'authenticated') {
             getKatalogueID()
         }
-        if (katalogueId) {
-            console.log(katalogueId)
-        }
-    }, [status, katalogueId])
+    }, [status])
 
     useEffect(() => {
         fetchMediaInfo()
-        getMovieRecommendationTitles().catch(console.error)
+        if (mId && type == "movie") {
+            getMovieRecommendationTitles().catch(console.error)
+        }
     }, [mId, type])
+
+    useEffect(() => {
+        if (katalogueId) {
+            getStatus()
+        }
+    }, [katalogueId])
+
+    useEffect(() => {
+        fetchRecommendedMovies().catch(console.error)
+        setRecommendedMovies([])
+    }, [movieRecommendations.length])
 
     return (
         <div>
