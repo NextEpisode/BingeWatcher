@@ -36,7 +36,6 @@ export default function Search() {
                 .then((data) => {
                     if (!data.errors) {
                         setResults(data.results);
-                        console.log(data.results)
 
                         let rows = data.results.reduce(function (rows, key, index) {
                             return (index % 4 == 0 ? rows.push([key])

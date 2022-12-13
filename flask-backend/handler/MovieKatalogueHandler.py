@@ -37,9 +37,9 @@ class MovieKatalogueHandler:
             result_list.append(result)
         return jsonify(moviekatalogues=result_list)
 
-    def getRandomMovieFromKatalogue(self, json):
-        kid = json["KID"]
-        status = json["MKUStatus"]
+    def getRandomMovieFromKatalogue(self,KID,MKUStatus):
+        kid = KID
+        status = MKUStatus
         dao = MovieKatalogueDao.MovieKatalogueDAO()
         moviekatalogues_list = dao.getMovieKataloguesByKIDAndStatus(kid, status)
         rng = random.choice(list(moviekatalogues_list))
@@ -82,7 +82,9 @@ class MovieKatalogueHandler:
         mkustatus = json['MKUStatus']
         dao = MovieKatalogueDao.MovieKatalogueDAO()
         if not dao.getExistingEntry(kid, movieid):
-            return jsonify(Error="Movie Katalogue not found."), 404
+            dao.insert(kid, movieid, mkustatus)
+            result = self.build_moviekatalogues_attributes(kid, movieid, mkustatus)
+            return jsonify(moviekatalogues=result), 201
         else:
             if kid and movieid and mkustatus:
                 dao.update(kid, movieid, mkustatus)

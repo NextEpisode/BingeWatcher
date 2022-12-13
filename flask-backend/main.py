@@ -77,6 +77,7 @@ def mkstat():
             print("REQUEST: ", request.json)
             return MovieKatalogueHandler().getByStatusUsingKID(request.json) #Works, Revised
 #Movie Area-----------------------------------------------------------------
+
 #TV Area--------------------------------------------------------------------
 
 @app.route('/getAllTVKatalogues', methods=['GET'])
@@ -163,13 +164,15 @@ def movrndclust():
     return rndclust.Cluster().getCluster()
 
 #Selective Algorithm that uses User movie in Katalogue for calculations
-@app.route('/tu15BntHj9/clst/slct', methods=['GET'])
-def movselectclust():
-    print("REQUEST: ", request.json)
-    return slctclust.Cluster().selectiveCluster(request.json)
+@app.route('/<string:movie_id>/clst/slct', methods=['GET'])
+def movselectclust(movie_id):
+    return slctclust.Cluster().selectiveMovieAlgorithm(movie_id)
 
-    
-# Recommendation Algorithm Are--------------------------------------------------------------------
+@app.route('/<string:KID>/<string:MKUStatus>/krp', methods=['GET'])
+def kataloguerandompick(KID,MKUStatus):
+    return MovieKatalogueHandler().getRandomMovieFromKatalogue(KID,MKUStatus)
+
+# Recommendation Algorithm Are------------------------------------------------
 #Finish purge, finish segmented update, check for any irrelevant code.
 #Blob research. How to use in python and how to
 

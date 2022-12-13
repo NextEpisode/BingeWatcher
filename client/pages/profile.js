@@ -48,10 +48,14 @@ function BasicTabs() {
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [movies, setMovies] = useState([]);
   const [series, setSeries] = useState([]);
+  const [recommendedMovieTitle, setRecommendedMovieTitle] = useState("");
 
   const [katalogueId, setkatalogueId] = useState()
   const [movieKatalogue, setMovieKatalogue] = useState()
   const [tvKatalogue, setTVKatalogue] = useState()
+  const [movieRecommendations, setMovieRecommendations] = useState([])
+  const [dailyTrendingSeries, setDailyTrendingSeries] = useState([])
+  const [dailyTrendingMovies, setDailyTrendingMovies] = useState([])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -62,7 +66,7 @@ function BasicTabs() {
       .then((res) => res.json())
       .then((info) => {
         if (!info.errors) {
-          setTrendingSeries(firstFourTrending(info.results));
+          setTrendingSeries(firstTwentyTrending(info.results));
         } else {
           setTrendingSeries([]);
         }
@@ -74,7 +78,7 @@ function BasicTabs() {
       .then((res) => res.json())
       .then((info) => {
         if (!info.errors) {
-          setTrendingMovies(firstFourTrending(info.results));
+          setTrendingMovies(firstTwentyTrending(info.results));
         } else {
           setTrendingMovies([]);
         }
@@ -88,6 +92,12 @@ function BasicTabs() {
         const response = await fetch(`https://api.themoviedb.org/3/movie/${movie.MovieID}?api_key=468018e64d6cfa119009ede09787dea0&`)
         const data = await response.json()
         data.media_status = movie.MKUStatus;
+        if (data.genres && data.genres.length > 0) {
+          data.first_genre = data.genres[0].name;
+        }
+        else {
+          data.first_genre = ''
+        }
         return data;
       }))
       setMovies(movieEntries);
@@ -101,6 +111,12 @@ function BasicTabs() {
         const response = await fetch(`https://api.themoviedb.org/3/tv/${tv.TVID}?api_key=468018e64d6cfa119009ede09787dea0&`)
         const data = await response.json()
         data.media_status = tv.TVKUStatus;
+        if (data.genres && data.genres.length > 0) {
+          data.first_genre = data.genres[0].name;
+        }
+        else {
+          data.first_genre = ''
+        }
         data.episode = tv.TVKUEpisode;
         data.season = tv.TVKUSeason;
         return data;
@@ -108,23 +124,6 @@ function BasicTabs() {
       setSeries(seriesEntry);
     }
   }
-
-  // const fetchRecommendedMovies = async () => {
-  //   let dummyMovies = [];
-  //   if (MovieRecommendations && MovieRecommendations.recommendedMovies.length > 0) {
-  //     MovieRecommendations.recommendedMovies.map(async (movie) => {
-  //       await fetch(`https://api.themoviedb.org/3/search/tv?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie}`
-  //       )
-  //         .then((res) => res.json())
-  //         .then((data) => {
-  //           if (!data.errors) {
-  //             dummyMovies.push(data);
-  //           }
-  //         });
-  //     })
-  //     setRecommendedMovies(dummyMovies);
-  //   }
-  // }
 
   async function getKatalogueID() {
     try {
@@ -139,6 +138,71 @@ function BasicTabs() {
       console.log(e)
     }
   }
+
+
+
+  async function getMovieRecommendationTitles(movieID) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/${movieID}/clst/slct`, {
+        headers: {
+          'Content-type': 'application/json',
+        }
+      })
+      const data = await response.json()
+      if(data.cluster){
+        setMovieRecommendations(data.cluster)
+      }
+      else{
+        setMovieRecommendations([])
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async function pickRandomMovieToRecommend() {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/${katalogueId}/Watched/krp`, {
+        headers: {
+          'Content-type': 'application/json',
+        }
+      })
+      const data = await response.json()
+      console.log('data')
+      console.log(data)
+      getMovieRecommendationTitles(data.moviekatalogues.MovieID)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const fetchRecommendedMovies = async () => {
+    console.log('Movie Recs')
+    console.log(movieRecommendations)
+    let dummyMovies = [];
+    if (movieRecommendations && movieRecommendations.length > 0) {
+      movieRecommendations.map(async (movie, index) => {
+        await fetch(`https://api.themoviedb.org/3/search/movie?api_key=468018e64d6cfa119009ede09787dea0&language=en-US&page=1&include_adult=false&query=${movie.Moviename}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (!data.errors) {
+              if (data.results && data.results.length > 0) {
+                //first element returned is the movie we're basing our recommendation on
+                if (index == 0) {
+                  setRecommendedMovieTitle("Because you watched ".concat(movie.Moviename));
+                }
+                else {
+                  dummyMovies[index - 1] = data.results[0];
+                }
+              }
+            }
+          });
+        setRecommendedMovies(dummyMovies)
+      });
+    }
+  }
+
 
   async function getMovieKatalogue() {
     try {
@@ -181,6 +245,7 @@ function BasicTabs() {
     if (katalogueId) {
       getMovieKatalogue().catch(console.error)
       getTVKatalogue().catch(console.error)
+      pickRandomMovieToRecommend().catch(console.error)
     }
   }, [katalogueId])
 
@@ -199,17 +264,46 @@ function BasicTabs() {
   useEffect(() => {
     fetchTrendingSeriesData().catch(console.error);
     fetchTrendingMoviesData().catch(console.error);
-    // fetchRecommendedMovies().catch(console.error)
+
+    fetch(`https://api.themoviedb.org/3/trending/tv/day?api_key=468018e64d6cfa119009ede09787dea0&`
+    )
+        .then((res) => res.json())
+        .then((data) => {
+            if (!data.errors) {
+                setDailyTrendingSeries(firstTwentyTrending(data.results));
+            } else {
+                setDailyTrendingSeries([]);
+            }
+        }).catch(console.error);
+
+        fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=468018e64d6cfa119009ede09787dea0&`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.errors) {
+                    setDailyTrendingMovies(firstTwentyTrending(data.results));
+                } else {
+                    setDailyTrendingMovies([]);
+                }
+            }).catch(console.error);
+
   }, [])
+
+  useEffect(() => {
+    fetchRecommendedMovies().catch(console.error)
+    setRecommendedMovies([])
+
+  }, [movieRecommendations.length])
 
   useEffect(() => {
     setMovies(movies)
   }, [movies.length])
 
-  const firstFourTrending = (media) => {
+
+  const firstTwentyTrending = (media) => {
     const trendingMedia = [];
     let index = 0;
-    for (index; index < 4; index++) {
+    for (index; index < 20; index++) {
       trendingMedia[index] = media[index];
     }
     return trendingMedia;
@@ -228,13 +322,15 @@ function BasicTabs() {
           {/* Movie tab */}
           <TabPanel value={value} index={0}>
             <Katalogue isMovie={true} medias={movies} setMedias={setMovies} />
-            <MediaCarousel shouldCom media={trendingMovies} title="Trending Movies" isMovie={true} />
-            <MediaCarousel media={recommendedMovies} title="Recommended Movies" isMovie={true} />
+            <MediaCarousel shouldCom media={trendingMovies} title="Trending movies of the week" isMovie={true} />
+            <MediaCarousel shouldCom media={dailyTrendingMovies} title="Trending movies of the day" isMovie={true} />
+            <MediaCarousel media={recommendedMovies} title={recommendedMovieTitle} isMovie={true} />
           </TabPanel>
           {/* Series Tab */}
           <TabPanel value={value} index={1}>
             <Katalogue isMovie={false} medias={series} setMedias={setSeries} />
-            <MediaCarousel media={trendingSeries} title="Trending Series" isMovie={false} />
+            <MediaCarousel media={trendingSeries} title="Trending series of the week" isMovie={false} />
+            <MediaCarousel shouldCom media={dailyTrendingSeries} title="Trending series of the day" isMovie={false} />
           </TabPanel>
         </Box>
       )}

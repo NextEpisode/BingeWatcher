@@ -6,7 +6,7 @@ import torch
 class Loader(Dataset):
 
     def __init__(self):
-        ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\csv_0.csv')
+        ratings_df = pd.read_csv(r'./algorithm/dataset/ml-latest-small/csv_0.csv')
         #ratings_df = pd.read_csv(r'flask-backend\algorithm\dataset\ml-latest-small\ratings.csv')
         self.ratings = ratings_df.copy()
         
