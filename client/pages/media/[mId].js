@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Box } from '@mui/system';
-import { FormControl, InputLabel, MenuItem, Paper, Select, Table, TableCell, TableRow, Typography } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Paper, Table, TableCell, TableRow, Typography } from '@mui/material';
 import { useSession } from 'next-auth/react'
 import MediaCarousel from '../../ClientComponents/MediaCarousel'
-
+import Select from '@mui/material/Select';
 
 export default function MediaPage() {
 
@@ -119,7 +119,7 @@ export default function MediaPage() {
                     'Content-type': 'application/json'
                 }
             })
-            setMediaStatus(pickedStatus);
+            setMediaStatus(pickedStatus)
 
         } else {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/movieKatalogueRoute/${katalogueId}`, {
@@ -133,10 +133,9 @@ export default function MediaPage() {
                     'Content-type': 'application/json'
                 }
             })
-            setMediaStatus(pickedStatus);
+            setMediaStatus(pickedStatus)
         }
     }
-
 
     useEffect(() => {
         if (status == 'authenticated') {
@@ -174,6 +173,11 @@ export default function MediaPage() {
                                         <Typography variant='h3' sx={{ ml: 5, color: 'error.contrastText' }} gutterBottom>
                                             {mediaInfo.title} {mediaInfo.name} ({type == "movie" ? mediaInfo.release_date.slice(0, 4) : mediaInfo.first_air_date.slice(0, 4)})
                                         </Typography>
+                                        <td>
+                                            <Typography variant='h6' sx={{ ml: 5, color: 'white' }}>
+                                                {mediaStatus}
+                                            </Typography>
+                                        </td>
                                         <Typography sx={{ ml: 4 }} gutterBottom>
                                             {mediaInfo.genres.map((item, index) => (
                                                 <td key={"genre-" + index}>
@@ -196,9 +200,10 @@ export default function MediaPage() {
                                             {session && (
                                                 <Box sx={{ ml: 5, minWidth: 170 }}>
                                                     <FormControl >
-                                                        <InputLabel id="demo-simple-select-label">Add to Katalogue</InputLabel>
+                                                        <InputLabel id="demo-simple-select-label" sx={{ color: "black" }}>Add to Katalogue</InputLabel>
                                                         <Select sx={{ minWidth: 175, bgcolor: 'error.contrastText' }}
                                                             labelId="demo-simple-select-label"
+                                                            value={mediaStatus}
                                                             id="demo-simple-select">
                                                             {katalogueStatuses.map((status, index) => (
                                                                 <React.Fragment key={"mID_MenuItem" + index}>
