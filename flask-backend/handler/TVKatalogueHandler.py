@@ -87,7 +87,9 @@ class TVKatalogueHandler:
         tvkuseason = json['TVKUSeason']
         tvkuepisode =json['TVKUEpisode']
         if not dao.getExistingEntry(kid, tvid):
-            return jsonify(Error="Katalogue not found."), 404
+            dao.insert(kid, tvid, tvkustatus, tvkuseason, tvkuepisode)
+            result = self.build_tvkatalogues_attributes(kid, tvid, tvkustatus, tvkuseason, tvkuepisode)
+            return jsonify(tvkatalogues=result), 201
         else:
             if kid and tvid and tvkustatus and tvkuseason and tvkuepisode:
                 dao.updateKatalogue(kid, tvid, tvkustatus, tvkuseason, tvkuepisode)
